@@ -265,6 +265,106 @@ sudo journalctl -xe
 # Ver intentos de login fallidos
 sudo grep "Failed password" /var/log/auth.log</code></pre>
                     </div>
+                    
+                    <div class="mt-4">
+                        <strong>¿Por qué?</strong> Los logs son esenciales para detectar intrusiones y responder a incidentes.
+                        <br>
+                        <strong>Riesgo mitigado:</strong> Falta de visibilidad sobre actividades sospechosas, dificultad para investigar incidentes.
+                    </div>
+                </section>
+                
+                <section class="mb-8">
+                    <h2 id="auditd" class="text-2xl font-semibold mb-4">8. Sistema de Auditoría (auditd)</h2>
+                    <p class="mb-4">
+                        auditd proporciona capacidades de auditoría del kernel para rastrear cambios en el sistema.
+                    </p>
+                    
+                    <div class="command-block">
+                        <pre><code># Instalar auditd
+sudo apt install auditd audispd-plugins -y
+sudo systemctl enable auditd
+sudo systemctl start auditd
+
+# Configurar reglas de auditoría (ejemplo: monitorear cambios en /etc)
+sudo auditctl -w /etc -p wa -k system-config
+
+# Ver eventos de auditoría
+sudo ausearch -k system-config
+
+# Reglas permanentes (editar /etc/audit/rules.d/audit.rules)
+# -w /etc -p wa -k system-config</code></pre>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <strong>¿Por qué?</strong> Proporciona registro detallado de cambios críticos en el sistema.
+                        <br>
+                        <strong>Riesgo mitigado:</strong> Cambios no autorizados en configuraciones críticas, falta de accountability.
+                    </div>
+                </section>
+                
+                <section class="mb-8">
+                    <h2 id="apparmor-selinux" class="text-2xl font-semibold mb-4">9. AppArmor (Control de Acceso Mandatorio)</h2>
+                    <p class="mb-4">
+                        AppArmor es el sistema de control de acceso mandatorio (MAC) por defecto en Ubuntu/Debian.
+                    </p>
+                    
+                    <div class="command-block">
+                        <pre><code># Verificar estado de AppArmor
+sudo systemctl status apparmor
+sudo aa-status
+
+# Listar perfiles cargados
+sudo aa-status | grep profiles
+
+# Poner perfiles en modo enforce
+sudo aa-enforce /etc/apparmor.d/*
+
+# Ver perfiles en modo complain (logging sin bloquear)
+sudo aa-complain /etc/apparmor.d/*
+
+# Recargar perfiles después de cambios
+sudo systemctl reload apparmor</code></pre>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <strong>¿Por qué?</strong> AppArmor limita qué pueden hacer las aplicaciones, incluso si son comprometidas.
+                        <br>
+                        <strong>Riesgo mitigado:</strong> Escalada de privilegios, ejecución de código malicioso.
+                    </div>
+                </section>
+                
+                <section class="mb-8">
+                    <h2 id="resumen-verificacion" class="text-2xl font-semibold mb-4">10. Verificación y Validación</h2>
+                    <p class="mb-4">
+                        Después de aplicar hardening, verifica que todo funcione correctamente:
+                    </p>
+                    
+                    <div class="command-block">
+                        <pre><code># Verificar servicios críticos
+sudo systemctl status ssh
+sudo systemctl status ufw
+sudo systemctl status fail2ban
+
+# Verificar configuración SSH
+sudo sshd -t
+
+# Verificar firewall
+sudo ufw status verbose
+
+# Ejecutar auditoría con Lynis
+sudo lynis audit system
+
+# Verificar puertos abiertos
+sudo ss -tulpn
+
+# Verificar usuarios con privilegios
+sudo grep -Po '^sudo.+:\K.*$' /etc/group</code></pre>
+                    </div>
+                    
+                    <div class="alert alert-success mt-4">
+                        <strong>Buena práctica:</strong> Documenta todos los cambios realizados y mantén un registro 
+                        de las configuraciones aplicadas. Esto facilitará auditorías futuras y troubleshooting.
+                    </div>
                 </section>
                 
                 <section class="mb-8">

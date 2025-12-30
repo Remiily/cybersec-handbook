@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NIST 800-53 - Cybersec Handbook</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+<body class="bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100">
+    <div id="sidebar-overlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
+    <aside id="sidebar" class="sidebar fixed top-0 left-0 h-full w-64 bg-white dark:bg-slate-800 border-r border-gray-200 dark:border-gray-700 z-50 overflow-y-auto">
+        <div class="p-4">
+            <a href="../../" class="text-xl font-bold text-blue-600 dark:text-blue-400 block mb-6">🔒 Cybersec Handbook</a>
+            <nav>
+                <a href="../" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">← Volver a Hardening</a>
+            </nav>
+        </div>
+    </aside>
+    
+    <div class="lg:ml-64">
+        <header class="sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700">
+            <div class="flex items-center justify-between px-4 py-3">
+                <button id="sidebar-toggle" onclick="toggleSidebar()" class="lg:hidden mr-3 text-gray-500"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg></button>
+                <div id="breadcrumbs" class="breadcrumb"></div>
+                <button id="theme-toggle" onclick="toggleTheme()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path></svg></button>
+            </div>
+        </header>
+        
+        <main class="p-6 max-w-5xl mx-auto">
+            <article>
+                <header class="mb-8">
+                    <h1 class="text-4xl font-bold mb-4">NIST SP 800-53</h1>
+                    <p class="text-xl text-gray-600 dark:text-gray-400 mb-4">
+                        Security and Privacy Controls for Information Systems and Organizations
+                    </p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="badge badge-intermediate">Intermedio</span>
+                        <span class="text-sm text-gray-500">⏱️ 1.5 horas</span>
+                    </div>
+                </header>
+                
+                <div id="table-of-contents" class="toc">
+                    <h3 class="font-semibold mb-3">Tabla de Contenidos</h3>
+                </div>
+                
+                <section class="mb-8">
+                    <h2 id="que-es-nist-800-53" class="text-2xl font-semibold mb-4">¿Qué es NIST 800-53?</h2>
+                    <p class="mb-4">
+                        <strong>NIST Special Publication 800-53</strong> es un catálogo de controles de seguridad y 
+                        privacidad desarrollado por el National Institute of Standards and Technology (NIST). Proporciona 
+                        un conjunto comprehensivo de controles para proteger sistemas de información federales.
+                    </p>
+                    <p class="mb-4">
+                        Aunque fue diseñado para sistemas federales de EE.UU., NIST 800-53 es ampliamente utilizado en 
+                        el sector privado y se ha convertido en un estándar de facto para la seguridad de sistemas.
+                    </p>
+                </section>
+                
+                <section class="mb-8">
+                    <h2 id="estructura" class="text-2xl font-semibold mb-4">Estructura de NIST 800-53</h2>
+                    <p class="mb-4">
+                        El documento está organizado en 20 familias de controles:
+                    </p>
+                    <div class="grid md:grid-cols-2 gap-4 mb-4">
+                        <div class="card">
+                            <div class="card-header">AC - Access Control</div>
+                            <p class="text-sm">Control de acceso lógico y físico</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">AU - Audit and Accountability</div>
+                            <p class="text-sm">Logging y auditoría</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">CM - Configuration Management</div>
+                            <p class="text-sm">Gestión de configuración</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">CP - Contingency Planning</div>
+                            <p class="text-sm">Planificación de continuidad</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">IA - Identification and Authentication</div>
+                            <p class="text-sm">Identificación y autenticación</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">IR - Incident Response</div>
+                            <p class="text-sm">Respuesta a incidentes</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">MA - Maintenance</div>
+                            <p class="text-sm">Mantenimiento de sistemas</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">MP - Media Protection</div>
+                            <p class="text-sm">Protección de medios</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">PE - Physical and Environmental</div>
+                            <p class="text-sm">Protección física</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">PL - Planning</div>
+                            <p class="text-sm">Planificación de seguridad</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">PS - Personnel Security</div>
+                            <p class="text-sm">Seguridad del personal</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">RA - Risk Assessment</div>
+                            <p class="text-sm">Evaluación de riesgos</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">SC - System and Communications Protection</div>
+                            <p class="text-sm">Protección de sistemas y comunicaciones</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">SI - System and Information Integrity</div>
+                            <p class="text-sm">Integridad de sistemas e información</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">SA - System and Services Acquisition</div>
+                            <p class="text-sm">Adquisición de sistemas y servicios</p>
+                        </div>
+                    </div>
+                </section>
+                
+                <section class="mb-8">
+                    <h2 id="niveles-baseline" class="text-2xl font-semibold mb-4">Niveles de Baseline</h2>
+                    <p class="mb-4">
+                        NIST 800-53 define tres niveles de baseline según el impacto:
+                    </p>
+                    <table class="mb-4">
+                        <thead>
+                            <tr>
+                                <th>Baseline</th>
+                                <th>Impacto</th>
+                                <th>Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Low</strong></td>
+                                <td>Bajo</td>
+                                <td>Sistemas con impacto limitado si se comprometen</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Moderate</strong></td>
+                                <td>Moderado</td>
+                                <td>Sistemas con impacto serio pero no catastrófico</td>
+                            </tr>
+                            <tr>
+                                <td><strong>High</strong></td>
+                                <td>Alto</td>
+                                <td>Sistemas críticos con impacto catastrófico</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+                
+                <section class="mb-8">
+                    <h2 id="aplicacion-hardening" class="text-2xl font-semibold mb-4">Aplicación al Hardening</h2>
+                    <p class="mb-4">
+                        Algunos controles relevantes para hardening de sistemas:
+                    </p>
+                    
+                    <h3 class="text-xl font-semibold mb-3">AC-3: Access Enforcement</h3>
+                    <p class="mb-4">
+                        Implementar control de acceso basado en políticas.
+                    </p>
+                    <ul class="list-disc list-inside space-y-2 mb-4">
+                        <li>Gestionar usuarios y grupos adecuadamente</li>
+                        <li>Implementar principio de menor privilegio</li>
+                        <li>Usar sudo con políticas restrictivas</li>
+                    </ul>
+                    
+                    <h3 class="text-xl font-semibold mb-3 mt-4">AC-17: Remote Access</h3>
+                    <p class="mb-4">
+                        Controlar y monitorear acceso remoto.
+                    </p>
+                    <ul class="list-disc list-inside space-y-2 mb-4">
+                        <li>Configurar SSH de forma segura</li>
+                        <li>Usar VPN para acceso remoto cuando sea posible</li>
+                        <li>Implementar autenticación multifactor</li>
+                    </ul>
+                    
+                    <h3 class="text-xl font-semibold mb-3 mt-4">CM-2: Baseline Configuration</h3>
+                    <p class="mb-4">
+                        Establecer y mantener configuraciones de línea base.
+                    </p>
+                    <ul class="list-disc list-inside space-y-2 mb-4">
+                        <li>Documentar configuraciones de hardening</li>
+                        <li>Usar herramientas como Ansible para mantener consistencia</li>
+                        <li>Versionar configuraciones</li>
+                    </ul>
+                    
+                    <h3 class="text-xl font-semibold mb-3 mt-4">SI-3: Malicious Code Protection</h3>
+                    <p class="mb-4">
+                        Implementar protección contra código malicioso.
+                    </p>
+                    <ul class="list-disc list-inside space-y-2 mb-4">
+                        <li>Instalar y mantener antivirus/antimalware</li>
+                        <li>Configurar escaneos automáticos</li>
+                        <li>Mantener firmas actualizadas</li>
+                    </ul>
+                </section>
+                
+                <section class="mb-8">
+                    <h2 id="version-revision-5" class="text-2xl font-semibold mb-4">Revisión 5 (Rev 5)</h2>
+                    <p class="mb-4">
+                        La Revisión 5 de NIST 800-53, publicada en 2020, introduce:
+                    </p>
+                    <ul class="list-disc list-inside space-y-2 mb-4">
+                        <li><strong>Controles de privacidad:</strong> Nueva familia de controles PR (Privacy)</li>
+                        <li><strong>Supply chain risk:</strong> Controles mejorados para gestión de riesgos de cadena de suministro</li>
+                        <li><strong>Organizational controls:</strong> Controles organizacionales mejorados</li>
+                        <li><strong>Parameterization:</strong> Mayor flexibilidad en implementación</li>
+                    </ul>
+                </section>
+                
+                <section class="mb-8">
+                    <h2 id="herramientas-implementacion" class="text-2xl font-semibold mb-4">Herramientas de Implementación</h2>
+                    <ul class="list-disc list-inside space-y-2 mb-4">
+                        <li><strong>OpenSCAP:</strong> Evaluar compliance con NIST 800-53</li>
+                        <li><strong>NIST Cybersecurity Framework:</strong> Complementa 800-53 con un framework más orientado a resultados</li>
+                        <li><strong>Compliance mapping tools:</strong> Mapear controles NIST a otros frameworks</li>
+                    </ul>
+                </section>
+                
+                <section class="mb-8">
+                    <h2 id="referencias" class="text-2xl font-semibold mb-4">Referencias</h2>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li><a href="https://csrc.nist.gov/publications/detail/sp/800-53/rev-5/final" class="text-blue-600 dark:text-blue-400 hover:underline" target="_blank">NIST SP 800-53 Rev 5 (Official)</a></li>
+                        <li><a href="https://csrc.nist.gov/projects/risk-management/sp800-53-controls/release-search" class="text-blue-600 dark:text-blue-400 hover:underline" target="_blank">NIST 800-53 Control Search</a></li>
+                        <li><a href="https://nvd.nist.gov/800-53" class="text-blue-600 dark:text-blue-400 hover:underline" target="_blank">NIST 800-53 Control Catalog</a></li>
+                    </ul>
+                </section>
+            </article>
+        </main>
+        
+        <footer class="border-t border-gray-200 dark:border-gray-700 mt-12 py-8">
+            <div class="max-w-5xl mx-auto px-6">
+                <p class="text-sm text-gray-600 dark:text-gray-400 text-center">
+                    Última actualización: 2025-01-XX | 
+                    <a href="https://github.com/your-username/cybersec-handbook" class="text-blue-600 dark:text-blue-400 hover:underline">Editar en GitHub</a>
+                </p>
+            </div>
+        </footer>
+    </div>
+    
+    <script src="../../assets/js/main.js"></script>
+    <script>
+        tailwind.config = { darkMode: 'class' }
+    </script>
+</body>
+</html>

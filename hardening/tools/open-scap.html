@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenSCAP - Herramienta de Hardening - Cybersec Handbook</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+<body class="bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100">
+    <div id="sidebar-overlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
+    <aside id="sidebar" class="sidebar fixed top-0 left-0 h-full w-64 bg-white dark:bg-slate-800 border-r border-gray-200 dark:border-gray-700 z-50 overflow-y-auto">
+        <div class="p-4">
+            <a href="../../" class="text-xl font-bold text-blue-600 dark:text-blue-400 block mb-6">🔒 Cybersec Handbook</a>
+            <nav>
+                <a href="../" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">← Volver a Hardening</a>
+            </nav>
+        </div>
+    </aside>
+    
+    <div class="lg:ml-64">
+        <header class="sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700">
+            <div class="flex items-center justify-between px-4 py-3">
+                <button id="sidebar-toggle" onclick="toggleSidebar()" class="lg:hidden mr-3 text-gray-500"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg></button>
+                <div id="breadcrumbs" class="breadcrumb"></div>
+                <button id="theme-toggle" onclick="toggleTheme()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path></svg></button>
+            </div>
+        </header>
+        
+        <main class="p-6 max-w-5xl mx-auto">
+            <article>
+                <header class="mb-8">
+                    <h1 class="text-4xl font-bold mb-4">OpenSCAP - Compliance Scanning</h1>
+                    <p class="text-xl text-gray-600 dark:text-gray-400 mb-4">
+                        Suite de herramientas para evaluar compliance y hardening usando SCAP
+                    </p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="badge badge-intermediate">Intermedio</span>
+                        <span class="text-sm text-gray-500">⏱️ 1 hora</span>
+                    </div>
+                </header>
+                
+                <div id="table-of-contents" class="toc">
+                    <h3 class="font-semibold mb-3">Tabla de Contenidos</h3>
+                </div>
+                
+                <section class="mb-8">
+                    <h2 id="que-es-openscap" class="text-2xl font-semibold mb-4">¿Qué es OpenSCAP?</h2>
+                    <p class="mb-4">
+                        <strong>OpenSCAP</strong> es una suite de herramientas open source que implementa el protocolo 
+                        SCAP (Security Content Automation Protocol) de NIST. Permite evaluar sistemas contra benchmarks 
+                        de seguridad como CIS, DISA STIG, y otros estándares.
+                    </p>
+                    <p class="mb-4">
+                        OpenSCAP puede:
+                    </p>
+                    <ul class="list-disc list-inside space-y-2 mb-4">
+                        <li>Escanear sistemas para verificar compliance</li>
+                        <li>Generar reportes de evaluación detallados</li>
+                        <li>Remediar automáticamente problemas encontrados</li>
+                        <li>Comparar sistemas con benchmarks reconocidos</li>
+                    </ul>
+                </section>
+                
+                <section class="mb-8">
+                    <h2 id="instalacion" class="text-2xl font-semibold mb-4">Instalación</h2>
+                    
+                    <h3 class="text-xl font-semibold mb-3">Ubuntu/Debian</h3>
+                    <div class="command-block">
+                        <pre><code># Instalar OpenSCAP
+sudo apt update
+sudo apt install openscap-scanner ssg-debderived
+
+# Instalar contenidos SCAP (Security Guides)
+sudo apt install ssg-debian ssg-ubuntu</code></pre>
+                    </div>
+                    
+                    <h3 class="text-xl font-semibold mb-3 mt-4">Red Hat/CentOS/RHEL</h3>
+                    <div class="command-block">
+                        <pre><code># OpenSCAP viene preinstalado en RHEL/CentOS
+# Si no está instalado:
+sudo yum install openscap-scanner scap-security-guide
+
+# Para RHEL 8+
+sudo dnf install openscap-scanner scap-security-guide</code></pre>
+                    </div>
+                </section>
+                
+                <section class="mb-8">
+                    <h2 id="uso-basico" class="text-2xl font-semibold mb-4">Uso Básico</h2>
+                    
+                    <h3 class="text-xl font-semibold mb-3">Listar perfiles disponibles</h3>
+                    <div class="command-block">
+                        <pre><code># Ver perfiles disponibles para tu distribución
+oscap info /usr/share/xml/scap/ssg/content/ssg-ubuntu2204-ds.xml
+
+# O usar el comando más simple
+oscap info /usr/share/xml/scap/ssg/content/ssg-$(lsb_release -is | tr '[:upper:]' '[:lower:]')$(lsb_release -rs | cut -d. -f1)-ds.xml</code></pre>
+                    </div>
+                    
+                    <h3 class="text-xl font-semibold mb-3 mt-4">Ejecutar evaluación</h3>
+                    <div class="command-block">
+                        <pre><code># Evaluar sistema contra un perfil específico
+sudo oscap xccdf eval \
+  --profile xccdf_org.ssgproject.content_profile_cis \
+  --results results.xml \
+  --report report.html \
+  /usr/share/xml/scap/ssg/content/ssg-ubuntu2204-ds.xml</code></pre>
+                    </div>
+                    
+                    <p class="mb-4 mt-4">
+                        Esto generará:
+                    </p>
+                    <ul class="list-disc list-inside space-y-2 mb-4">
+                        <li><code>results.xml</code> - Resultados en formato XML (machine-readable)</li>
+                        <li><code>report.html</code> - Reporte HTML legible</li>
+                    </ul>
+                    
+                    <h3 class="text-xl font-semibold mb-3 mt-4">Verificar solo (sin remediación)</h3>
+                    <div class="command-block">
+                        <pre><code># Evaluar sin hacer cambios
+sudo oscap xccdf eval \
+  --profile xccdf_org.ssgproject.content_profile_cis \
+  --results-arf results-arf.xml \
+  /usr/share/xml/scap/ssg/content/ssg-ubuntu2204-ds.xml</code></pre>
+                    </div>
+                </section>
+                
+                <section class="mb-8">
+                    <h2 id="perfiles-comunes" class="text-2xl font-semibold mb-4">Perfiles Comunes</h2>
+                    <p class="mb-4">
+                        Los perfiles más utilizados incluyen:
+                    </p>
+                    <table class="mb-4">
+                        <thead>
+                            <tr>
+                                <th>Perfil</th>
+                                <th>Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>cis</code></td>
+                                <td>CIS Benchmark (Center for Internet Security)</td>
+                            </tr>
+                            <tr>
+                                <td><code>cis_server_l1</code></td>
+                                <td>CIS Level 1 Server</td>
+                            </tr>
+                            <tr>
+                                <td><code>cis_workstation_l1</code></td>
+                                <td>CIS Level 1 Workstation</td>
+                            </tr>
+                            <tr>
+                                <td><code>stig</code></td>
+                                <td>DISA STIG (Security Technical Implementation Guide)</td>
+                            </tr>
+                            <tr>
+                                <td><code>pci-dss</code></td>
+                                <td>Payment Card Industry Data Security Standard</td>
+                            </tr>
+                            <tr>
+                                <td><code>ospp</code></td>
+                                <td>OSPP (Operating System Protection Profile)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+                
+                <section class="mb-8">
+                    <h2 id="remediacion-automatica" class="text-2xl font-semibold mb-4">Remediación Automática</h2>
+                    <p class="mb-4">
+                        OpenSCAP puede generar scripts de remediación automática:
+                    </p>
+                    <div class="command-block">
+                        <pre><code># Generar script de remediación Bash
+sudo oscap xccdf generate fix \
+  --profile xccdf_org.ssgproject.content_profile_cis \
+  --fix-type bash \
+  --output remediation.sh \
+  /usr/share/xml/scap/ssg/content/ssg-ubuntu2204-ds.xml
+
+# Revisar el script antes de ejecutarlo
+cat remediation.sh
+
+# Ejecutar remediación (¡con precaución!)
+# sudo bash remediation.sh</code></pre>
+                    </div>
+                    
+                    <div class="alert alert-warning">
+                        <strong>Importante:</strong> Siempre revisa los scripts de remediación antes de ejecutarlos. 
+                        Algunos cambios pueden afectar la funcionalidad del sistema.
+                    </div>
+                </section>
+                
+                <section class="mb-8">
+                    <h2 id="interpretando-resultados" class="text-2xl font-semibold mb-4">Interpretando Resultados</h2>
+                    <p class="mb-4">
+                        El reporte HTML incluye:
+                    </p>
+                    <ul class="list-disc list-inside space-y-2 mb-4">
+                        <li><strong>Score:</strong> Puntaje de compliance (0-100)</li>
+                        <li><strong>Pass/Fail:</strong> Estado de cada regla evaluada</li>
+                        <li><strong>Severidad:</strong> Nivel de importancia de cada fallo</li>
+                        <li><strong>Descripción:</strong> Explicación de cada regla</li>
+                        <li><strong>Remediación:</strong> Pasos para corregir problemas</li>
+                    </ul>
+                </section>
+                
+                <section class="mb-8">
+                    <h2 id="automatizacion" class="text-2xl font-semibold mb-4">Automatización</h2>
+                    <p class="mb-4">
+                        Puedes integrar OpenSCAP en scripts o CI/CD:
+                    </p>
+                    <div class="command-block">
+                        <pre><code>#!/bin/bash
+# Script de evaluación automatizada
+
+SCAP_FILE="/usr/share/xml/scap/ssg/content/ssg-ubuntu2204-ds.xml"
+PROFILE="xccdf_org.ssgproject.content_profile_cis"
+RESULTS_DIR="/var/log/openscap"
+DATE=$(date +%Y%m%d_%H%M%S)
+
+mkdir -p $RESULTS_DIR
+
+sudo oscap xccdf eval \
+  --profile $PROFILE \
+  --results $RESULTS_DIR/results-$DATE.xml \
+  --report $RESULTS_DIR/report-$DATE.html \
+  $SCAP_FILE
+
+# Extraer score
+SCORE=$(oscap xccdf eval --profile $PROFILE $SCAP_FILE 2>&1 | \
+  grep -oP 'Score: \K[0-9]+')
+
+echo "Compliance Score: $SCORE"
+
+# Enviar alerta si score es bajo
+if [ "$SCORE" -lt 70 ]; then
+    echo "ALERTA: Score de compliance bajo ($SCORE)" | \
+      mail -s "OpenSCAP Report - Low Score" admin@example.com
+fi</code></pre>
+                    </div>
+                </section>
+                
+                <section class="mb-8">
+                    <h2 id="referencias" class="text-2xl font-semibold mb-4">Referencias</h2>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li><a href="https://www.open-scap.org/" class="text-blue-600 dark:text-blue-400 hover:underline" target="_blank">OpenSCAP Official Site</a></li>
+                        <li><a href="https://github.com/ComplianceAsCode/content" class="text-blue-600 dark:text-blue-400 hover:underline" target="_blank">SCAP Security Guide (GitHub)</a></li>
+                        <li><a href="https://www.redhat.com/en/blog/using-openscap-security-policies-rhel" class="text-blue-600 dark:text-blue-400 hover:underline" target="_blank">Using OpenSCAP Security Policies</a></li>
+                    </ul>
+                </section>
+            </article>
+        </main>
+        
+        <footer class="border-t border-gray-200 dark:border-gray-700 mt-12 py-8">
+            <div class="max-w-5xl mx-auto px-6">
+                <p class="text-sm text-gray-600 dark:text-gray-400 text-center">
+                    Última actualización: 2025-01-XX | 
+                    <a href="https://github.com/your-username/cybersec-handbook" class="text-blue-600 dark:text-blue-400 hover:underline">Editar en GitHub</a>
+                </p>
+            </div>
+        </footer>
+    </div>
+    
+    <script src="../../assets/js/main.js"></script>
+    <script>
+        tailwind.config = { darkMode: 'class' }
+    </script>
+</body>
+</html>
