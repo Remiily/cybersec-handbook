@@ -1,6 +1,6 @@
 # Cybersec Handbook - Guía Profesional de Ciberseguridad
 
-[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Deployed-brightgreen)](https://your-username.github.io/cybersec-handbook)
+[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Deployed-brightgreen)](https://remiily.github.io/cybersec-handbook)
 
 Guía interactiva, profesional y escalable de ciberseguridad enfocada inicialmente en System Hardening, diseñada para crecer con otras áreas como Pentesting, Red Team, Blue Team, Forensics e Incident Response.
 

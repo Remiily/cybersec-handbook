@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hardening de Contenedores - Cybersec Handbook</title>
+    <title>Checklists de Hardening - Cybersec Handbook</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link rel="stylesheet" href="../../assets/css/main.css">
@@ -32,65 +32,56 @@
         <main class="p-6 max-w-5xl mx-auto">
             <article>
                 <header class="mb-8">
-                    <h1 class="text-4xl font-bold mb-4">Hardening de Contenedores</h1>
+                    <h1 class="text-4xl font-bold mb-4">Checklists Interactivos de Hardening</h1>
                     <p class="text-xl text-gray-600 dark:text-gray-400 mb-4">
-                        Guía de seguridad para Docker y Kubernetes
+                        Checklists interactivos basados en benchmarks reconocidos para auditorías sistemáticas
                     </p>
-                    <div class="flex flex-wrap gap-2 mb-4">
-                        <span class="badge badge-advanced">Avanzado</span>
-                        <span class="text-sm text-gray-500">⏱️ 3-4 horas</span>
-                    </div>
                 </header>
                 
-                <div id="table-of-contents" class="toc">
-                    <h3 class="font-semibold mb-3">Tabla de Contenidos</h3>
-                </div>
-                
-                <div class="alert alert-info">
-                    <strong>Nota:</strong> Esta es una guía en desarrollo. El contenido completo se agregará próximamente.
-                </div>
-                
                 <section class="mb-8">
-                    <h2 id="introduccion" class="text-2xl font-semibold mb-4">Introducción</h2>
-                    <p class="mb-4">
-                        El hardening de contenedores es fundamental en arquitecturas modernas. Docker y Kubernetes 
-                        requieren configuraciones específicas de seguridad para proteger los workloads en contenedores.
-                    </p>
+                    <h2 class="text-2xl font-semibold mb-4">Checklists Disponibles</h2>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="card">
+                            <div class="card-header">🐧 Checklist Linux Genérico</div>
+                            <p class="text-gray-600 dark:text-gray-400 mb-4">
+                                Checklist completo para hardening de sistemas Linux basado en CIS Benchmarks 
+                                y mejores prácticas. Incluye progreso guardado y exportación.
+                            </p>
+                            <a href="linux-generic-checklist.html" class="text-blue-600 dark:text-blue-400 hover:underline">
+                                Abrir Checklist →
+                            </a>
+                        </div>
+                        
+                        <div class="card opacity-60">
+                            <div class="card-header">🪟 Checklist Windows Server</div>
+                            <p class="text-gray-600 dark:text-gray-400 mb-4">
+                                Próximamente: Checklist para hardening de Windows Server.
+                            </p>
+                            <span class="text-gray-400">Próximamente</span>
+                        </div>
+                    </div>
                 </section>
                 
                 <section class="mb-8">
-                    <h2 id="docker-seguridad" class="text-2xl font-semibold mb-4">Docker Security</h2>
-                    <p class="mb-4">Contenido próximamente sobre:</p>
-                    <ul class="list-disc list-inside space-y-2">
-                        <li>Daemon de Docker seguro</li>
-                        <li>Imágenes base seguras</li>
-                        <li>Escaneo de vulnerabilidades</li>
-                        <li>Usuarios no-root en contenedores</li>
-                        <li>Limitaciones de recursos</li>
-                        <li>Secrets management</li>
+                    <h2 class="text-2xl font-semibold mb-4">Características de los Checklists</h2>
+                    <ul class="list-disc list-inside space-y-2 mb-4">
+                        <li><strong>Progreso persistente:</strong> Tu progreso se guarda automáticamente en el navegador (localStorage)</li>
+                        <li><strong>Barra de progreso:</strong> Visualiza el porcentaje de completado</li>
+                        <li><strong>Exportación:</strong> Exporta tus resultados a JSON para documentación</li>
+                        <li><strong>Reset:</strong> Restablece el progreso cuando sea necesario</li>
+                        <li><strong>Basado en estándares:</strong> Todos los checklists están basados en benchmarks reconocidos (CIS, NIST, etc.)</li>
                     </ul>
                 </section>
                 
                 <section class="mb-8">
-                    <h2 id="kubernetes-seguridad" class="text-2xl font-semibold mb-4">Kubernetes Security</h2>
-                    <p class="mb-4">Contenido próximamente sobre:</p>
-                    <ul class="list-disc list-inside space-y-2">
-                        <li>RBAC (Role-Based Access Control)</li>
-                        <li>Network Policies</li>
-                        <li>Pod Security Standards</li>
-                        <li>Secrets y ConfigMaps</li>
-                        <li>Admission Controllers</li>
-                        <li>Audit Logging</li>
-                    </ul>
-                </section>
-                
-                <section class="mb-8">
-                    <h2 id="referencias" class="text-2xl font-semibold mb-4">Referencias</h2>
-                    <ul class="list-disc list-inside space-y-2">
-                        <li><a href="https://docs.docker.com/engine/security/" class="text-blue-600 dark:text-blue-400 hover:underline" target="_blank">Docker Security Documentation</a></li>
-                        <li><a href="https://kubernetes.io/docs/concepts/security/" class="text-blue-600 dark:text-blue-400 hover:underline" target="_blank">Kubernetes Security Documentation</a></li>
-                        <li><a href="https://www.cisecurity.org/benchmark/docker" class="text-blue-600 dark:text-blue-400 hover:underline" target="_blank">CIS Docker Benchmark</a></li>
-                    </ul>
+                    <h2 class="text-2xl font-semibold mb-4">Cómo Usar los Checklists</h2>
+                    <ol class="list-decimal list-inside space-y-2 mb-4">
+                        <li>Abre el checklist que corresponde a tu sistema</li>
+                        <li>Revisa cada ítem y marca como completado cuando lo hayas verificado/aplicado</li>
+                        <li>El progreso se guarda automáticamente - puedes cerrar y continuar más tarde</li>
+                        <li>Exporta el resultado cuando termines para documentación</li>
+                        <li>Usa el checklist como guía durante auditorías de seguridad</li>
+                    </ol>
                 </section>
             </article>
         </main>

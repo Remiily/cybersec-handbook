@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zero Trust Hardening - Cybersec Handbook</title>
+    <title>Hardening Windows - Cybersec Handbook</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../../assets/css/main.css">
 </head>
 <body class="bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100">
     <div id="sidebar-overlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
     <aside id="sidebar" class="sidebar fixed top-0 left-0 h-full w-64 bg-white dark:bg-slate-800 border-r border-gray-200 dark:border-gray-700 z-50 overflow-y-auto">
         <div class="p-4">
-            <a href="../../" class="text-xl font-bold text-blue-600 dark:text-blue-400 block mb-6">🔒 Cybersec Handbook</a>
+            <a href="../../../" class="text-xl font-bold text-blue-600 dark:text-blue-400 block mb-6">🔒 Cybersec Handbook</a>
             <nav>
-                <a href="../" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">← Volver a Hardening</a>
+                <a href="../../" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">← Volver a Hardening</a>
             </nav>
         </div>
     </aside>
@@ -32,58 +32,51 @@
         <main class="p-6 max-w-5xl mx-auto">
             <article>
                 <header class="mb-8">
-                    <h1 class="text-4xl font-bold mb-4">Arquitectura Zero Trust</h1>
+                    <h1 class="text-4xl font-bold mb-4">Hardening de Sistemas Windows</h1>
                     <p class="text-xl text-gray-600 dark:text-gray-400 mb-4">
-                        Implementación de principios Zero Trust en hardening de sistemas
+                        Guías específicas para diferentes versiones de Windows
                     </p>
                     <div class="flex flex-wrap gap-2 mb-4">
-                        <span class="badge badge-advanced">Avanzado</span>
-                        <span class="text-sm text-gray-500">⏱️ 2-3 horas</span>
+                        <span class="badge badge-intermediate">Intermedio</span>
+                        <span class="text-sm text-gray-500">⏱️ Variable</span>
                     </div>
                 </header>
                 
-                <div id="table-of-contents" class="toc">
-                    <h3 class="font-semibold mb-3">Tabla de Contenidos</h3>
+                <div class="grid md:grid-cols-2 gap-6 mb-8">
+                    <div class="card">
+                        <div class="card-header">Windows 10 / 11</div>
+                        <p class="text-gray-600 dark:text-gray-400 mb-4">
+                            Guía completa de hardening para sistemas Windows 10 y Windows 11, incluyendo configuración 
+                            de firewall, UAC, BitLocker, y más.
+                        </p>
+                        <a href="windows-10-11.html" class="text-blue-600 dark:text-blue-400 hover:underline">
+                            Ver guía completa →
+                        </a>
+                    </div>
+                    
+                    <div class="card opacity-60">
+                        <div class="card-header">Windows Server</div>
+                        <p class="text-gray-600 dark:text-gray-400 mb-4">
+                            Próximamente: Guía específica para Windows Server con configuraciones empresariales y GPO.
+                        </p>
+                        <span class="text-gray-400">Próximamente</span>
+                    </div>
                 </div>
                 
-                <div class="alert alert-info">
-                    <strong>Nota:</strong> Esta es una guía en desarrollo. El contenido completo se agregará próximamente.
-                </div>
-                
                 <section class="mb-8">
-                    <h2 id="introduccion" class="text-2xl font-semibold mb-4">¿Qué es Zero Trust?</h2>
+                    <h2 class="text-2xl font-semibold mb-4">Principios Generales de Hardening Windows</h2>
                     <p class="mb-4">
-                        Zero Trust es un modelo de seguridad que asume que ningún dispositivo, usuario o red 
-                        debe ser confiable por defecto. Cada acceso debe ser verificado explícitamente.
-                    </p>
-                    <p class="mb-4">
-                        Los principios fundamentales incluyen:
+                        Aunque cada versión tiene particularidades, estos principios aplican a todas:
                     </p>
                     <ul class="list-disc list-inside space-y-2">
-                        <li>Verificación explícita</li>
-                        <li>Acceso con menor privilegio</li>
-                        <li>Asumir brecha (assume breach)</li>
-                    </ul>
-                </section>
-                
-                <section class="mb-8">
-                    <h2 id="implementacion" class="text-2xl font-semibold mb-4">Implementación</h2>
-                    <p class="mb-4">Contenido próximamente sobre:</p>
-                    <ul class="list-disc list-inside space-y-2">
-                        <li>Identity Verification (MFA, Identity Providers)</li>
-                        <li>Device Health Verification</li>
-                        <li>Network Segmentation</li>
-                        <li>Micro-segmentation</li>
-                        <li>Continuous Monitoring</li>
-                        <li>Policy Enforcement Points</li>
-                    </ul>
-                </section>
-                
-                <section class="mb-8">
-                    <h2 id="referencias" class="text-2xl font-semibold mb-4">Referencias</h2>
-                    <ul class="list-disc list-inside space-y-2">
-                        <li><a href="https://www.nist.gov/publications/zero-trust-architecture" class="text-blue-600 dark:text-blue-400 hover:underline" target="_blank">NIST Zero Trust Architecture</a></li>
-                        <li><a href="https://www.cisa.gov/zero-trust-maturity-model" class="text-blue-600 dark:text-blue-400 hover:underline" target="_blank">CISA Zero Trust Maturity Model</a></li>
+                        <li>Mantener Windows Update activado y actualizado</li>
+                        <li>Configurar Windows Firewall adecuadamente</li>
+                        <li>Habilitar UAC (User Account Control) al máximo nivel</li>
+                        <li>Deshabilitar servicios innecesarios</li>
+                        <li>Configurar políticas de contraseñas fuertes</li>
+                        <li>Usar BitLocker para cifrado de disco</li>
+                        <li>Configurar Windows Defender y mantenerlo actualizado</li>
+                        <li>Aplicar configuraciones mediante Group Policy en entornos empresariales</li>
                     </ul>
                 </section>
             </article>
@@ -99,7 +92,7 @@
         </footer>
     </div>
     
-    <script src="../../assets/js/main.js"></script>
+    <script src="../../../assets/js/main.js"></script>
     <script>
         tailwind.config = { darkMode: 'class' }
     </script>

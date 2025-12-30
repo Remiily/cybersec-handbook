@@ -4,6 +4,12 @@
 function initTheme() {
   const theme = localStorage.getItem('theme') || 'light';
   document.documentElement.setAttribute('data-theme', theme);
+  // Agregar/quitar clase 'dark' para Tailwind
+  if (theme === 'dark') {
+    document.documentElement.classList.add('dark');
+  } else {
+    document.documentElement.classList.remove('dark');
+  }
   updateThemeToggle(theme);
 }
 
@@ -11,6 +17,12 @@ function toggleTheme() {
   const currentTheme = document.documentElement.getAttribute('data-theme');
   const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
   document.documentElement.setAttribute('data-theme', newTheme);
+  // También agregar/quitar clase 'dark' para Tailwind
+  if (newTheme === 'dark') {
+    document.documentElement.classList.add('dark');
+  } else {
+    document.documentElement.classList.remove('dark');
+  }
   localStorage.setItem('theme', newTheme);
   updateThemeToggle(newTheme);
 }

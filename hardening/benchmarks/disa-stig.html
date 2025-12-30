@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DISA STIGs - Cybersec Handbook</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+<body class="bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100">
+    <div id="sidebar-overlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
+    <aside id="sidebar" class="sidebar fixed top-0 left-0 h-full w-64 bg-white dark:bg-slate-800 border-r border-gray-200 dark:border-gray-700 z-50 overflow-y-auto">
+        <div class="p-4">
+            <a href="../../" class="text-xl font-bold text-blue-600 dark:text-blue-400 block mb-6">🔒 Cybersec Handbook</a>
+            <nav>
+                <a href="../" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">← Volver a Hardening</a>
+            </nav>
+        </div>
+    </aside>
+    
+    <div class="lg:ml-64">
+        <header class="sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700">
+            <div class="flex items-center justify-between px-4 py-3">
+                <button id="sidebar-toggle" onclick="toggleSidebar()" class="lg:hidden mr-3 text-gray-500"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg></button>
+                <div id="breadcrumbs" class="breadcrumb"></div>
+                <button id="theme-toggle" onclick="toggleTheme()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path></svg></button>
+            </div>
+        </header>
+        
+        <main class="p-6 max-w-5xl mx-auto">
+            <article>
+                <header class="mb-8">
+                    <h1 class="text-4xl font-bold mb-4">DISA STIGs</h1>
+                    <p class="text-xl text-gray-600 dark:text-gray-400 mb-4">
+                        Security Technical Implementation Guides del Defense Information Systems Agency
+                    </p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="badge badge-advanced">Avanzado</span>
+                        <span class="text-sm text-gray-500">⏱️ 2 horas</span>
+                    </div>
+                </header>
+                
+                <div id="table-of-contents" class="toc">
+                    <h3 class="font-semibold mb-3">Tabla de Contenidos</h3>
+                </div>
+                
+                <section class="mb-8">
+                    <h2 id="que-son-stigs" class="text-2xl font-semibold mb-4">¿Qué son los DISA STIGs?</h2>
+                    <p class="mb-4">
+                        Los <strong>STIGs (Security Technical Implementation Guides)</strong> son guías técnicas detalladas 
+                        desarrolladas por el Defense Information Systems Agency (DISA) del Departamento de Defensa de EE.UU. 
+                        Proporcionan instrucciones específicas para configurar sistemas de forma segura.
+                    </p>
+                    <p class="mb-4">
+                        Aunque fueron diseñados para sistemas militares y gubernamentales, los STIGs son ampliamente 
+                        utilizados en el sector privado debido a su rigor y detalle técnico.
+                    </p>
+                </section>
+                
+                <section class="mb-8">
+                    <h2 id="estructura-stigs" class="text-2xl font-semibold mb-4">Estructura de los STIGs</h2>
+                    <p class="mb-4">
+                        Cada STIG está organizado en secciones que cubren:
+                    </p>
+                    <ul class="list-disc list-inside space-y-2 mb-4">
+                        <li><strong>Vulnerability ID (V-ID):</strong> Identificador único para cada vulnerabilidad</li>
+                        <li><strong>Severity:</strong> Nivel de severidad (CAT I, CAT II, CAT III)</li>
+                        <li><strong>Rule Title:</strong> Título descriptivo de la regla</li>
+                        <li><strong>Discussion:</strong> Explicación detallada del problema y solución</li>
+                        <li><strong>Check Content:</strong> Cómo verificar si el sistema cumple con la regla</li>
+                        <li><strong>Fix Text:</strong> Instrucciones específicas para remediar el problema</li>
+                    </ul>
+                </section>
+                
+                <section class="mb-8">
+                    <h2 id="categorias-severidad" class="text-2xl font-semibold mb-4">Categorías de Severidad</h2>
+                    <table class="mb-4">
+                        <thead>
+                            <tr>
+                                <th>Categoría</th>
+                                <th>Descripción</th>
+                                <th>Impacto</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>CAT I</strong></td>
+                                <td>Crítico</td>
+                                <td>Vulnerabilidad que permite acceso no autorizado, pérdida de datos, o compromiso total del sistema</td>
+                            </tr>
+                            <tr>
+                                <td><strong>CAT II</strong></td>
+                                <td>Alto</td>
+                                <td>Vulnerabilidad que podría permitir acceso limitado, degradación del servicio, o pérdida parcial de datos</td>
+                            </tr>
+                            <tr>
+                                <td><strong>CAT III</strong></td>
+                                <td>Medio</td>
+                                <td>Vulnerabilidad menor que podría causar degradación del servicio o no cumplir con mejores prácticas</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+                
+                <section class="mb-8">
+                    <h2 id="stigs-disponibles" class="text-2xl font-semibold mb-4">STIGs Disponibles</h2>
+                    <p class="mb-4">
+                        DISA publica STIGs para una amplia variedad de tecnologías:
+                    </p>
+                    <div class="grid md:grid-cols-2 gap-4 mb-4">
+                        <div class="card">
+                            <div class="card-header">Sistemas Operativos</div>
+                            <ul class="list-disc list-inside space-y-1 text-sm mt-2">
+                                <li>Windows 10/11</li>
+                                <li>Windows Server 2019/2022</li>
+                                <li>Red Hat Enterprise Linux</li>
+                                <li>Ubuntu</li>
+                                <li>macOS</li>
+                            </ul>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">Aplicaciones</div>
+                            <ul class="list-disc list-inside space-y-1 text-sm mt-2">
+                                <li>Apache HTTP Server</li>
+                                <li>Microsoft IIS</li>
+                                <li>Oracle Database</li>
+                                <li>Microsoft SQL Server</li>
+                            </ul>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">Dispositivos de Red</div>
+                            <ul class="list-disc list-inside space-y-1 text-sm mt-2">
+                                <li>Cisco Routers/Switches</li>
+                                <li>Firewalls</li>
+                                <li>Load Balancers</li>
+                            </ul>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">Cloud & Virtualization</div>
+                            <ul class="list-disc list-inside space-y-1 text-sm mt-2">
+                                <li>VMware vSphere</li>
+                                <li>AWS</li>
+                                <li>Azure</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+                
+                <section class="mb-8">
+                    <h2 id="como-aplicar-stigs" class="text-2xl font-semibold mb-4">Cómo Aplicar STIGs</h2>
+                    
+                    <h3 class="text-xl font-semibold mb-3">1. Descargar el STIG</h3>
+                    <p class="mb-4">
+                        Los STIGs están disponibles en formato XML (para SCAP) y PDF en:
+                    </p>
+                    <ul class="list-disc list-inside space-y-2 mb-4">
+                        <li><a href="https://public.cyber.mil/stigs/" class="text-blue-600 dark:text-blue-400 hover:underline" target="_blank">public.cyber.mil/stigs/</a></li>
+                        <li>Requiere cuenta gratuita para descargar</li>
+                    </ul>
+                    
+                    <h3 class="text-xl font-semibold mb-3 mt-4">2. Usar OpenSCAP</h3>
+                    <p class="mb-4">
+                        La forma más eficiente de aplicar STIGs es usando OpenSCAP:
+                    </p>
+                    <div class="command-block">
+                        <pre><code># Descargar STIG para tu sistema
+# Por ejemplo, para RHEL 8:
+# Descargar desde public.cyber.mil
+
+# Evaluar sistema contra STIG
+sudo oscap xccdf eval \
+  --profile stig \
+  --results results-stig.xml \
+  --report report-stig.html \
+  /usr/share/xml/scap/ssg/content/ssg-rhel8-ds.xml
+
+# Ver resultados
+firefox report-stig.html</code></pre>
+                    </div>
+                    
+                    <h3 class="text-xl font-semibold mb-3 mt-4">3. Aplicar Remedios Automáticamente</h3>
+                    <div class="command-block">
+                        <pre><code># Generar script de remediación
+sudo oscap xccdf generate fix \
+  --profile stig \
+  --fix-type bash \
+  --output stig-remediation.sh \
+  /usr/share/xml/scap/ssg/content/ssg-rhel8-ds.xml
+
+# Revisar script antes de ejecutar
+cat stig-remediation.sh
+
+# Ejecutar remediación (¡con precaución!)
+# sudo bash stig-remediation.sh</code></pre>
+                    </div>
+                    
+                    <div class="alert alert-warning">
+                        <strong>Importante:</strong> Siempre revisa los scripts de remediación antes de ejecutarlos. 
+                        Algunos cambios pueden afectar la funcionalidad del sistema.
+                    </div>
+                </section>
+                
+                <section class="mb-8">
+                    <h2 id="stig-viewer" class="text-2xl font-semibold mb-4">STIG Viewer</h2>
+                    <p class="mb-4">
+                        <strong>STIG Viewer</strong> es una herramienta oficial de DISA para trabajar con STIGs:
+                    </p>
+                    <ul class="list-disc list-inside space-y-2 mb-4">
+                        <li>Ver y navegar STIGs de forma visual</li>
+                        <li>Generar checklists personalizados</li>
+                        <li>Importar resultados de escaneos SCAP</li>
+                        <li>Generar reportes de compliance</li>
+                    </ul>
+                    <p class="mb-4">
+                        Descarga disponible en: <a href="https://public.cyber.mil/stigs/srg-stig-tools/" class="text-blue-600 dark:text-blue-400 hover:underline" target="_blank">public.cyber.mil/stigs/srg-stig-tools/</a>
+                    </p>
+                </section>
+                
+                <section class="mb-8">
+                    <h2 id="mejores-practicas" class="text-2xl font-semibold mb-4">Mejores Prácticas</h2>
+                    <ul class="list-disc list-inside space-y-2 mb-4">
+                        <li><strong>Priorizar por severidad:</strong> Enfócate primero en CAT I y CAT II</li>
+                        <li><strong>Probar en desarrollo:</strong> Nunca apliques STIGs directamente en producción</li>
+                        <li><strong>Documentar excepciones:</strong> Si no puedes aplicar una regla, documenta el por qué</li>
+                        <li><strong>Revisión continua:</strong> Los STIGs se actualizan regularmente</li>
+                        <li><strong>Combinar con otros benchmarks:</strong> STIGs complementan bien con CIS Benchmarks</li>
+                        <li><strong>Automatizar:</strong> Usa herramientas como Ansible para aplicar STIGs a escala</li>
+                    </ul>
+                </section>
+                
+                <section class="mb-8">
+                    <h2 id="referencias" class="text-2xl font-semibold mb-4">Referencias</h2>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li><a href="https://public.cyber.mil/stigs/" class="text-blue-600 dark:text-blue-400 hover:underline" target="_blank">DISA STIGs - Sitio Oficial</a></li>
+                        <li><a href="https://www.stigviewer.com/" class="text-blue-600 dark:text-blue-400 hover:underline" target="_blank">STIG Viewer (Web)</a></li>
+                        <li><a href="https://public.cyber.mil/stigs/srg-stig-tools/" class="text-blue-600 dark:text-blue-400 hover:underline" target="_blank">STIG Tools Download</a></li>
+                    </ul>
+                </section>
+            </article>
+        </main>
+        
+        <footer class="border-t border-gray-200 dark:border-gray-700 mt-12 py-8">
+            <div class="max-w-5xl mx-auto px-6">
+                <p class="text-sm text-gray-600 dark:text-gray-400 text-center">
+                    Última actualización: 2025-01-XX | 
+                    <a href="https://github.com/Remiily/cybersec-handbook" class="text-blue-600 dark:text-blue-400 hover:underline">Editar en GitHub</a>
+                </p>
+            </div>
+        </footer>
+    </div>
+    
+    <script src="../../assets/js/main.js"></script>
+    <script>
+        tailwind.config = { darkMode: 'class' }
+    </script>
+</body>
+</html>
