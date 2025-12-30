@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CIS Benchmarks - Cybersec Handbook</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+<body class="bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100">
+    <div id="sidebar-overlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
+    <aside id="sidebar" class="sidebar fixed top-0 left-0 h-full w-64 bg-white dark:bg-slate-800 border-r border-gray-200 dark:border-gray-700 z-50 overflow-y-auto">
+        <div class="p-4">
+            <a href="../../" class="text-xl font-bold text-blue-600 dark:text-blue-400 block mb-6">🔒 Cybersec Handbook</a>
+            <nav>
+                <a href="../" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">← Volver a Hardening</a>
+            </nav>
+        </div>
+    </aside>
+    
+    <div class="lg:ml-64">
+        <header class="sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700">
+            <div class="flex items-center justify-between px-4 py-3">
+                <button id="sidebar-toggle" onclick="toggleSidebar()" class="lg:hidden mr-3 text-gray-500"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg></button>
+                <div id="breadcrumbs" class="breadcrumb"></div>
+                <button id="theme-toggle" onclick="toggleTheme()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path></svg></button>
+            </div>
+        </header>
+        
+        <main class="p-6 max-w-5xl mx-auto">
+            <article>
+                <header class="mb-8">
+                    <h1 class="text-4xl font-bold mb-4">CIS Benchmarks</h1>
+                    <p class="text-xl text-gray-600 dark:text-gray-400 mb-4">
+                        Guía de referencia para los CIS Benchmarks y su aplicación práctica
+                    </p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="badge badge-intermediate">Intermedio</span>
+                        <span class="text-sm text-gray-500">⏱️ 1 hora</span>
+                    </div>
+                </header>
+                
+                <div id="table-of-contents" class="toc">
+                    <h3 class="font-semibold mb-3">Tabla de Contenidos</h3>
+                </div>
+                
+                <section class="mb-8">
+                    <h2 id="que-son-cis" class="text-2xl font-semibold mb-4">¿Qué son los CIS Benchmarks?</h2>
+                    <p class="mb-4">
+                        Los <strong>CIS Benchmarks</strong> (Center for Internet Security Benchmarks) son un conjunto 
+                        de configuraciones de seguridad consensuadas por expertos para una amplia variedad de 
+                        tecnologías, incluyendo sistemas operativos, servidores web, bases de datos, aplicaciones 
+                        en la nube y más.
+                    </p>
+                    <p class="mb-4">
+                        Estos benchmarks proporcionan recomendaciones específicas y accionables para proteger 
+                        sistemas contra amenazas conocidas, basadas en las mejores prácticas de la industria 
+                        y revisadas por profesionales de seguridad de todo el mundo.
+                    </p>
+                </section>
+                
+                <section class="mb-8">
+                    <h2 id="estructura-benchmarks" class="text-2xl font-semibold mb-4">Estructura de los Benchmarks</h2>
+                    <p class="mb-4">
+                        Cada CIS Benchmark está organizado en secciones lógicas que cubren diferentes aspectos 
+                        de la seguridad del sistema:
+                    </p>
+                    
+                    <ul class="list-disc list-inside space-y-2 mb-4">
+                        <li><strong>Inventario inicial:</strong> Identificar componentes a proteger</li>
+                        <li><strong>Configuraciones del sistema operativo:</strong> Parámetros del kernel, servicios, etc.</li>
+                        <li><strong>Servicios de red:</strong> Configuración de firewall, servicios expuestos</li>
+                        <li><strong>Gestión de usuarios:</strong> Políticas de contraseñas, privilegios, cuentas</li>
+                        <li><strong>Logging y monitoreo:</strong> Configuración de logs y alertas</li>
+                        <li><strong>Software y aplicaciones:</strong> Instalación y configuración segura</li>
+                    </ul>
+                </section>
+                
+                <section class="mb-8">
+                    <h2 id="niveles-configuracion" class="text-2xl font-semibold mb-4">Niveles de Configuración</h2>
+                    <p class="mb-4">
+                        Los CIS Benchmarks típicamente incluyen dos niveles de configuración:
+                    </p>
+                    
+                    <div class="grid md:grid-cols-2 gap-4 mb-4">
+                        <div class="card">
+                            <div class="card-header">Nivel 1 - Profile 1</div>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">
+                                Recomendaciones esenciales que no afectan significativamente la funcionalidad 
+                                del sistema. Ideal para entornos donde la funcionalidad es prioritaria.
+                            </p>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-header">Nivel 2 - Profile 2</div>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">
+                                Recomendaciones más estrictas que proporcionan mayor seguridad pero pueden 
+                                requerir cambios en la funcionalidad. Ideal para entornos de alta seguridad.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+                
+                <section class="mb-8">
+                    <h2 id="benchmarks-disponibles" class="text-2xl font-semibold mb-4">Benchmarks Disponibles</h2>
+                    <p class="mb-4">
+                        CIS publica benchmarks para una amplia gama de tecnologías. Algunos de los más utilizados incluyen:
+                    </p>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Categoría</th>
+                                <th>Benchmarks Principales</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Sistemas Operativos</td>
+                                <td>Ubuntu Linux, Red Hat Enterprise Linux, Windows Server, macOS</td>
+                            </tr>
+                            <tr>
+                                <td>Servidores Web</td>
+                                <td>Apache HTTP Server, Nginx, Microsoft IIS</td>
+                            </tr>
+                            <tr>
+                                <td>Bases de Datos</td>
+                                <td>MySQL, PostgreSQL, Microsoft SQL Server, MongoDB</td>
+                            </tr>
+                            <tr>
+                                <td>Nube</td>
+                                <td>AWS Foundations, Microsoft Azure, Google Cloud Platform</td>
+                            </tr>
+                            <tr>
+                                <td>Contenedores</td>
+                                <td>Docker, Kubernetes</td>
+                            </tr>
+                            <tr>
+                                <td>Aplicaciones</td>
+                                <td>Microsoft Office, Adobe Acrobat Reader</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+                
+                <section class="mb-8">
+                    <h2 id="como-aplicar" class="text-2xl font-semibold mb-4">Cómo Aplicar los Benchmarks</h2>
+                    
+                    <ol class="list-decimal list-inside space-y-4 mb-4">
+                        <li>
+                            <strong>Descargar el Benchmark apropiado:</strong>
+                            <p class="ml-6 mt-2">Visita <a href="https://www.cisecurity.org/cis-benchmarks/" class="text-blue-600 dark:text-blue-400 hover:underline" target="_blank">cissecurity.org</a> y descarga el benchmark para tu tecnología.</p>
+                        </li>
+                        <li>
+                            <strong>Revisar el documento:</strong>
+                            <p class="ml-6 mt-2">Familiarízate con las recomendaciones y entiende el impacto de cada configuración.</p>
+                        </li>
+                        <li>
+                            <strong>Planificar la implementación:</strong>
+                            <p class="ml-6 mt-2">Prioriza las configuraciones según tu entorno y nivel de seguridad requerido.</p>
+                        </li>
+                        <li>
+                            <strong>Probar en ambiente de desarrollo:</strong>
+                            <p class="ml-6 mt-2">Nunca apliques cambios directamente en producción. Prueba primero.</p>
+                        </li>
+                        <li>
+                            <strong>Implementar gradualmente:</strong>
+                            <p class="ml-6 mt-2">Aplica las configuraciones en fases y valida la funcionalidad después de cada cambio.</p>
+                        </li>
+                        <li>
+                            <strong>Usar herramientas automatizadas:</strong>
+                            <p class="ml-6 mt-2">Considera usar herramientas como OpenSCAP, InSpec o scripts de hardening para automatizar.</p>
+                        </li>
+                        <li>
+                            <strong>Auditar regularmente:</strong>
+                            <p class="ml-6 mt-2">Realiza auditorías periódicas para asegurar que las configuraciones se mantienen.</p>
+                        </li>
+                    </ol>
+                </section>
+                
+                <section class="mb-8">
+                    <h2 id="herramientas-automatizacion" class="text-2xl font-semibold mb-4">Herramientas de Automatización</h2>
+                    <p class="mb-4">
+                        Aplicar manualmente los benchmarks puede ser tedioso. Estas herramientas ayudan a automatizar el proceso:
+                    </p>
+                    
+                    <ul class="list-disc list-inside space-y-2 mb-4">
+                        <li><strong>OpenSCAP:</strong> Implementa compliance scanning usando SCAP (Security Content Automation Protocol)</li>
+                        <li><strong>Chef InSpec:</strong> Framework para escribir y ejecutar tests de compliance</li>
+                        <li><strong>Ansible:</strong> Puede usar roles específicos como ansible-hardening</li>
+                        <li><strong>CIS-CAT:</strong> Herramienta oficial de CIS (requiere licencia)</li>
+                        <li><strong>Lynis:</strong> Auditoría de seguridad de sistemas Unix/Linux</li>
+                    </ul>
+                </section>
+                
+                <section class="mb-8">
+                    <h2 id="referencias" class="text-2xl font-semibold mb-4">Referencias y Recursos</h2>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li><a href="https://www.cisecurity.org/cis-benchmarks/" class="text-blue-600 dark:text-blue-400 hover:underline" target="_blank">CIS Benchmarks - Sitio Oficial</a></li>
+                        <li><a href="https://www.cisecurity.org/cis-workbench/" class="text-blue-600 dark:text-blue-400 hover:underline" target="_blank">CIS Workbench (Herramienta de evaluación)</a></li>
+                        <li><a href="https://www.open-scap.org/" class="text-blue-600 dark:text-blue-400 hover:underline" target="_blank">OpenSCAP</a></li>
+                    </ul>
+                </section>
+            </article>
+        </main>
+        
+        <footer class="border-t border-gray-200 dark:border-gray-700 mt-12 py-8">
+            <div class="max-w-5xl mx-auto px-6">
+                <p class="text-sm text-gray-600 dark:text-gray-400 text-center">
+                    Última actualización: 2025-01-XX | 
+                    <a href="https://github.com/your-username/cybersec-handbook" class="text-blue-600 dark:text-blue-400 hover:underline">Editar en GitHub</a>
+                </p>
+            </div>
+        </footer>
+    </div>
+    
+    <script src="../../assets/js/main.js"></script>
+    <script>
+        tailwind.config = { darkMode: 'class' }
+    </script>
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recursos - Cybersec Handbook</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="../assets/css/main.css">
+</head>
+<body class="bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100">
+    <div id="sidebar-overlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
+    <aside id="sidebar" class="sidebar fixed top-0 left-0 h-full w-64 bg-white dark:bg-slate-800 border-r border-gray-200 dark:border-gray-700 z-50 overflow-y-auto">
+        <div class="p-4">
+            <a href="../" class="text-xl font-bold text-blue-600 dark:text-blue-400 block mb-6">🔒 Cybersec Handbook</a>
+            <nav>
+                <a href="../" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">← Volver al Inicio</a>
+            </nav>
+        </div>
+    </aside>
+    
+    <div class="lg:ml-64">
+        <header class="sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700">
+            <div class="flex items-center justify-between px-4 py-3">
+                <button id="sidebar-toggle" onclick="toggleSidebar()" class="lg:hidden mr-3 text-gray-500"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg></button>
+                <div id="breadcrumbs" class="breadcrumb"></div>
+                <button id="theme-toggle" onclick="toggleTheme()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path></svg></button>
+            </div>
+        </header>
+        
+        <main class="p-6 max-w-5xl mx-auto">
+            <article>
+                <header class="mb-8">
+                    <h1 class="text-4xl font-bold mb-4">Recursos y Referencias</h1>
+                    <p class="text-xl text-gray-600 dark:text-gray-400 mb-4">
+                        Enlaces útiles, libros, cursos y herramientas de ciberseguridad
+                    </p>
+                </header>
+                
+                <section class="mb-8">
+                    <h2 class="text-2xl font-semibold mb-4">Estándares y Frameworks</h2>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="card">
+                            <div class="card-header">CIS Benchmarks</div>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                                Configuraciones de seguridad consensuadas
+                            </p>
+                            <a href="https://www.cisecurity.org/cis-benchmarks/" class="text-blue-600 dark:text-blue-400 hover:underline" target="_blank">
+                                Visitar sitio →
+                            </a>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-header">NIST Cybersecurity Framework</div>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                                Framework de ciberseguridad de NIST
+                            </p>
+                            <a href="https://www.nist.gov/cyberframework" class="text-blue-600 dark:text-blue-400 hover:underline" target="_blank">
+                                Visitar sitio →
+                            </a>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-header">DISA STIGs</div>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                                Security Technical Implementation Guides
+                            </p>
+                            <a href="https://public.cyber.mil/stigs/" class="text-blue-600 dark:text-blue-400 hover:underline" target="_blank">
+                                Visitar sitio →
+                            </a>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-header">OWASP</div>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                                Open Web Application Security Project
+                            </p>
+                            <a href="https://owasp.org/" class="text-blue-600 dark:text-blue-400 hover:underline" target="_blank">
+                                Visitar sitio →
+                            </a>
+                        </div>
+                    </div>
+                </section>
+                
+                <section class="mb-8">
+                    <h2 class="text-2xl font-semibold mb-4">Herramientas Recomendadas</h2>
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <div class="card">
+                            <div class="card-header">Lynis</div>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Auditoría de seguridad Unix/Linux</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">OpenSCAP</div>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Compliance scanning</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">Chef InSpec</div>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Tests de compliance</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">Ansible</div>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Automatización de hardening</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">Nmap</div>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Network scanning</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">Wireshark</div>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Network analysis</p>
+                        </div>
+                    </div>
+                </section>
+                
+                <section class="mb-8">
+                    <h2 class="text-2xl font-semibold mb-4">Libros Recomendados</h2>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li>"The Web Application Hacker's Handbook" - Stuttard & Pinto</li>
+                        <li>"Metasploit: The Penetration Tester's Guide" - Kennedy et al.</li>
+                        <li>"Applied Cryptography" - Bruce Schneier</li>
+                        <li>"The Art of Exploitation" - Jon Erickson</li>
+                        <li>"Blue Team Handbook" - Ben Clark</li>
+                    </ul>
+                </section>
+                
+                <section class="mb-8">
+                    <h2 class="text-2xl font-semibold mb-4">Certificaciones</h2>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="card">
+                            <div class="card-header">OSCP</div>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Offensive Security Certified Professional</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">CISSP</div>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Certified Information Systems Security Professional</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">CEH</div>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Certified Ethical Hacker</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">GSEC</div>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">GIAC Security Essentials</p>
+                        </div>
+                    </div>
+                </section>
+            </article>
+        </main>
+        
+        <footer class="border-t border-gray-200 dark:border-gray-700 mt-12 py-8">
+            <div class="max-w-5xl mx-auto px-6">
+                <p class="text-sm text-gray-600 dark:text-gray-400 text-center">
+                    Última actualización: 2025-01-XX | 
+                    <a href="https://github.com/your-username/cybersec-handbook" class="text-blue-600 dark:text-blue-400 hover:underline">Editar en GitHub</a>
+                </p>
+            </div>
+        </footer>
+    </div>
+    
+    <script src="../assets/js/main.js"></script>
+    <script>
+        tailwind.config = { darkMode: 'class' }
+    </script>
+</body>
+</html>

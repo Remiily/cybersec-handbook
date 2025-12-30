@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hardening Ubuntu/Debian - Cybersec Handbook</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="../../../assets/css/main.css">
+</head>
+<body class="bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100">
+    <div id="sidebar-overlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
+    <aside id="sidebar" class="sidebar fixed top-0 left-0 h-full w-64 bg-white dark:bg-slate-800 border-r border-gray-200 dark:border-gray-700 z-50 overflow-y-auto">
+        <div class="p-4">
+            <a href="../../../" class="text-xl font-bold text-blue-600 dark:text-blue-400 block mb-6">🔒 Cybersec Handbook</a>
+            <nav>
+                <a href="../../" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">← Volver a Hardening</a>
+            </nav>
+        </div>
+    </aside>
+    
+    <div class="lg:ml-64">
+        <header class="sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700">
+            <div class="flex items-center justify-between px-4 py-3">
+                <button id="sidebar-toggle" onclick="toggleSidebar()" class="lg:hidden mr-3 text-gray-500"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg></button>
+                <div id="breadcrumbs" class="breadcrumb"></div>
+                <button id="theme-toggle" onclick="toggleTheme()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path></svg></button>
+            </div>
+        </header>
+        
+        <main class="p-6 max-w-5xl mx-auto">
+            <article>
+                <header class="mb-8">
+                    <h1 class="text-4xl font-bold mb-4">Hardening de Ubuntu/Debian</h1>
+                    <p class="text-xl text-gray-600 dark:text-gray-400 mb-4">Guía completa paso a paso para endurecer sistemas Ubuntu y Debian</p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="badge badge-intermediate">Intermedio</span>
+                        <span class="text-sm text-gray-500">⏱️ 2-3 horas</span>
+                    </div>
+                </header>
+                
+                <div id="table-of-contents" class="toc">
+                    <h3 class="font-semibold mb-3">Tabla de Contenidos</h3>
+                </div>
+                
+                <div class="alert alert-warning">
+                    <strong>Importante:</strong> Siempre realiza estas configuraciones en un entorno de prueba primero. 
+                    Algunos cambios pueden afectar la funcionalidad del sistema.
+                </div>
+                
+                <section class="mb-8">
+                    <h2 id="actualizaciones-sistema" class="text-2xl font-semibold mb-4">1. Actualizaciones del Sistema</h2>
+                    <p class="mb-4">
+                        Mantener el sistema actualizado es fundamental. Los parches de seguridad cierran vulnerabilidades conocidas.
+                    </p>
+                    
+                    <div class="command-block">
+                        <pre><code># Actualizar lista de paquetes
+sudo apt update
+
+# Actualizar todos los paquetes instalados
+sudo apt upgrade -y
+
+# Instalar actualizaciones de seguridad automáticamente
+sudo apt install unattended-upgrades
+sudo dpkg-reconfigure -plow unattended-upgrades</code></pre>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <strong>¿Por qué?</strong> Las actualizaciones de seguridad cierran vulnerabilidades conocidas.
+                        <br>
+                        <strong>Riesgo mitigado:</strong> Explotación de vulnerabilidades conocidas (CVE).
+                    </div>
+                </section>
+                
+                <section class="mb-8">
+                    <h2 id="firewall" class="text-2xl font-semibold mb-4">2. Configuración del Firewall (UFW)</h2>
+                    <p class="mb-4">
+                        UFW (Uncomplicated Firewall) es el firewall por defecto en Ubuntu. Configúralo para permitir solo el tráfico necesario.
+                    </p>
+                    
+                    <div class="command-block">
+                        <pre><code># Habilitar UFW
+sudo ufw enable
+
+# Permitir SSH (IMPORTANTE: hacer antes de bloquear todo)
+sudo ufw allow 22/tcp
+
+# Permitir HTTP/HTTPS si es servidor web
+sudo ufw allow 80/tcp
+sudo ufw allow 443/tcp
+
+# Denegar todo lo demás por defecto
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+
+# Ver estado
+sudo ufw status verbose</code></pre>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <strong>¿Por qué?</strong> Limita el acceso de red al sistema, bloqueando conexiones no autorizadas.
+                        <br>
+                        <strong>Riesgo mitigado:</strong> Acceso no autorizado vía red, escaneo de puertos.
+                    </div>
+                </section>
+                
+                <section class="mb-8">
+                    <h2 id="usuarios-privilegios" class="text-2xl font-semibold mb-4">3. Gestión de Usuarios y Privilegios</h2>
+                    
+                    <h3 class="text-xl font-semibold mb-3">3.1 Deshabilitar acceso root</h3>
+                    <div class="command-block">
+                        <pre><code># Verificar si hay contraseña en root (no debería haberla)
+sudo passwd -l root
+
+# Configurar sudo sin contraseña para usuarios específicos (opcional)
+# Editar /etc/sudoers.d/nopasswd
+sudo visudo -f /etc/sudoers.d/nopasswd
+# Agregar: username ALL=(ALL) NOPASSWD: ALL</code></pre>
+                    </div>
+                    
+                    <h3 class="text-xl font-semibold mb-3 mt-4">3.2 Crear usuario no privilegiado</h3>
+                    <div class="command-block">
+                        <pre><code># Crear nuevo usuario
+sudo adduser nuevo-usuario
+
+# Agregar a grupo sudo
+sudo usermod -aG sudo nuevo-usuario
+
+# Verificar usuarios con acceso sudo
+sudo grep -Po '^sudo.+:\K.*$' /etc/group</code></pre>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <strong>¿Por qué?</strong> Reduce el riesgo de acceso no autorizado con privilegios elevados.
+                        <br>
+                        <strong>Riesgo mitigado:</strong> Compromiso de cuenta root, escalada de privilegios.
+                    </div>
+                </section>
+                
+                <section class="mb-8">
+                    <h2 id="servicios-innecesarios" class="text-2xl font-semibold mb-4">4. Eliminar Servicios Innecesarios</h2>
+                    <p class="mb-4">
+                        Cada servicio en ejecución aumenta la superficie de ataque. Deshabilita los que no necesites.
+                    </p>
+                    
+                    <div class="command-block">
+                        <pre><code># Ver servicios en ejecución
+sudo systemctl list-units --type=service --state=running
+
+# Ver servicios habilitados
+sudo systemctl list-unit-files --type=service --state=enabled
+
+# Detener y deshabilitar servicio (ejemplo: bluetooth)
+sudo systemctl stop bluetooth
+sudo systemctl disable bluetooth
+
+# Verificar puertos abiertos
+sudo ss -tulpn</code></pre>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <strong>¿Por qué?</strong> Reduce la superficie de ataque eliminando puntos de entrada potenciales.
+                        <br>
+                        <strong>Riesgo mitigado:</strong> Explotación de servicios vulnerables, puertos expuestos.
+                    </div>
+                </section>
+                
+                <section class="mb-8">
+                    <h2 id="ssh-hardening" class="text-2xl font-semibold mb-4">5. Hardening de SSH</h2>
+                    <p class="mb-4">
+                        SSH es un objetivo común de atacantes. Configúralo de forma segura.
+                    </p>
+                    
+                    <div class="command-block">
+                        <pre><code># Editar configuración SSH
+sudo nano /etc/ssh/sshd_config
+
+# Configuraciones recomendadas:
+# Permitir solo protocolo 2
+Protocol 2
+
+# Deshabilitar login root
+PermitRootLogin no
+
+# Deshabilitar autenticación con contraseña (usar solo keys)
+PasswordAuthentication no
+PubkeyAuthentication yes
+
+# Cambiar puerto por defecto (opcional)
+Port 2222
+
+# Limitar intentos de login
+MaxAuthTries 3
+LoginGraceTime 60
+
+# Deshabilitar X11 forwarding si no se usa
+X11Forwarding no
+
+# Reiniciar SSH después de cambios
+sudo systemctl restart sshd</code></pre>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <strong>¿Por qué?</strong> SSH es frecuentemente atacado con fuerza bruta y exploits.
+                        <br>
+                        <strong>Riesgo mitigado:</strong> Ataques de fuerza bruta, acceso no autorizado remoto.
+                    </div>
+                </section>
+                
+                <section class="mb-8">
+                    <h2 id="kernel-parameters" class="text-2xl font-semibold mb-4">6. Parámetros del Kernel</h2>
+                    <p class="mb-4">
+                        Configurar parámetros del kernel para mejorar la seguridad del sistema.
+                    </p>
+                    
+                    <div class="command-block">
+                        <pre><code># Editar sysctl.conf
+sudo nano /etc/sysctl.conf
+
+# Agregar las siguientes configuraciones:
+
+# Deshabilitar IP forwarding (si no es router)
+net.ipv4.ip_forward = 0
+net.ipv6.conf.all.forwarding = 0
+
+# Protección contra SYN flood
+net.ipv4.tcp_syncookies = 1
+
+# Ignorar peticiones ICMP redirect
+net.ipv4.conf.all.accept_redirects = 0
+net.ipv4.conf.default.accept_redirects = 0
+
+# No enviar paquetes ICMP redirect
+net.ipv4.conf.all.send_redirects = 0
+net.ipv4.conf.default.send_redirects = 0
+
+# Ignorar peticiones ICMP echo (ping)
+net.ipv4.icmp_echo_ignore_broadcasts = 1
+
+# Aplicar cambios
+sudo sysctl -p</code></pre>
+                    </div>
+                </section>
+                
+                <section class="mb-8">
+                    <h2 id="logging-monitoring" class="text-2xl font-semibold mb-4">7. Logging y Monitoreo</h2>
+                    <p class="mb-4">
+                        Configurar logging adecuado para detectar y responder a incidentes.
+                    </p>
+                    
+                    <div class="command-block">
+                        <pre><code># Configurar logrotate para evitar que los logs llenen el disco
+sudo nano /etc/logrotate.conf
+
+# Instalar y configurar fail2ban para prevenir ataques de fuerza bruta
+sudo apt install fail2ban -y
+sudo systemctl enable fail2ban
+sudo systemctl start fail2ban
+
+# Ver logs del sistema
+sudo journalctl -xe
+
+# Ver intentos de login fallidos
+sudo grep "Failed password" /var/log/auth.log</code></pre>
+                    </div>
+                </section>
+                
+                <section class="mb-8">
+                    <h2 id="referencias" class="text-2xl font-semibold mb-4">Referencias</h2>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li><a href="https://www.cisecurity.org/benchmark/ubuntu_linux" class="text-blue-600 dark:text-blue-400 hover:underline" target="_blank">CIS Ubuntu Linux Benchmark</a></li>
+                        <li><a href="https://ubuntu.com/security/guides" class="text-blue-600 dark:text-blue-400 hover:underline" target="_blank">Ubuntu Security Guides</a></li>
+                        <li><a href="https://www.debian.org/security/" class="text-blue-600 dark:text-blue-400 hover:underline" target="_blank">Debian Security Information</a></li>
+                    </ul>
+                </section>
+            </article>
+        </main>
+        
+        <footer class="border-t border-gray-200 dark:border-gray-700 mt-12 py-8">
+            <div class="max-w-5xl mx-auto px-6">
+                <p class="text-sm text-gray-600 dark:text-gray-400 text-center">
+                    Última actualización: 2025-01-XX | 
+                    <a href="https://github.com/your-username/cybersec-handbook" class="text-blue-600 dark:text-blue-400 hover:underline">Editar en GitHub</a>
+                </p>
+            </div>
+        </footer>
+    </div>
+    
+    <script src="../../../assets/js/main.js"></script>
+    <script>
+        tailwind.config = { darkMode: 'class' }
+    </script>
+</body>
+</html>
