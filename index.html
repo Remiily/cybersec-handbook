@@ -99,11 +99,19 @@
         </div>
     </header>
 
-    <div class="flex">
+    <!-- Sidebar Overlay for Mobile -->
+    <div 
+        x-show="sidebarOpen"
+        @click="closeSidebar()"
+        class="sidebar-overlay"
+        x-cloak
+    ></div>
+
+    <div class="flex relative">
         <!-- Sidebar -->
         <aside 
-            :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'"
-            class="sidebar fixed lg:static"
+            :class="sidebarOpen ? 'open' : ''"
+            class="sidebar"
         >
             <nav class="p-4 space-y-2">
                 <div class="mb-4">
@@ -216,7 +224,7 @@
         </aside>
 
         <!-- Main Content -->
-        <main class="flex-1 min-h-screen">
+        <main class="flex-1 min-h-screen lg:ml-64">
             <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <article>
                     <header class="mb-8">
