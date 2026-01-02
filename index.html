@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="es" x-data="app" x-init="init()" :class="{ 'dark': darkMode }">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberSec Handbook - Mi Guía Personal de Ciberseguridad</title>
+    <meta name="description" content="Guía práctica y profesional de ciberseguridad con checklists, comandos detallados, herramientas esenciales y cheatsheets integrados">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <!-- MiniSearch for search functionality -->
+    <script src="https://cdn.jsdelivr.net/npm/minisearch@7.0.0/dist/umd/index.min.js"></script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="assets/css/main.css">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        mono: ['Fira Code', 'Monaco', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors">
+    
+    <!-- Header -->
+    <header class="sticky top-0 z-30 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Menu button and title -->
+                <div class="flex items-center gap-4">
+                    <button 
+                        @click="toggleSidebar()"
+                        class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 lg:hidden"
+                        aria-label="Toggle sidebar"
+                    >
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                    <a href="index.html" class="flex items-center gap-2">
+                        <h1 class="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                            🛡️ CyberSec Handbook
+                        </h1>
+                    </a>
+                </div>
+                
+                <!-- Search bar -->
+                <div class="flex-1 max-w-lg mx-4 relative" x-data="{ focused: false }">
+                    <input
+                        type="text"
+                        x-model="searchQuery"
+                        @input="handleSearch($event)"
+                        @focus="focused = true"
+                        @blur="setTimeout(() => focused = false, 200)"
+                        placeholder="Buscar guías, comandos, herramientas..."
+                        class="w-full px-4 py-2 pl-10 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    >
+                    <svg class="absolute left-3 top-2.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                    
+                    <!-- Search results dropdown -->
+                    <div x-show="showSearchResults && searchResults.length > 0" class="search-results" x-cloak>
+                        <template x-for="result in searchResults" :key="result.url">
+                            <a :href="result.url" class="search-result-item block">
+                                <div class="font-medium" x-text="result.title"></div>
+                                <div class="text-sm text-gray-500 dark:text-gray-400" x-text="result.category"></div>
+                            </a>
+                        </template>
+                    </div>
+                </div>
+                
+                <!-- Dark mode toggle -->
+                <button
+                    @click="toggleDarkMode()"
+                    class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+                    aria-label="Toggle dark mode"
+                >
+                    <svg x-show="!darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                    </svg>
+                    <svg x-show="darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex">
+        <!-- Sidebar -->
+        <aside 
+            :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'"
+            class="sidebar fixed lg:static"
+        >
+            <nav class="p-4 space-y-2">
+                <div class="mb-4">
+                    <h2 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Navegación</h2>
+                </div>
+                
+                <a href="index.html" class="nav-link active block px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 font-medium">
+                    🏠 Inicio
+                </a>
+                
+                <div class="mt-4">
+                    <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Desarrollo de Carrera</h3>
+                    <a href="career-development/career-paths.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">
+                        Trayectorias Profesionales
+                    </a>
+                    <a href="career-development/certifications-guide.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">
+                        Guía de Certificaciones
+                    </a>
+                    <a href="career-development/soft-skills.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">
+                        Habilidades Blandas
+                    </a>
+                    <a href="career-development/interview-prep.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">
+                        Preparación para Entrevistas
+                    </a>
+                </div>
+                
+                <div class="mt-4">
+                    <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Hardening</h3>
+                    <a href="hardening/os-hardening/linux-guide.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">
+                        Linux Hardening
+                    </a>
+                    <a href="hardening/os-hardening/windows-guide.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">
+                        Windows Hardening
+                    </a>
+                    <a href="hardening/cloud-hardening/aws-guide.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">
+                        AWS Hardening
+                    </a>
+                    <a href="hardening/cloud-hardening/azure-guide.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">
+                        Azure Hardening
+                    </a>
+                    <a href="hardening/cloud-hardening/gcp-guide.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">
+                        GCP Hardening
+                    </a>
+                    <a href="hardening/containers-guide.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">
+                        Containers (Docker/K8s)
+                    </a>
+                </div>
+                
+                <div class="mt-4">
+                    <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Gobierno, Riesgo y Cumplimiento</h3>
+                    <a href="governance-risk-compliance/ciso-roadmap.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">
+                        Roadmap a CISO
+                    </a>
+                    <a href="governance-risk-compliance/frameworks-implementation.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">
+                        Implementación de Frameworks
+                    </a>
+                    <a href="governance-risk-compliance/risk-assessment-guide.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">
+                        Evaluación de Riesgos
+                    </a>
+                    <a href="governance-risk-compliance/compliance-checks.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">
+                        Verificación de Cumplimiento
+                    </a>
+                </div>
+                
+                <div class="mt-4">
+                    <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Recursos</h3>
+                    <a href="resources/cheatsheets-collection/index.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">
+                        Colección de Cheatsheets
+                    </a>
+                    <a href="resources/tools-recommendations.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">
+                        Herramientas Recomendadas
+                    </a>
+                    <a href="resources/quick-guides.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">
+                        Guías Rápidas
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 min-h-screen">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <article>
+                    <header class="mb-8">
+                        <h1 class="text-4xl font-bold mb-4">CyberSec Handbook</h1>
+                        <p class="text-xl text-gray-600 dark:text-gray-400 mb-4">
+                            Mi guía práctica y profesional de ciberseguridad
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="badge badge-beginner">Guía Personal</span>
+                            <span class="badge badge-intermediate">Hands-on</span>
+                            <span class="badge badge-advanced">Escalable</span>
+                        </div>
+                    </header>
+
+                    <div class="prose prose-lg dark:prose-invert max-w-none">
+                        <div class="alert alert-info mb-6">
+                            <h3 class="font-semibold mb-2">👋 Bienvenido a mi Handbook</h3>
+                            <p>
+                                Esta es mi guía personal de ciberseguridad, diseñada como un recurso que me acompaña 
+                                a lo largo de toda mi carrera. Desde proyectos iniciales de hardening hasta roles de 
+                                liderazgo, encontrarás guías paso a paso, comandos detallados, herramientas esenciales 
+                                y cheatsheets integrados para cada tema.
+                            </p>
+                        </div>
+
+                        <h2>🎯 Enfoque de esta Guía</h2>
+                        <p>
+                            Este handbook está diseñado como una herramienta de trabajo diaria: directo al grano, con 
+                            checklists accionables y consejos basados en prácticas reales que he aplicado en proyectos 
+                            profesionales. Cada sección incluye:
+                        </p>
+                        <ul>
+                            <li><strong>Guías paso a paso</strong>: Secuencias numeradas con comandos completos y parámetros explicados</li>
+                            <li><strong>Nivel de experiencia</strong>: Desde principiante hasta avanzado</li>
+                            <li><strong>Tiempo estimado</strong>: Para planificar tus sesiones de trabajo</li>
+                            <li><strong>Herramientas recomendadas</strong>: Con pros/contras y comandos iniciales</li>
+                            <li><strong>Cheatsheets integrados</strong>: Referencias rápidas dentro de cada tema</li>
+                            <li><strong>Checklists interactivos</strong>: Con progreso, persistencia y exportación</li>
+                        </ul>
+
+                        <h2>🚀 Cómo Usar Esta Guía</h2>
+                        <div class="steps-container">
+                            <div class="step">
+                                <h3>Explora por Categoría</h3>
+                                <p>
+                                    Usa el sidebar para navegar por las diferentes áreas: Hardening, Pentesting, 
+                                    Governance, etc. Cada categoría está organizada de lo básico a lo avanzado.
+                                </p>
+                            </div>
+                            <div class="step">
+                                <h3>Sigue las Guías Paso a Paso</h3>
+                                <p>
+                                    Cada guía está diseñada para ser seguida secuencialmente. Los comandos incluyen 
+                                    parámetros recomendados basados en mi experiencia práctica.
+                                </p>
+                            </div>
+                            <div class="step">
+                                <h3>Usa los Checklists</h3>
+                                <p>
+                                    Marca tu progreso en los checklists interactivos. Tu progreso se guarda 
+                                    automáticamente y puedes exportarlo cuando necesites documentar tu trabajo.
+                                </p>
+                            </div>
+                            <div class="step">
+                                <h3>Consulta los Cheatsheets</h3>
+                                <p>
+                                    Cada sección incluye cheatsheets resumidos con comandos clave. También hay una 
+                                    <a href="resources/cheatsheets-collection/index.html">colección completa</a> 
+                                    de referencias rápidas.
+                                </p>
+                            </div>
+                        </div>
+
+                        <h2>📚 Estructura del Contenido</h2>
+                        
+                        <h3>Hardening</h3>
+                        <p>
+                            Guías detalladas para hardening de sistemas operativos (Linux, Windows), clouds (AWS, Azure, GCP) 
+                            y contenedores. Incluye aplicación de benchmarks CIS/STIG con herramientas como Lynis y OpenSCAP.
+                        </p>
+
+                        <h3>Desarrollo de Carrera</h3>
+                        <p>
+                            Roadmaps para avanzar de junior a senior, guías de certificaciones (OSCP, CISSP), habilidades 
+                            blandas y preparación para entrevistas con preguntas comunes y respuestas detalladas.
+                        </p>
+
+                        <h3>Gobierno, Riesgo y Cumplimiento</h3>
+                        <p>
+                            Roadmap para llegar a CISO, implementación de frameworks (NIST, ISO), evaluación de riesgos 
+                            y verificación de cumplimiento (GDPR, PCI-DSS) con checklists interactivos.
+                        </p>
+
+                        <h3>Arquitectura de Seguridad</h3>
+                        <p>
+                            Implementación de Zero Trust, IAM/PAM, segmentación de red y mejores prácticas de diseño 
+                            con ejemplos prácticos y comandos de configuración.
+                        </p>
+
+                        <h3>Pentesting y Red Team</h3>
+                        <p>
+                            Metodologías (PTES), herramientas esenciales, testing web (OWASP Top 10), tácticas MITRE ATT&CK 
+                            y configuración de C2 frameworks.
+                        </p>
+
+                        <h3>Blue Team y Defensa</h3>
+                        <p>
+                            Setup de SOC, SIEM/EDR, threat hunting, reglas de detección (YARA, Sigma) y respuesta a incidentes 
+                            con playbooks NIST.
+                        </p>
+
+                        <h3>Cloud y DevSecOps</h3>
+                        <p>
+                            Terraform seguro, seguridad en pipelines CI/CD, gestión de SBOM y compliance en entornos cloud-native.
+                        </p>
+
+                        <h2>💡 Consejos para Máximo Aprovechamiento</h2>
+                        <ul>
+                            <li><strong>Empieza por lo básico</strong>: Si eres nuevo en un tema, sigue las guías desde el principio</li>
+                            <li><strong>Personaliza los checklists</strong>: Añade tus propios pasos cuando sea necesario</li>
+                            <li><strong>Usa la búsqueda</strong>: La búsqueda global te ayuda a encontrar comandos y conceptos rápidamente</li>
+                            <li><strong>Modo oscuro</strong>: Activa el modo oscuro para trabajar cómodamente en cualquier momento</li>
+                            <li><strong>Exporta tu progreso</strong>: Usa la función de exportación para mantener registros de tus proyectos</li>
+                        </ul>
+
+                        <h2>🔄 Actualización y Contribuciones</h2>
+                        <p>
+                            Este handbook es un documento vivo. Se actualiza constantemente con nuevas herramientas, 
+                            técnicas y aprendizajes de proyectos reales. Si encuentras errores o tienes sugerencias, 
+                            puedes contribuir directamente en GitHub.
+                        </p>
+
+                        <div class="alert alert-success mt-8">
+                            <p class="font-semibold mb-2">✨ Listo para empezar</p>
+                            <p>
+                                Explora las categorías en el sidebar o usa la búsqueda para encontrar temas específicos. 
+                                Cada guía está diseñada para ser práctica y accionable desde el primer momento.
+                            </p>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-sm text-gray-600 dark:text-gray-400">
+                    Actualizado por mí en Enero 2026
+                </p>
+                <div class="flex gap-4">
+                    <a href="https://github.com/tu-usuario/cybersec-handbook" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">
+                        Editar en GitHub
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="assets/js/search.js"></script>
+    <script src="assets/js/main.js"></script>
+    
+    <style>
+        [x-cloak] { display: none !important; }
+    </style>
+</body>
+</html>
+

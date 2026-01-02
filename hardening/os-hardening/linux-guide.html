@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="es" x-data="app" x-init="init()" :class="{ 'dark': darkMode }">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hardening Linux - CyberSec Handbook</title>
+    <meta name="description" content="Guía paso a paso para hardening de sistemas Linux (Ubuntu/RHEL) con comandos detallados, benchmarks CIS y herramientas esenciales">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/minisearch@7.0.0/dist/umd/index.min.js"></script>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    
+    <script>
+        tailwind.config = { darkMode: 'class' }
+    </script>
+</head>
+<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+    
+    <!-- Header (same as index.html) -->
+    <header class="sticky top-0 z-30 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-4">
+                    <button @click="toggleSidebar()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 lg:hidden">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                    <a href="../../index.html" class="flex items-center gap-2">
+                        <h1 class="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                            🛡️ CyberSec Handbook
+                        </h1>
+                    </a>
+                </div>
+                <div class="flex-1 max-w-lg mx-4 relative">
+                    <input type="text" x-model="searchQuery" @input="handleSearch($event)" placeholder="Buscar..." 
+                        class="w-full px-4 py-2 pl-10 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <svg class="absolute left-3 top-2.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </div>
+                <button @click="toggleDarkMode()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                    <svg x-show="!darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                    </svg>
+                    <svg x-show="darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex">
+        <!-- Sidebar (simplified - same structure as index) -->
+        <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'" class="sidebar fixed lg:static">
+            <nav class="p-4 space-y-2">
+                <a href="../../index.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🏠 Inicio</a>
+                <div class="mt-4">
+                    <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-2">Hardening</h3>
+                    <a href="linux-guide.html" class="block px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 font-medium">Linux</a>
+                    <a href="windows-guide.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Windows</a>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="flex-1 min-h-screen">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <article>
+                    <header class="mb-8">
+                        <nav class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                            <a href="../../index.html" class="hover:text-gray-700 dark:hover:text-gray-300">Inicio</a>
+                            <span class="mx-2">/</span>
+                            <a href="../index.html" class="hover:text-gray-700 dark:hover:text-gray-300">Hardening</a>
+                            <span class="mx-2">/</span>
+                            <span>Linux Hardening</span>
+                        </nav>
+                        <h1 class="text-4xl font-bold mb-4">Hardening de Sistemas Linux</h1>
+                        <p class="text-xl text-gray-600 dark:text-gray-400 mb-4">
+                            Guía práctica paso a paso para asegurar sistemas Linux (Ubuntu, RHEL, CentOS)
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="badge badge-intermediate">Nivel: Intermedio</span>
+                            <span class="badge">⏱️ Tiempo: 2-4 horas</span>
+                            <span class="badge">🐧 Ubuntu / RHEL</span>
+                        </div>
+                    </header>
+
+                    <!-- Table of Contents -->
+                    <div id="table-of-contents" class="toc">
+                        <h3 class="font-semibold mb-2">📋 Tabla de Contenidos</h3>
+                    </div>
+
+                    <div class="prose prose-lg dark:prose-invert max-w-none">
+                        <div class="alert alert-info mb-6">
+                            <p><strong>Nota importante:</strong> Esta guía está basada en mi experiencia práctica con Ubuntu 22.04 LTS y RHEL 8/9. 
+                            Los comandos pueden variar ligeramente según la distribución. Siempre prueba en un entorno de desarrollo primero.</p>
+                        </div>
+
+                        <h2 id="introduccion">Introducción</h2>
+                        <p>
+                            El hardening de sistemas Linux es fundamental para cualquier infraestructura segura. En esta guía, 
+                            comparto el proceso que sigo en proyectos reales, desde la configuración inicial hasta la aplicación 
+                            de benchmarks CIS/STIG. Cada paso incluye comandos completos con parámetros que he validado en producción.
+                        </p>
+
+                        <h2 id="pre-requisitos">Pre-requisitos</h2>
+                        <ul>
+                            <li>Acceso root o sudo a un sistema Linux (recomiendo Ubuntu 22.04 o RHEL 8+)</li>
+                            <li>Backup completo del sistema antes de comenzar</li>
+                            <li>Acceso de consola física o IPMI (por si algo sale mal)</li>
+                            <li>Familiaridad básica con terminal y editores (nano/vim)</li>
+                        </ul>
+
+                        <h2 id="checklist-inicial">Checklist de Hardening Linux</h2>
+                        <div class="checklist-container bg-gray-50 dark:bg-gray-800 rounded-lg p-4 mb-6" data-checklist-id="linux-hardening">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="font-semibold">Progreso General</h3>
+                                <div class="flex gap-2">
+                                    <button onclick="resetChecklist(this.closest('.checklist-container'))" class="text-sm px-3 py-1 bg-gray-200 dark:bg-gray-700 rounded hover:bg-gray-300 dark:hover:bg-gray-600">
+                                        Resetear
+                                    </button>
+                                    <button onclick="exportChecklist(this.closest('.checklist-container'))" class="text-sm px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700">
+                                        Exportar JSON
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="progress-bar mb-4">
+                                <div class="progress-fill" style="width: 0%"></div>
+                            </div>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-4 progress-text">0/12 completado (0%)</p>
+                            
+                            <div class="space-y-2">
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))" class="mr-3">
+                                    <span>Actualizar sistema y parches de seguridad</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))" class="mr-3">
+                                    <span>Configurar firewall (UFW/firewalld)</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))" class="mr-3">
+                                    <span>Deshabilitar servicios innecesarios</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))" class="mr-3">
+                                    <span>Configurar parámetros del kernel (sysctl)</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))" class="mr-3">
+                                    <span>Configurar SELinux/AppArmor</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))" class="mr-3">
+                                    <span>Hardening de SSH</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))" class="mr-3">
+                                    <span>Configurar límites de recursos (ulimit)</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))" class="mr-3">
+                                    <span>Auditoría y logging (auditd)</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))" class="mr-3">
+                                    <span>Configurar sudo seguro</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))" class="mr-3">
+                                    <span>Implementar fail2ban</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))" class="mr-3">
+                                    <span>Aplicar benchmark CIS con Lynis</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))" class="mr-3">
+                                    <span>Verificación final y documentación</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <h2 id="actualizar-sistema">Paso 1: Actualizar Sistema y Parches</h2>
+                        <p>
+                            Siempre empiezo actualizando el sistema completo. En producción, recomiendo hacer esto durante 
+                            ventanas de mantenimiento programadas, ya que algunas actualizaciones pueden requerir reinicio.
+                        </p>
+
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <div class="flex justify-between items-start mb-2">
+                                <p class="text-sm text-gray-600 dark:text-gray-400 mb-2"><strong>Ubuntu/Debian:</strong></p>
+                                <button @click="copy('sudo apt update && sudo apt upgrade -y && sudo apt dist-upgrade -y')" 
+                                    class="copy-btn" :class="{ 'copied': copied }">
+                                    <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                    </svg>
+                                    <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                            <pre><code>sudo apt update && sudo apt upgrade -y && sudo apt dist-upgrade -y</code></pre>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                                <strong>Explicación:</strong> <code>update</code> actualiza la lista de paquetes, <code>upgrade</code> instala actualizaciones, 
+                                <code>dist-upgrade</code> maneja cambios de dependencias. El flag <code>-y</code> confirma automáticamente.
+                            </p>
+                        </div>
+
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <div class="flex justify-between items-start mb-2">
+                                <p class="text-sm text-gray-600 dark:text-gray-400 mb-2"><strong>RHEL/CentOS/Rocky:</strong></p>
+                                <button @click="copy('sudo dnf update -y && sudo dnf upgrade -y')" class="copy-btn" :class="{ 'copied': copied }">
+                                    <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                    </svg>
+                                    <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                            <pre><code>sudo dnf update -y && sudo dnf upgrade -y</code></pre>
+                        </div>
+
+                        <div class="alert alert-warning mt-4">
+                            <p><strong>⚠️ Importante:</strong> Después de actualizar, reinicia el sistema si hay actualizaciones del kernel: <code>sudo reboot</code></p>
+                        </div>
+
+                        <h2 id="configurar-firewall">Paso 2: Configurar Firewall</h2>
+                        <p>
+                            El firewall es tu primera línea de defensa. En Ubuntu uso UFW por su simplicidad, mientras que en RHEL 
+                            prefiero firewalld por su integración con SELinux.
+                        </p>
+
+                        <h3>UFW (Ubuntu/Debian)</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('sudo ufw default deny incoming\nsudo ufw default allow outgoing\nsudo ufw allow ssh\nsudo ufw enable')" 
+                                class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code>sudo ufw default deny incoming
+sudo ufw default allow outgoing
+sudo ufw allow ssh
+sudo ufw enable</code></pre>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                                <strong>Explicación:</strong> Denegar entrada por defecto, permitir salida, permitir SSH (¡importante! o te quedarás fuera), 
+                                y activar el firewall. Verifica con <code>sudo ufw status verbose</code>.
+                            </p>
+                        </div>
+
+                        <h3>Firewalld (RHEL/CentOS)</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('sudo firewall-cmd --set-default-zone=public\nsudo firewall-cmd --permanent --add-service=ssh\nsudo firewall-cmd --reload\nsudo firewall-cmd --list-all')" 
+                                class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code>sudo firewall-cmd --set-default-zone=public
+sudo firewall-cmd --permanent --add-service=ssh
+sudo firewall-cmd --reload
+sudo firewall-cmd --list-all</code></pre>
+                        </div>
+
+                        <h2 id="sysctl-hardening">Paso 3: Hardening del Kernel (sysctl)</h2>
+                        <p>
+                            Configurar parámetros del kernel es crítico para prevenir ataques de red comunes. Estos ajustes mitigan 
+                            SYN floods, IP spoofing, y mejoran el logging de seguridad.
+                        </p>
+
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('# Backup del archivo original\nsudo cp /etc/sysctl.conf /etc/sysctl.conf.backup\n\n# Añadir configuración de hardening\nsudo tee -a /etc/sysctl.conf << EOF\n\n# Prevenir IP spoofing\nnet.ipv4.conf.all.rp_filter = 1\nnet.ipv4.conf.default.rp_filter = 1\n\n# Deshabilitar ICMP redirects\nnet.ipv4.conf.all.accept_redirects = 0\nnet.ipv4.conf.default.accept_redirects = 0\nnet.ipv6.conf.all.accept_redirects = 0\nnet.ipv6.conf.default.accept_redirects = 0\n\n# Deshabilitar send redirects\nnet.ipv4.conf.all.send_redirects = 0\nnet.ipv4.conf.default.send_redirects = 0\n\n# Protección SYN flood\nnet.ipv4.tcp_syncookies = 1\nnet.ipv4.tcp_max_syn_backlog = 2048\nnet.ipv4.tcp_synack_retries = 2\nnet.ipv4.tcp_syn_retries = 5\n\n# Logging de paquetes sospechosos\nnet.ipv4.conf.all.log_martians = 1\nnet.ipv4.conf.default.log_martians = 1\n\n# Deshabilitar IP forwarding (si no es router)\nnet.ipv4.ip_forward = 0\nEOF\n\n# Aplicar cambios\nsudo sysctl -p')" 
+                                class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Backup del archivo original
+sudo cp /etc/sysctl.conf /etc/sysctl.conf.backup
+
+# Añadir configuración de hardening
+sudo tee -a /etc/sysctl.conf << EOF
+
+# Prevenir IP spoofing
+net.ipv4.conf.all.rp_filter = 1
+net.ipv4.conf.default.rp_filter = 1
+
+# Deshabilitar ICMP redirects
+net.ipv4.conf.all.accept_redirects = 0
+net.ipv4.conf.default.accept_redirects = 0
+net.ipv6.conf.all.accept_redirects = 0
+net.ipv6.conf.default.accept_redirects = 0
+
+# Deshabilitar send redirects
+net.ipv4.conf.all.send_redirects = 0
+net.ipv4.conf.default.send_redirects = 0
+
+# Protección SYN flood
+net.ipv4.tcp_syncookies = 1
+net.ipv4.tcp_max_syn_backlog = 2048
+net.ipv4.tcp_synack_retries = 2
+net.ipv4.tcp_syn_retries = 5
+
+# Logging de paquetes sospechosos
+net.ipv4.conf.all.log_martians = 1
+net.ipv4.conf.default.log_martians = 1
+
+# Deshabilitar IP forwarding (si no es router)
+net.ipv4.ip_forward = 0
+EOF
+
+# Aplicar cambios
+sudo sysctl -p</code></pre>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                                <strong>Nota:</strong> Si tu servidor actúa como router, cambia <code>net.ipv4.ip_forward = 1</code>. 
+                                Verifica con <code>sysctl -a | grep ip_forward</code>.
+                            </p>
+                        </div>
+
+                        <h2 id="ssh-hardening">Paso 4: Hardening de SSH</h2>
+                        <p>
+                            SSH es uno de los servicios más atacados. En proyectos reales, he visto millones de intentos de autenticación 
+                            por día. Esta configuración reduce drásticamente el riesgo.
+                        </p>
+
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('# Backup\nsudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config.backup\n\n# Editar configuración (usa tu editor favorito)\nsudo nano /etc/ssh/sshd_config\n\n# Configuraciones recomendadas:\n# PermitRootLogin no\n# PasswordAuthentication no  # Si usas keys\n# PubkeyAuthentication yes\n# PermitEmptyPasswords no\n# MaxAuthTries 3\n# ClientAliveInterval 300\n# ClientAliveCountMax 2\n# X11Forwarding no\n# AllowUsers tu_usuario\n\n# Reiniciar servicio\nsudo systemctl restart sshd\n# Verificar configuración\nsudo sshd -t')" 
+                                class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Backup
+sudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config.backup
+
+# Configuraciones recomendadas en /etc/ssh/sshd_config:
+PermitRootLogin no
+PasswordAuthentication no  # Si usas keys
+PubkeyAuthentication yes
+PermitEmptyPasswords no
+MaxAuthTries 3
+ClientAliveInterval 300
+ClientAliveCountMax 2
+X11Forwarding no
+AllowUsers tu_usuario  # Especifica usuarios permitidos
+
+# Reiniciar servicio
+sudo systemctl restart sshd
+# Verificar configuración
+sudo sshd -t</code></pre>
+                        </div>
+
+                        <div class="alert alert-warning mt-4">
+                            <p><strong>⚠️ Crítico:</strong> Antes de deshabilitar <code>PasswordAuthentication</code>, asegúrate de tener acceso SSH con keys configuradas. 
+                            Mantén una sesión SSH abierta mientras haces cambios para no quedar bloqueado.</p>
+                        </div>
+
+                        <h2 id="fail2ban">Paso 5: Implementar Fail2ban</h2>
+                        <p>
+                            Fail2ban protege contra fuerza bruta escaneando logs y bloqueando IPs después de múltiples intentos fallidos. 
+                            En producción, reduce los intentos de ataque en más del 90%.
+                        </p>
+
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('# Instalar (Ubuntu)\nsudo apt install fail2ban -y\n\n# Instalar (RHEL)\nsudo dnf install fail2ban -y\n\n# Configurar\nsudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local\nsudo nano /etc/fail2ban/jail.local\n\n# Configuraciones recomendadas:\n# bantime = 3600  # 1 hora\n# findtime = 600  # 10 minutos\n# maxretry = 3\n\n# Habilitar y empezar\nsudo systemctl enable fail2ban\nsudo systemctl start fail2ban\n\n# Verificar estado\nsudo fail2ban-client status\nsudo fail2ban-client status sshd')" 
+                                class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Instalar (Ubuntu)
+sudo apt install fail2ban -y
+
+# Configurar
+sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
+sudo nano /etc/fail2ban/jail.local
+
+# Configuraciones recomendadas:
+# bantime = 3600  # 1 hora
+# findtime = 600  # 10 minutos
+# maxretry = 3
+
+# Habilitar y empezar
+sudo systemctl enable fail2ban
+sudo systemctl start fail2ban
+
+# Verificar estado
+sudo fail2ban-client status</code></pre>
+                        </div>
+
+                        <h2 id="benchmark-cis">Paso 6: Aplicar Benchmark CIS con Lynis</h2>
+                        <p>
+                            Lynis es una herramienta de auditoría open-source que verifica compliance con benchmarks CIS. Es parte de mi 
+                            workflow estándar en cualquier proyecto de hardening.
+                        </p>
+
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('# Instalar Lynis (Ubuntu)\nsudo apt install lynis -y\n\n# O desde repositorio oficial\ncd /tmp\nwget https://downloads.cisofy.com/lynis/lynis-3.0.9.tar.gz\ntar xzf lynis-3.0.9.tar.gz\ncd lynis\nsudo ./lynis audit system\n\n# Ejecutar auditoría completa\nsudo lynis audit system --quick\n\n# Ver reporte detallado\nsudo cat /var/log/lynis-report.dat\nsudo cat /var/log/lynis.log')" 
+                                class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Instalar Lynis
+sudo apt install lynis -y
+
+# Ejecutar auditoría completa
+sudo lynis audit system
+
+# Modo rápido (recomendado para primera pasada)
+sudo lynis audit system --quick
+
+# Ver reporte detallado
+sudo cat /var/log/lynis-report.dat
+sudo cat /var/log/lynis.log</code></pre>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                                Lynis genera un score de 0-100. En producción, apunto a 80+. Revisa las recomendaciones 
+                                (<code>Warnings</code> y <code>Suggestions</code>) y aplica las que sean relevantes para tu entorno.
+                            </p>
+                        </div>
+
+                        <h2 id="cheatsheet-linux">Cheatsheet: Comandos Esenciales de Hardening</h2>
+                        <div class="overflow-x-auto">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Comando</th>
+                                        <th>Propósito</th>
+                                        <th>Ejemplo</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><code>sudo ufw status</code></td>
+                                        <td>Verificar estado del firewall</td>
+                                        <td><code>sudo ufw status verbose</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>sudo systemctl disable servicio</code></td>
+                                        <td>Deshabilitar servicio al inicio</td>
+                                        <td><code>sudo systemctl disable apache2</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>sudo sysctl -a | grep parametro</code></td>
+                                        <td>Verificar parámetros del kernel</td>
+                                        <td><code>sudo sysctl -a | grep ip_forward</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>sudo ss -tulpn</code></td>
+                                        <td>Listar puertos abiertos</td>
+                                        <td><code>sudo ss -tulpn | grep LISTEN</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>sudo auditctl -l</code></td>
+                                        <td>Listar reglas de auditoría</td>
+                                        <td><code>sudo auditctl -l | head -20</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>sudo fail2ban-client status</code></td>
+                                        <td>Estado de fail2ban</td>
+                                        <td><code>sudo fail2ban-client status sshd</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>sudo chmod 600 archivo</code></td>
+                                        <td>Proteger archivo sensible</td>
+                                        <td><code>sudo chmod 600 /etc/ssh/ssh_host_key</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>sudo getenforce</code></td>
+                                        <td>Verificar estado SELinux (RHEL)</td>
+                                        <td><code>sudo getenforce</code></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h2 id="herramientas-recomendadas">Herramientas Recomendadas</h2>
+                        <ul>
+                            <li><strong>Lynis</strong>: Auditoría de seguridad y compliance CIS</li>
+                            <li><strong>OpenSCAP</strong>: Evaluación y remediación automatizada (STIG, CIS)</li>
+                            <li><strong>rkhunter</strong>: Detección de rootkits</li>
+                            <li><strong>chkrootkit</strong>: Otro scanner de rootkits</li>
+                            <li><strong>aide</strong>: Detección de cambios en archivos (HIDS)</li>
+                            <li><strong>auditd</strong>: Sistema de auditoría del kernel</li>
+                        </ul>
+
+                        <h2 id="siguientes-pasos">Siguientes Pasos</h2>
+                        <p>
+                            Después de completar esta guía básica, considera:
+                        </p>
+                        <ul>
+                            <li>Aplicar benchmarks CIS completos con OpenSCAP</li>
+                            <li>Implementar HIDS (Host-based IDS) como AIDE</li>
+                            <li>Configurar logging centralizado (rsyslog, syslog-ng)</li>
+                            <li>Implementar gestión de parches automatizada</li>
+                            <li>Revisar configuración de permisos de archivos críticos</li>
+                        </ul>
+
+                        <div class="alert alert-success mt-8">
+                            <p class="font-semibold mb-2">✅ Checklist Completado</p>
+                            <p>
+                                Si has seguido todos los pasos, tu sistema Linux está significativamente más seguro. 
+                                Recuerda documentar los cambios y mantener backups de configuración. El hardening es un proceso continuo, 
+                                no un evento único.
+                            </p>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </main>
+    </div>
+
+    <footer class="bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-sm text-gray-600 dark:text-gray-400">Actualizado por mí en Enero 2026</p>
+                <a href="https://github.com/tu-usuario/cybersec-handbook" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">
+                    Editar en GitHub
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../../assets/js/search.js"></script>
+    <script src="../../assets/js/main.js"></script>
+    <style>[x-cloak] { display: none !important; }</style>
+</body>
+</html>
+
