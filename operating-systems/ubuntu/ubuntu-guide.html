@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="es" x-data="app" x-init="init()" :class="{ 'dark': darkMode }">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía Completa de Ubuntu - CyberSec Handbook</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <script>tailwind.config = { darkMode: 'class' }</script>
+</head>
+<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+    <header class="sticky top-0 z-30 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-4">
+                    <button @click="toggleSidebar()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 lg:hidden">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                    <a href="../../index.html" class="flex items-center gap-2">
+                        <h1 class="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">🛡️ CyberSec Handbook</h1>
+                    </a>
+                </div>
+                <button @click="toggleDarkMode()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                    <svg x-show="!darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                    </svg>
+                    <svg x-show="darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+    <div class="flex">
+        <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'" class="sidebar fixed lg:static">
+            <nav class="p-4 space-y-2">
+                <a href="../../index.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🏠 Inicio</a>
+                <div class="mt-4">
+                    <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-2">Sistemas Operativos</h3>
+                    <a href="../linux/linux-essentials.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Linux Esencial</a>
+                    <a href="ubuntu-guide.html" class="block px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 font-medium">Ubuntu</a>
+                    <a href="../fedora/fedora-guide.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Fedora</a>
+                </div>
+            </nav>
+        </aside>
+        <main class="flex-1 min-h-screen">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <article>
+                    <header class="mb-8">
+                        <h1 class="text-4xl font-bold mb-4">Guía Completa de Ubuntu</h1>
+                        <p class="text-xl text-gray-600 dark:text-gray-400 mb-4">Todo sobre Ubuntu: desde instalación hasta administración avanzada</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="badge badge-beginner">Nivel: Principiante a Avanzado</span>
+                            <span class="badge">🐧 Ubuntu 20.04/22.04 LTS</span>
+                        </div>
+                    </header>
+                    <div id="table-of-contents" class="toc"></div>
+                    <div class="prose prose-lg dark:prose-invert max-w-none">
+                        <h2 id="introduccion">Introducción a Ubuntu</h2>
+                        <p>Ubuntu es una de las distribuciones Linux más populares, ideal para principiantes pero potente para profesionales. Basada en Debian, usa el gestor de paquetes APT y el sistema de servicios systemd.</p>
+
+                        <h2 id="instalacion">Instalación y Primeros Pasos</h2>
+
+                        <h3>Actualizar Sistema</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('sudo apt update\nsudo apt upgrade -y\nsudo apt dist-upgrade -y\nsudo apt autoremove -y')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code>sudo apt update              # Actualizar lista de paquetes disponibles
+sudo apt upgrade -y          # Actualizar paquetes instalados
+sudo apt dist-upgrade -y     # Actualizar sistema (incluye cambios de dependencias)
+sudo apt autoremove -y       # Eliminar paquetes no utilizados</code></pre>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                                <strong>Rutina esencial:</strong> Ejecuta esto después de cada instalación y periódicamente. <code>dist-upgrade</code> puede actualizar el kernel.
+                            </p>
+                        </div>
+
+                        <h2 id="gestion-paquetes">Gestión de Paquetes con APT</h2>
+
+                        <h3>Comandos Básicos</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('apt search paquete\napt show paquete\nsudo apt install paquete\nsudo apt install paquete1 paquete2\nsudo apt remove paquete\nsudo apt purge paquete\nsudo apt autoremove')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code>apt search paquete              # Buscar paquete en repositorios
+apt show paquete                # Ver información detallada del paquete
+sudo apt install paquete        # Instalar paquete
+sudo apt install paquete1 paquete2  # Instalar múltiples paquetes
+sudo apt remove paquete         # Desinstalar paquete (mantiene configuración)
+sudo apt purge paquete          # Desinstalar y eliminar configuración
+sudo apt autoremove             # Eliminar paquetes huérfanos</code></pre>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                                <strong>Diferencia:</strong> <code>remove</code> mantiene archivos de configuración, <code>purge</code> los elimina completamente.
+                            </p>
+                        </div>
+
+                        <h3>Paquetes Esenciales Recomendados</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('sudo apt install -y curl wget git vim nano htop tree unzip zip build-essential software-properties-common apt-transport-https ca-certificates gnupg lsb-release')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code>sudo apt install -y curl wget git vim nano htop tree unzip zip \
+  build-essential software-properties-common apt-transport-https \
+  ca-certificates gnupg lsb-release</code></pre>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                                <strong>Kit de herramientas esencial:</strong> Herramientas que uso en todos mis sistemas Ubuntu para desarrollo y administración.
+                            </p>
+                        </div>
+
+                        <h2 id="servicios-systemd">Gestión de Servicios (systemd)</h2>
+
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('systemctl status servicio\nsystemctl start servicio\nsystemctl stop servicio\nsystemctl restart servicio\nsystemctl reload servicio\nsystemctl enable servicio\nsystemctl disable servicio\nsystemctl list-units --type=service\nsystemctl list-units --type=service --state=running')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code>systemctl status servicio                      # Ver estado del servicio
+systemctl start servicio                       # Iniciar servicio
+systemctl stop servicio                        # Detener servicio
+systemctl restart servicio                     # Reiniciar servicio
+systemctl reload servicio                      # Recargar configuración (sin interrumpir)
+systemctl enable servicio                      # Habilitar al inicio
+systemctl disable servicio                     # Deshabilitar al inicio
+systemctl list-units --type=service            # Listar todos los servicios
+systemctl list-units --type=service --state=running  # Solo servicios activos</code></pre>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                                <strong>Ejemplos comunes:</strong> <code>systemctl status nginx</code>, <code>systemctl enable docker</code>, <code>systemctl restart ssh</code>
+                            </p>
+                        </div>
+
+                        <h2 id="usuarios-grupos">Gestión de Usuarios y Grupos</h2>
+
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('sudo adduser nuevo_usuario\nsudo deluser usuario\nsudo usermod -aG grupo usuario\nsudo groups usuario\nid usuario\nsudo passwd usuario\nsudo chsh -s /bin/bash usuario\nwhoami\nw\nwho')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code>sudo adduser nuevo_usuario      # Crear nuevo usuario (interactivo)
+sudo deluser usuario             # Eliminar usuario
+sudo usermod -aG grupo usuario   # Añadir usuario a grupo (sin -a reemplaza grupos)
+sudo groups usuario              # Ver grupos del usuario
+id usuario                       # Ver UID, GID y grupos
+sudo passwd usuario              # Cambiar contraseña
+sudo chsh -s /bin/bash usuario   # Cambiar shell del usuario
+whoami                           # Usuario actual
+w                                # Usuarios conectados y actividad
+who                              # Usuarios conectados</code></pre>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                                <strong>Grupos comunes:</strong> <code>sudo</code> (administración), <code>docker</code> (uso de Docker), <code>www-data</code> (servidor web)
+                            </p>
+                        </div>
+
+                        <h2 id="logs-ubuntu">Logs y Monitoreo</h2>
+
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('journalctl -u servicio\njournalctl -f\njournalctl --since \"1 hour ago\"\njournalctl --since today\njournalctl -p err\njournalctl -n 50\ntail -f /var/log/syslog\ntail -f /var/log/auth.log\ndmesg | tail')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code>journalctl -u servicio              # Logs de un servicio específico
+journalctl -f                       # Seguir logs en tiempo real (tail -f)
+journalctl --since "1 hour ago"     # Logs de última hora
+journalctl --since today            # Logs de hoy
+journalctl -p err                   # Solo errores (emerg, alert, crit, err)
+journalctl -n 50                    # Últimas 50 líneas
+tail -f /var/log/syslog             # Log del sistema (legacy)
+tail -f /var/log/auth.log           # Logs de autenticación
+dmesg | tail                        # Mensajes del kernel</code></pre>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                                <strong>journalctl:</strong> Sistema moderno de logs de systemd. Más poderoso que los logs tradicionales en /var/log.
+                            </p>
+                        </div>
+
+                        <h2 id="red-ubuntu">Configuración de Red</h2>
+
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('ip addr show\nip link show\nsudo ip link set eth0 up\nsudo ip addr add 192.168.1.100/24 dev eth0\nip route show\nsudo ip route add default via 192.168.1.1\ncat /etc/netplan/*.yaml\nsudo netplan apply\nsudo netplan try')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code>ip addr show                      # Ver interfaces e IPs
+ip link show                      # Ver interfaces de red
+sudo ip link set eth0 up          # Activar interfaz
+sudo ip addr add 192.168.1.100/24 dev eth0  # Asignar IP temporal
+ip route show                     # Ver tabla de enrutamiento
+sudo ip route add default via 192.168.1.1  # Añadir gateway
+cat /etc/netplan/*.yaml           # Ver configuración Netplan (Ubuntu 18.04+)
+sudo netplan apply                # Aplicar configuración Netplan
+sudo netplan try                  # Probar configuración (revertir si falla)</code></pre>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                                <strong>Netplan:</strong> Sistema de configuración de red en Ubuntu moderno. Configuración en YAML en <code>/etc/netplan/</code>.
+                            </p>
+                        </div>
+
+                        <h2 id="cheatsheet-ubuntu">Cheatsheet Ubuntu</h2>
+                        <div class="overflow-x-auto">
+                            <table>
+                                <thead>
+                                    <tr><th>Categoría</th><th>Comando</th><th>Descripción</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>Paquetes</td><td><code>sudo apt update && sudo apt upgrade</code></td><td>Actualizar sistema</td></tr>
+                                    <tr><td>Paquetes</td><td><code>sudo apt install paquete</code></td><td>Instalar paquete</td></tr>
+                                    <tr><td>Servicios</td><td><code>systemctl status servicio</code></td><td>Estado de servicio</td></tr>
+                                    <tr><td>Servicios</td><td><code>sudo systemctl restart servicio</code></td><td>Reiniciar servicio</td></tr>
+                                    <tr><td>Logs</td><td><code>journalctl -u servicio -f</code></td><td>Logs en tiempo real</td></tr>
+                                    <tr><td>Usuarios</td><td><code>sudo adduser usuario</code></td><td>Crear usuario</td></tr>
+                                    <tr><td>Usuarios</td><td><code>sudo usermod -aG sudo usuario</code></td><td>Dar permisos sudo</td></tr>
+                                    <tr><td>Red</td><td><code>ip addr show</code></td><td>Ver IPs</td></tr>
+                                    <tr><td>Red</td><td><code>sudo netplan apply</code></td><td>Aplicar red</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="alert alert-success mt-8">
+                            <p class="font-semibold mb-2">✅ Ubuntu Dominado</p>
+                            <p>Con estos comandos puedes administrar eficientemente cualquier sistema Ubuntu. Práctica regularmente y consulta <code>man</code> para ayuda detallada: <code>man comando</code>.</p>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </main>
+    </div>
+    <footer class="bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-sm text-gray-600 dark:text-gray-400">Actualizado por mí en Enero 2026</p>
+                <a href="https://github.com/tu-usuario/cybersec-handbook" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">Editar en GitHub</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../../assets/js/search.js"></script>
+    <script src="../../assets/js/main.js"></script>
+    <style>[x-cloak] { display: none !important; }</style>
+</body>
+</html>
+

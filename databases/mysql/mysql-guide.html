@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="es" x-data="app" x-init="init()" :class="{ 'dark': darkMode }">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía Completa de MySQL - CyberSec Handbook</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <script>tailwind.config = { darkMode: 'class' }</script>
+</head>
+<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+    <header class="sticky top-0 z-30 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-4">
+                    <button @click="toggleSidebar()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 lg:hidden">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                    <a href="../../index.html" class="flex items-center gap-2">
+                        <h1 class="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">🛡️ CyberSec Handbook</h1>
+                    </a>
+                </div>
+                <button @click="toggleDarkMode()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                    <svg x-show="!darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                    </svg>
+                    <svg x-show="darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+    <div class="flex">
+        <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'" class="sidebar fixed lg:static">
+            <nav class="p-4 space-y-2">
+                <a href="../../index.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🏠 Inicio</a>
+                <div class="mt-4">
+                    <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-2">Bases de Datos</h3>
+                    <a href="mysql-guide.html" class="block px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 font-medium">MySQL</a>
+                    <a href="../postgresql/postgresql-guide.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">PostgreSQL</a>
+                    <a href="../mongodb/mongodb-guide.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">MongoDB</a>
+                    <a href="../redis/redis-guide.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Redis</a>
+                </div>
+            </nav>
+        </aside>
+        <main class="flex-1 min-h-screen">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <article>
+                    <header class="mb-8">
+                        <h1 class="text-4xl font-bold mb-4">Guía Completa de MySQL</h1>
+                        <p class="text-xl text-gray-600 dark:text-gray-400 mb-4">Desde instalación hasta administración avanzada</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="badge badge-beginner">Nivel: Principiante a Avanzado</span>
+                            <span class="badge">🗄️ MySQL 8.0+</span>
+                        </div>
+                    </header>
+                    <div id="table-of-contents" class="toc"></div>
+                    <div class="prose prose-lg dark:prose-invert max-w-none">
+                        <h2 id="instalacion">Instalación</h2>
+
+                        <h3>Ubuntu/Debian</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('sudo apt update\nsudo apt install mysql-server -y\nsudo mysql_secure_installation\nsudo systemctl start mysql\nsudo systemctl enable mysql\nsudo systemctl status mysql')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code>sudo apt update
+sudo apt install mysql-server -y
+sudo mysql_secure_installation    # Configuración de seguridad inicial
+sudo systemctl start mysql
+sudo systemctl enable mysql       # Habilitar al inicio
+sudo systemctl status mysql</code></pre>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                                <strong>mysql_secure_installation:</strong> Script interactivo que configura contraseña root, elimina usuarios anónimos, deshabilita login remoto de root, y elimina bases de datos de prueba. Ejecútalo siempre después de instalar.
+                            </p>
+                        </div>
+
+                        <h2 id="conexion">Conexión y Primeros Pasos</h2>
+
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('mysql -u root -p\nmysql -u usuario -p -h localhost\nmysql -u usuario -p -h 192.168.1.100\nmysql -u usuario -p nombre_base\nmysql -u usuario -p < script.sql')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code>mysql -u root -p                        # Conectar como root (pedirá contraseña)
+mysql -u usuario -p -h localhost        # Conectar a servidor local
+mysql -u usuario -p -h 192.168.1.100    # Conectar a servidor remoto
+mysql -u usuario -p nombre_base         # Conectar directamente a una base de datos
+mysql -u usuario -p < script.sql        # Ejecutar script SQL desde archivo</code></pre>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                                <strong>Parámetros:</strong> <code>-u</code> usuario, <code>-p</code> pedir contraseña, <code>-h</code> host. Sin <code>-h</code> asume localhost.
+                            </p>
+                        </div>
+
+                        <h2 id="comandos-basicos">Comandos Básicos (Principiantes)</h2>
+
+                        <h3>Información del Sistema</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('SHOW DATABASES;\nUSE nombre_base;\nSHOW TABLES;\nDESCRIBE nombre_tabla;\nSELECT VERSION();\nSELECT DATABASE();\nSTATUS;')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code>SHOW DATABASES;              # Listar todas las bases de datos
+USE nombre_base;              # Seleccionar base de datos para trabajar
+SHOW TABLES;                  # Listar tablas de la base actual
+DESCRIBE nombre_tabla;        # Ver estructura de tabla (columnas, tipos, etc.)
+SELECT VERSION();             # Ver versión de MySQL
+SELECT DATABASE();            # Ver base de datos actual
+STATUS;                       # Información completa del servidor</code></pre>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                                <strong>Importante:</strong> Los comandos SQL terminan con punto y coma (<code>;</code>). Sin él, MySQL espera más líneas.
+                            </p>
+                        </div>
+
+                        <h3>Crear Base de Datos y Tablas</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('CREATE DATABASE nombre_base CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;\nDROP DATABASE nombre_base;\nCREATE TABLE usuarios (\n    id INT AUTO_INCREMENT PRIMARY KEY,\n    nombre VARCHAR(100) NOT NULL,\n    email VARCHAR(255) UNIQUE NOT NULL,\n    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP\n);\nDROP TABLE nombre_tabla;')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code>CREATE DATABASE nombre_base CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+DROP DATABASE nombre_base;
+
+CREATE TABLE usuarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+DROP TABLE nombre_tabla;</code></pre>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                                <strong>utf8mb4:</strong> Usa siempre utf8mb4 (soporta emojis y caracteres Unicode completos) en lugar de utf8 (que solo soporta 3 bytes).
+                            </p>
+                        </div>
+
+                        <h3>INSERT, SELECT, UPDATE, DELETE (CRUD Básico)</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('INSERT INTO usuarios (nombre, email) VALUES (\'Juan Pérez\', \'juan@ejemplo.com\');\nSELECT * FROM usuarios;\nSELECT nombre, email FROM usuarios WHERE id = 1;\nSELECT * FROM usuarios WHERE email LIKE \'%@gmail.com\';\nUPDATE usuarios SET nombre = \'Juan García\' WHERE id = 1;\nDELETE FROM usuarios WHERE id = 1;')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code>-- INSERTAR datos
+INSERT INTO usuarios (nombre, email) VALUES ('Juan Pérez', 'juan@ejemplo.com');
+
+-- CONSULTAR datos
+SELECT * FROM usuarios;                                    -- Todos los registros
+SELECT nombre, email FROM usuarios WHERE id = 1;          -- Columnas específicas
+SELECT * FROM usuarios WHERE email LIKE '%@gmail.com';    -- Con LIKE (búsqueda)
+
+-- ACTUALIZAR datos
+UPDATE usuarios SET nombre = 'Juan García' WHERE id = 1;
+
+-- ELIMINAR datos
+DELETE FROM usuarios WHERE id = 1;</code></pre>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                                <strong>⚠️ Cuidado con UPDATE y DELETE:</strong> Siempre usa <code>WHERE</code> para especificar qué filas modificar. Sin WHERE, afecta TODAS las filas.
+                            </p>
+                        </div>
+
+                        <h2 id="comandos-avanzados">Comandos Avanzados (Profesionales)</h2>
+
+                        <h3>Índices y Optimización</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('CREATE INDEX idx_email ON usuarios(email);\nCREATE UNIQUE INDEX idx_email_unique ON usuarios(email);\nSHOW INDEX FROM usuarios;\nEXPLAIN SELECT * FROM usuarios WHERE email = \'test@ejemplo.com\';\nANALYZE TABLE usuarios;')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code>CREATE INDEX idx_email ON usuarios(email);           # Índice simple
+CREATE UNIQUE INDEX idx_email_unique ON usuarios(email);  # Índice único
+SHOW INDEX FROM usuarios;                          # Ver índices de tabla
+EXPLAIN SELECT * FROM usuarios WHERE email = 'test@ejemplo.com';  # Ver plan de ejecución
+ANALYZE TABLE usuarios;                            # Actualizar estadísticas de tabla</code></pre>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                                <strong>EXPLAIN:</strong> Muestra cómo MySQL ejecutará la consulta. Esencial para optimización. Busca "Using index" en la columna Extra.
+                            </p>
+                        </div>
+
+                        <h3>JOINs y Consultas Complejas</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('SELECT u.nombre, p.titulo FROM usuarios u INNER JOIN posts p ON u.id = p.usuario_id;\nSELECT u.nombre, p.titulo FROM usuarios u LEFT JOIN posts p ON u.id = p.usuario_id;\nSELECT u.nombre, COUNT(p.id) as total_posts FROM usuarios u LEFT JOIN posts p ON u.id = p.usuario_id GROUP BY u.id;\nSELECT usuario_id, COUNT(*) as total FROM posts GROUP BY usuario_id HAVING total > 10;')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code>-- INNER JOIN: Solo registros que coinciden en ambas tablas
+SELECT u.nombre, p.titulo 
+FROM usuarios u 
+INNER JOIN posts p ON u.id = p.usuario_id;
+
+-- LEFT JOIN: Todos los usuarios, incluso sin posts
+SELECT u.nombre, p.titulo 
+FROM usuarios u 
+LEFT JOIN posts p ON u.id = p.usuario_id;
+
+-- Con agregación (COUNT)
+SELECT u.nombre, COUNT(p.id) as total_posts 
+FROM usuarios u 
+LEFT JOIN posts p ON u.id = p.usuario_id 
+GROUP BY u.id;
+
+-- HAVING: filtrar después de GROUP BY
+SELECT usuario_id, COUNT(*) as total 
+FROM posts 
+GROUP BY usuario_id 
+HAVING total > 10;</code></pre>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                                <strong>JOINs:</strong> INNER JOIN solo muestra coincidencias. LEFT JOIN muestra todos los de la izquierda aunque no haya coincidencias. GROUP BY agrupa, HAVING filtra grupos.
+                            </p>
+                        </div>
+
+                        <h3>Backup y Restore</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('mysqldump -u root -p nombre_base > backup.sql\nmysqldump -u root -p --all-databases > backup_completo.sql\nmysqldump -u root -p nombre_base tabla1 tabla2 > backup_tablas.sql\nmysql -u root -p nombre_base < backup.sql\nmysql -u root -p < backup_completo.sql')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># BACKUP de una base de datos
+mysqldump -u root -p nombre_base > backup.sql
+
+# BACKUP completo (todas las bases)
+mysqldump -u root -p --all-databases > backup_completo.sql
+
+# BACKUP de tablas específicas
+mysqldump -u root -p nombre_base tabla1 tabla2 > backup_tablas.sql
+
+# RESTORE de base de datos
+mysql -u root -p nombre_base < backup.sql
+
+# RESTORE completo
+mysql -u root -p < backup_completo.sql</code></pre>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                                <strong>Backups:</strong> Ejecuta backups regularmente. En producción, automatiza con cron. Considera comprimir: <code>mysqldump ... | gzip > backup.sql.gz</code>
+                            </p>
+                        </div>
+
+                        <h3>Usuarios y Permisos</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('CREATE USER \'usuario\'@\'localhost\' IDENTIFIED BY \'contraseña_segura\';\nCREATE USER \'usuario\'@\'%\' IDENTIFIED BY \'contraseña_segura\';\nGRANT SELECT, INSERT ON nombre_base.* TO \'usuario\'@\'localhost\';\nGRANT ALL PRIVILEGES ON nombre_base.* TO \'usuario\'@\'localhost\';\nFLUSH PRIVILEGES;\nSHOW GRANTS FOR \'usuario\'@\'localhost\';\nREVOKE SELECT ON nombre_base.* FROM \'usuario\'@\'localhost\';\nDROP USER \'usuario\'@\'localhost\';')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code>-- Crear usuario (localhost = solo local, % = desde cualquier host)
+CREATE USER 'usuario'@'localhost' IDENTIFIED BY 'contraseña_segura';
+CREATE USER 'usuario'@'%' IDENTIFIED BY 'contraseña_segura';
+
+-- Otorgar permisos específicos
+GRANT SELECT, INSERT ON nombre_base.* TO 'usuario'@'localhost';
+
+-- Otorgar todos los permisos
+GRANT ALL PRIVILEGES ON nombre_base.* TO 'usuario'@'localhost';
+
+FLUSH PRIVILEGES;  -- Aplicar cambios de permisos
+
+-- Ver permisos
+SHOW GRANTS FOR 'usuario'@'localhost';
+
+-- Revocar permisos
+REVOKE SELECT ON nombre_base.* FROM 'usuario'@'localhost';
+
+-- Eliminar usuario
+DROP USER 'usuario'@'localhost';</code></pre>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                                <strong>Seguridad:</strong> Usa siempre contraseñas seguras. Limita permisos al mínimo necesario. Prefiere usuarios con acceso solo desde localhost cuando sea posible.
+                            </p>
+                        </div>
+
+                        <h2 id="cheatsheet-mysql">Cheatsheet MySQL</h2>
+                        <div class="overflow-x-auto">
+                            <table>
+                                <thead>
+                                    <tr><th>Comando</th><th>Uso</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td><code>SHOW DATABASES;</code></td><td>Listar bases de datos</td></tr>
+                                    <tr><td><code>USE nombre_base;</code></td><td>Seleccionar base</td></tr>
+                                    <tr><td><code>SHOW TABLES;</code></td><td>Listar tablas</td></tr>
+                                    <tr><td><code>DESCRIBE tabla;</code></td><td>Estructura de tabla</td></tr>
+                                    <tr><td><code>SELECT * FROM tabla;</code></td><td>Consultar datos</td></tr>
+                                    <tr><td><code>INSERT INTO tabla VALUES (...);</code></td><td>Insertar datos</td></tr>
+                                    <tr><td><code>UPDATE tabla SET col=val WHERE id=1;</code></td><td>Actualizar</td></tr>
+                                    <tr><td><code>DELETE FROM tabla WHERE id=1;</code></td><td>Eliminar</td></tr>
+                                    <tr><td><code>mysqldump -u root -p base > backup.sql</code></td><td>Backup</td></tr>
+                                    <tr><td><code>mysql -u root -p base < backup.sql</code></td><td>Restore</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="alert alert-success mt-8">
+                            <p class="font-semibold mb-2">✅ MySQL Dominado</p>
+                            <p>Con estos comandos puedes administrar eficientemente MySQL. Para más detalles, consulta la documentación oficial o usa <code>HELP comando;</code> dentro de MySQL.</p>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </main>
+    </div>
+    <footer class="bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-sm text-gray-600 dark:text-gray-400">Actualizado por mí en Enero 2026</p>
+                <a href="https://github.com/tu-usuario/cybersec-handbook" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">Editar en GitHub</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../../assets/js/search.js"></script>
+    <script src="../../assets/js/main.js"></script>
+    <style>[x-cloak] { display: none !important; }</style>
+</body>
+</html>
+

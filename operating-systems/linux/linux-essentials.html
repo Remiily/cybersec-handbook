@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="es" x-data="app" x-init="init()" :class="{ 'dark': darkMode }">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía Esencial de Linux - CyberSec Handbook</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <script>tailwind.config = { darkMode: 'class' }</script>
+</head>
+<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+    <header class="sticky top-0 z-30 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-4">
+                    <button @click="toggleSidebar()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 lg:hidden">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                    <a href="../../index.html" class="flex items-center gap-2">
+                        <h1 class="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">🛡️ CyberSec Handbook</h1>
+                    </a>
+                </div>
+                <button @click="toggleDarkMode()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                    <svg x-show="!darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                    </svg>
+                    <svg x-show="darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+    <div class="flex">
+        <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'" class="sidebar fixed lg:static">
+            <nav class="p-4 space-y-2">
+                <a href="../../index.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🏠 Inicio</a>
+                <div class="mt-4">
+                    <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-2">Sistemas Operativos</h3>
+                    <a href="linux-essentials.html" class="block px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 font-medium">Linux Esencial</a>
+                    <a href="../ubuntu/ubuntu-guide.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Ubuntu</a>
+                    <a href="../fedora/fedora-guide.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Fedora</a>
+                    <a href="../rhel/rhel-guide.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">RHEL/CentOS</a>
+                </div>
+            </nav>
+        </aside>
+        <main class="flex-1 min-h-screen">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <article>
+                    <header class="mb-8">
+                        <nav class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                            <a href="../../index.html" class="hover:text-gray-700 dark:hover:text-gray-300">Inicio</a>
+                            <span class="mx-2">/</span>
+                            <span>Sistemas Operativos / Linux Esencial</span>
+                        </nav>
+                        <h1 class="text-4xl font-bold mb-4">Guía Esencial de Linux</h1>
+                        <p class="text-xl text-gray-600 dark:text-gray-400 mb-4">
+                            Desde comandos básicos hasta técnicas avanzadas - Todo lo que necesitas saber
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="badge badge-beginner">Nivel: Principiante a Avanzado</span>
+                            <span class="badge">🐧 Linux Universal</span>
+                        </div>
+                    </header>
+
+                    <div id="table-of-contents" class="toc"></div>
+
+                    <div class="prose prose-lg dark:prose-invert max-w-none">
+                        <div class="alert alert-info mb-6">
+                            <p><strong>Para Principiantes:</strong> Esta guía está diseñada para crecer contigo. Empieza con la sección "Conceptos Básicos" y avanza gradualmente. Todos los comandos incluyen explicaciones detalladas.</p>
+                        </div>
+
+                        <h2 id="conceptos-basicos">Conceptos Básicos para Principiantes</h2>
+                        <p>Linux es un sistema operativo basado en Unix. Todo se maneja mediante comandos en la terminal, lo cual puede parecer intimidante al principio, pero es extremadamente poderoso una vez que lo dominas.</p>
+
+                        <h3>Estructura del Sistema de Archivos</h3>
+                        <p>En Linux, todo es un archivo. La estructura de directorios es jerárquica:</p>
+                        <ul>
+                            <li><code>/</code> - Raíz del sistema (equivalente a C:\ en Windows)</li>
+                            <li><code>/home</code> - Directorios de usuarios</li>
+                            <li><code>/etc</code> - Archivos de configuración</li>
+                            <li><code>/var</code> - Archivos variables (logs, caché)</li>
+                            <li><code>/usr</code> - Programas y datos de usuario</li>
+                            <li><code>/bin</code> - Binarios esenciales del sistema</li>
+                            <li><code>/opt</code> - Software opcional/adicional</li>
+                            <li><code>/tmp</code> - Archivos temporales</li>
+                        </ul>
+
+                        <h2 id="comandos-basicos">Comandos Esenciales para Principiantes</h2>
+
+                        <h3>Navegación y Exploración</h3>
+
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('pwd')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code>pwd</code></pre>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                                <strong>Print Working Directory:</strong> Muestra el directorio actual. Es tu "ubicación" en el sistema de archivos.
+                            </p>
+                        </div>
+
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('ls\nls -l\nls -la\nls -lah')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code>ls              # Lista archivos y directorios
+ls -l           # Lista con detalles (permisos, tamaño, fecha)
+ls -la          # Lista TODO incluyendo archivos ocultos (empiezan con .)
+ls -lah         # Lista con detalles, todo y tamaños legibles (human-readable)</code></pre>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                                <strong>List:</strong> El comando más usado. <code>-l</code> muestra detalles, <code>-a</code> incluye ocultos, <code>-h</code> hace tamaños legibles (KB, MB).
+                            </p>
+                        </div>
+
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('cd /home/usuario\ncd ..\ncd ~\ncd -')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code>cd /home/usuario    # Cambiar a directorio específico (ruta absoluta)
+cd ..               # Ir al directorio padre
+cd ~                # Ir al directorio home del usuario
+cd -                # Volver al directorio anterior</code></pre>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                                <strong>Change Directory:</strong> <code>~</code> es atajo para tu directorio home. <code>..</code> significa "directorio padre".
+                            </p>
+                        </div>
+
+                        <h3>Gestión de Archivos y Directorios</h3>
+
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('mkdir nuevo_directorio\nmkdir -p ruta/completa/directorios\nrmdir directorio_vacio\nrm archivo.txt\nrm -r directorio\nrm -rf directorio')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code>mkdir nuevo_directorio           # Crear directorio
+mkdir -p ruta/completa/directorios  # Crear estructura completa de directorios
+rmdir directorio_vacio            # Eliminar directorio vacío
+rm archivo.txt                    # Eliminar archivo
+rm -r directorio                  # Eliminar directorio y su contenido (recursivo)
+rm -rf directorio                 # Eliminar sin confirmación (force)</code></pre>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                                <strong>⚠️ Cuidado con <code>rm -rf</code>:</strong> No hay "papelera de reciclaje" en Linux. Los archivos se eliminan permanentemente. Sé cuidadoso, especialmente con rutas como <code>/</code> o <code>~</code>.
+                            </p>
+                        </div>
+
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('cp archivo.txt copia.txt\ncp -r directorio/ copia_directorio/\ncp archivo.txt /ruta/destino/\nmv archivo.txt nuevo_nombre.txt\nmv archivo.txt /ruta/destino/')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code>cp archivo.txt copia.txt                    # Copiar archivo
+cp -r directorio/ copia_directorio/         # Copiar directorio (recursivo)
+cp archivo.txt /ruta/destino/               # Copiar a otra ubicación
+mv archivo.txt nuevo_nombre.txt             # Renombrar o mover
+mv archivo.txt /ruta/destino/               # Mover a otra ubicación</code></pre>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                                <strong>Copy y Move:</strong> <code>mv</code> puede renombrar (si el destino está en el mismo directorio) o mover (si es otra ubicación).
+                            </p>
+                        </div>
+
+                        <h3>Ver y Editar Archivos</h3>
+
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('cat archivo.txt\nless archivo.txt\nhead archivo.txt\nhead -n 20 archivo.txt\ntail archivo.txt\ntail -f /var/log/syslog')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code>cat archivo.txt                # Mostrar todo el contenido
+less archivo.txt               # Ver con scroll (q para salir, / para buscar)
+head archivo.txt               # Primeras 10 líneas
+head -n 20 archivo.txt         # Primeras 20 líneas
+tail archivo.txt               # Últimas 10 líneas
+tail -f /var/log/syslog        # Seguir archivo en tiempo real (muy útil para logs)</code></pre>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                                <strong>Ver archivos:</strong> <code>cat</code> es simple pero no maneja bien archivos grandes. <code>less</code> es mejor para archivos grandes. <code>tail -f</code> es esencial para monitorear logs.
+                            </p>
+                        </div>
+
+                        <h2 id="permisos">Permisos y Propiedad (Concepto Crítico)</h2>
+                        <p>Linux usa un sistema de permisos robusto. Cada archivo tiene permisos de lectura (r), escritura (w) y ejecución (x) para tres grupos: propietario (owner), grupo (group) y otros (others).</p>
+
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('ls -l archivo.txt\nchmod 755 script.sh\nchmod +x script.sh\nchmod u+w archivo.txt\nchown usuario:grupo archivo.txt\nsudo chown root:root /etc/archivo')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code>ls -l archivo.txt              # Ver permisos (rwxrwxrwx)
+chmod 755 script.sh            # Permisos: owner(rwx), group(r-x), others(r-x)
+chmod +x script.sh             # Añadir permiso de ejecución para todos
+chmod u+w archivo.txt          # Añadir escritura al usuario (u=user, g=group, o=others)
+chown usuario:grupo archivo.txt # Cambiar propietario y grupo
+sudo chown root:root /etc/archivo  # Cambiar a root (requiere sudo)</code></pre>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                                <strong>Permisos numéricos:</strong> 755 = 7(4+2+1=rwx) 5(4+1=r-x) 5(4+1=r-x). 4=read, 2=write, 1=execute.
+                            </p>
+                        </div>
+
+                        <h2 id="comandos-avanzados">Comandos Avanzados para Profesionales</h2>
+
+                        <h3>Búsqueda y Filtrado</h3>
+
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('find /home -name \"*.txt\"\nfind /var/log -type f -mtime -7\nfind / -name archivo -type f 2>/dev/null\ngrep \"error\" archivo.log\ngrep -r \"patrón\" /ruta/directorio/\ngrep -i \"ERROR\" archivo.log\ngrep -v \"excluir\" archivo.log')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code>find /home -name "*.txt"                    # Buscar archivos .txt en /home
+find /var/log -type f -mtime -7            # Archivos modificados en últimos 7 días
+find / -name archivo -type f 2>/dev/null   # Buscar en todo el sistema (oculta errores)
+grep "error" archivo.log                    # Buscar texto en archivo
+grep -r "patrón" /ruta/directorio/         # Buscar recursivamente
+grep -i "ERROR" archivo.log                 # Case-insensitive
+grep -v "excluir" archivo.log               # Invertir búsqueda (excluir líneas)</code></pre>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                                <strong>Find y Grep:</strong> <code>find</code> busca archivos, <code>grep</code> busca texto dentro de archivos. Son herramientas extremadamente poderosas combinadas con pipes.
+                            </p>
+                        </div>
+
+                        <h3>Pipes y Redirección</h3>
+
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('comando1 | comando2\nls -la | grep \"\.txt\"\nps aux | grep proceso\ncat archivo.txt > salida.txt\ncat archivo.txt >> salida.txt\ncomando 2>&1 | tee log.txt')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code>comando1 | comando2              # Pipe: salida de comando1 como entrada de comando2
+ls -la | grep "\.txt"            # Listar y filtrar solo .txt
+ps aux | grep proceso            # Buscar proceso en lista de procesos
+cat archivo.txt > salida.txt     # Redirigir salida (sobrescribe)
+cat archivo.txt >> salida.txt    # Redirigir salida (añade al final)
+comando 2>&1 | tee log.txt       # Redirigir stdout y stderr, y guardar en archivo</code></pre>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                                <strong>Pipes:</strong> El poder real de Linux. Combina comandos simples para crear operaciones complejas. <code>2>&1</code> redirige stderr a stdout.
+                            </p>
+                        </div>
+
+                        <h3>Procesos y Sistema</h3>
+
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('ps aux\nps aux | grep proceso\nkill PID\nkill -9 PID\nkillall nombre_proceso\ntop\nhtop\nsystemctl status servicio\nsystemctl start servicio\nsystemctl stop servicio\nsystemctl enable servicio')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code>ps aux                           # Listar todos los procesos
+ps aux | grep proceso            # Buscar proceso específico
+kill PID                         # Terminar proceso (señal SIGTERM - graceful)
+kill -9 PID                      # Forzar terminación (SIGKILL - inmediato)
+killall nombre_proceso           # Terminar todos los procesos con ese nombre
+top                              # Monitor de procesos en tiempo real
+htop                             # Versión mejorada de top (si está instalado)
+systemctl status servicio        # Estado de servicio systemd
+systemctl start servicio         # Iniciar servicio
+systemctl stop servicio          # Detener servicio
+systemctl enable servicio        # Habilitar servicio al inicio</code></pre>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                                <strong>Systemd:</strong> Sistema moderno de gestión de servicios. <code>enable</code> hace que el servicio inicie automáticamente al arrancar el sistema.
+                            </p>
+                        </div>
+
+                        <h3>Red y Conectividad</h3>
+
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('ip addr show\nip route show\nping google.com\nnetstat -tulpn\nss -tulpn\ncurl https://ejemplo.com\nwget https://ejemplo.com/archivo\ntcpdump -i eth0\ntcpdump -i eth0 port 80')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code>ip addr show                     # Ver interfaces de red e IPs
+ip route show                    # Ver tabla de enrutamiento
+ping google.com                  # Probar conectividad
+netstat -tulpn                   # Ver puertos abiertos (legacy)
+ss -tulpn                        # Versión moderna de netstat (más rápido)
+curl https://ejemplo.com         # Descargar/conectar vía HTTP(S)
+wget https://ejemplo.com/archivo # Descargar archivo
+tcpdump -i eth0                  # Capturar tráfico de red (requiere permisos)
+tcpdump -i eth0 port 80          # Capturar solo puerto 80</code></pre>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                                <strong>Red:</strong> <code>ss</code> es más rápido que <code>netstat</code>. <code>tcpdump</code> es esencial para troubleshooting de red pero requiere permisos elevados.
+                            </p>
+                        </div>
+
+                        <h2 id="cheatsheet-linux">Cheatsheet Rápido: Comandos Más Usados</h2>
+                        <div class="overflow-x-auto">
+                            <table>
+                                <thead>
+                                    <tr><th>Comando</th><th>Uso Común</th><th>Ejemplo</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td><code>ls -lah</code></td><td>Listar archivos con detalles</td><td><code>ls -lah ~/Documentos</code></td></tr>
+                                    <tr><td><code>cd</code></td><td>Cambiar directorio</td><td><code>cd /var/log</code></td></tr>
+                                    <tr><td><code>cat</code></td><td>Ver archivo</td><td><code>cat /etc/hosts</code></td></tr>
+                                    <tr><td><code>grep</code></td><td>Buscar texto</td><td><code>grep "error" log.txt</code></td></tr>
+                                    <tr><td><code>find</code></td><td>Buscar archivos</td><td><code>find . -name "*.log"</code></td></tr>
+                                    <tr><td><code>ps aux</code></td><td>Procesos</td><td><code>ps aux | grep nginx</code></td></tr>
+                                    <tr><td><code>kill</code></td><td>Terminar proceso</td><td><code>kill -9 1234</code></td></tr>
+                                    <tr><td><code>chmod</code></td><td>Cambiar permisos</td><td><code>chmod +x script.sh</code></td></tr>
+                                    <tr><td><code>sudo</code></td><td>Ejecutar como root</td><td><code>sudo systemctl restart nginx</code></td></tr>
+                                    <tr><td><code>tar</code></td><td>Comprimir/descomprimir</td><td><code>tar -czf backup.tar.gz directorio/</code></td></tr>
+                                    <tr><td><code>df -h</code></td><td>Espacio en disco</td><td><code>df -h</code></td></tr>
+                                    <tr><td><code>du -sh</code></td><td>Tamaño de directorio</td><td><code>du -sh /var/log</code></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h2 id="troubleshooting">Troubleshooting Común</h2>
+
+                        <h3>Problemas Comunes y Soluciones</h3>
+
+                        <div class="alert alert-warning">
+                            <p><strong>❌ "Permission denied"</strong></p>
+                            <p><code>chmod +x archivo</code> o <code>sudo comando</code> según corresponda.</p>
+                        </div>
+
+                        <div class="alert alert-warning">
+                            <p><strong>❌ "Command not found"</strong></p>
+                            <p>El comando no está instalado o no está en PATH. Verifica con <code>which comando</code> o instala el paquete necesario.</p>
+                        </div>
+
+                        <div class="alert alert-warning">
+                            <p><strong>❌ "No space left on device"</strong></p>
+                            <p>Disco lleno. Verifica con <code>df -h</code>, limpia logs con <code>journalctl --vacuum-time=7d</code>, o elimina archivos temporales.</p>
+                        </div>
+
+                        <div class="alert alert-success mt-8">
+                            <p class="font-semibold mb-2">✅ Siguiente Paso</p>
+                            <p>Domina estos comandos básicos antes de avanzar. La práctica constante es clave. Experimenta en un entorno seguro antes de usar comandos en producción.</p>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </main>
+    </div>
+    <footer class="bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-sm text-gray-600 dark:text-gray-400">Actualizado por mí en Enero 2026</p>
+                <a href="https://github.com/tu-usuario/cybersec-handbook" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">Editar en GitHub</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../../assets/js/search.js"></script>
+    <script src="../../assets/js/main.js"></script>
+    <style>[x-cloak] { display: none !important; }</style>
+</body>
+</html>
+
