@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es" x-data="app" x-init="init()" :class="{ 'dark': darkMode }">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Threat Hunting - CyberSec Handbook</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <script>tailwind.config = { darkMode: 'class' }</script>
+</head>
+<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+    <header class="sticky top-0 z-30 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-4">
+                    <button @click="toggleSidebar()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 lg:hidden sidebar-toggle">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                    <a href="../../index.html" class="flex items-center gap-2">
+                        <h1 class="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">🛡️ CyberSec Handbook</h1>
+                    </a>
+                </div>
+                <button @click="toggleDarkMode()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                    <svg x-show="!darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                    </svg>
+                    <svg x-show="darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+    <div x-show="sidebarOpen" @click="closeSidebar()" class="sidebar-overlay" x-cloak></div>
+    <div class="flex relative">
+        <aside :class="sidebarOpen ? 'open' : ''" class="sidebar">
+            <nav class="p-4 space-y-2">
+                <a href="../../index.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🏠 Inicio</a>
+                <div class="mt-4">
+                    <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-2">Blue Team</h3>
+                    <a href="soc-setup.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Setup de SOC</a>
+                    <a href="hunting-guide.html" class="nav-link block px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 font-medium">Threat Hunting</a>
+                    <a href="detection-rules.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Reglas de Detección</a>
+                </div>
+            </nav>
+        </aside>
+        <main class="flex-1 min-h-screen lg:ml-64">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <article>
+                    <header class="mb-8">
+                        <h1 class="text-4xl font-bold mb-4">Threat Hunting</h1>
+                        <p class="text-xl text-gray-600 dark:text-gray-400 mb-4">Búsqueda proactiva de amenazas en la red</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="badge badge-advanced">Nivel: Avanzado</span>
+                            <span class="badge">🔍 Threat Hunting</span>
+                        </div>
+                    </header>
+                    <div id="table-of-contents" class="toc"></div>
+                    <div class="prose prose-lg dark:prose-invert max-w-none">
+                        <h2 id="metodologia-hunting">Metodología de Threat Hunting</h2>
+                        <div class="steps-container">
+                            <div class="step">
+                                <h3>1. Hypothesis</h3>
+                                <p>Formular hipótesis basada en threat intelligence, TTPs conocidos o anomalías detectadas.</p>
+                            </div>
+                            <div class="step">
+                                <h3>2. Investigation</h3>
+                                <p>Buscar evidencia usando queries, scripts y herramientas de análisis.</p>
+                            </div>
+                            <div class="step">
+                                <h3>3. Pattern Discovery</h3>
+                                <p>Identificar patrones y comportamientos anómalos.</p>
+                            </div>
+                            <div class="step">
+                                <h3>4. Response</h3>
+                                <p>Responder a amenazas encontradas y documentar findings.</p>
+                            </div>
+                        </div>
+
+                        <h2 id="queries-comunes">Queries Comunes de Threat Hunting</h2>
+                        <h3>Detección de PowerShell Sospechoso</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('# Splunk SPL\nindex=windows EventCode=4104 \"PowerShell\" | stats count by host, CommandLine | where count > 10\n\n# Buscar PowerShell con flags de bypass\nindex=windows EventCode=4104 (\"-enc\" OR \"-e \" OR \"-nop\" OR \"-w hidden\")\n\n# ELK/Kibana\n{\n  \"query\": {\n    \"bool\": {\n      \"must\": [\n        { \"match\": { \"event.code\": \"4104\" } },\n        { \"match\": { \"process.name\": \"powershell.exe\" } }\n      ],\n      \"should\": [\n        { \"match\": { \"process.command_line\": \"-enc\" } },\n        { \"match\": { \"process.command_line\": \"-nop\" } }\n      ]\n    }\n  }\n}')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Splunk SPL
+index=windows EventCode=4104 "PowerShell" | stats count by host, CommandLine | where count > 10
+
+# Buscar PowerShell con flags de bypass
+index=windows EventCode=4104 ("-enc" OR "-e " OR "-nop" OR "-w hidden")
+
+# ELK/Kibana
+{
+  "query": {
+    "bool": {
+      "must": [
+        { "match": { "event.code": "4104" } },
+        { "match": { "process.name": "powershell.exe" } }
+      ],
+      "should": [
+        { "match": { "process.command_line": "-enc" } },
+        { "match": { "process.command_line": "-nop" } }
+      ]
+    }
+  }
+}</code></pre>
+                        </div>
+
+                        <h3>Detección de Lateral Movement</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('# Detectar conexiones RDP/WinRM desde hosts inusuales\n# Splunk\nindex=windows EventCode=4624 LogonType=10 | stats count by src_ip, host | where count > 5\n\n# Detectar uso de herramientas de lateral movement\nindex=windows (\"psexec\" OR \"wmic\" OR \"schtasks\" OR \"at.exe\") | stats count by host, user\n\n# Detectar conexiones SMB desde hosts externos\nindex=windows EventCode=5145 ShareName=\"*\" | where src_ip NOT LIKE \"192.168.%\" | stats count by src_ip')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Detectar conexiones RDP/WinRM desde hosts inusuales
+# Splunk
+index=windows EventCode=4624 LogonType=10 | stats count by src_ip, host | where count > 5
+
+# Detectar uso de herramientas de lateral movement
+index=windows ("psexec" OR "wmic" OR "schtasks" OR "at.exe") | stats count by host, user
+
+# Detectar conexiones SMB desde hosts externos
+index=windows EventCode=5145 ShareName="*" | where src_ip NOT LIKE "192.168.%" | stats count by src_ip</code></pre>
+                        </div>
+
+                        <h2 id="herramientas-hunting">Herramientas de Threat Hunting</h2>
+                        <div class="overflow-x-auto mb-6">
+                            <table>
+                                <thead>
+                                    <tr><th>Herramienta</th><th>Uso</th><th>Instalación</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><code>Zeek (Bro)</code></td>
+                                        <td>Network analysis framework</td>
+                                        <td><code>sudo apt install zeek</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>Suricata</code></td>
+                                        <td>IDS/IPS y network monitoring</td>
+                                        <td><code>sudo apt install suricata</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>YARA</code></td>
+                                        <td>Pattern matching para malware</td>
+                                        <td><code>sudo apt install yara</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>Sigma</code></td>
+                                        <td>Reglas de detección portables</td>
+                                        <td><code>git clone https://github.com/SigmaHQ/sigma.git</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>MISP</code></td>
+                                        <td>Threat Intelligence Platform</td>
+                                        <td>misp-project.org</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="alert alert-success mt-8">
+                            <p class="font-semibold mb-2">✅ Threat Hunting</p>
+                            <p>Threat hunting es proactivo, no reactivo. Usa threat intelligence y TTPs conocidos para buscar amenazas antes de que se conviertan en incidentes. Documenta tus hunts y comparte findings con el equipo.</p>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </main>
+    </div>
+    <footer class="bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-sm text-gray-600 dark:text-gray-400">Actualizado por mí en Enero 2026</p>
+                <a href="https://github.com/tu-usuario/cybersec-handbook" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">Editar en GitHub</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../../assets/js/search.js"></script>
+    <script src="../../assets/js/main.js"></script>
+    <style>[x-cloak] { display: none !important; }</style>
+</body>
+</html>
+

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es" x-data="app" x-init="init()" :class="{ 'dark': darkMode }">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seguridad en CI/CD - CyberSec Handbook</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <script>tailwind.config = { darkMode: 'class' }</script>
+</head>
+<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+    <header class="sticky top-0 z-30 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-4">
+                    <button @click="toggleSidebar()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 lg:hidden sidebar-toggle">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                    <a href="../../index.html" class="flex items-center gap-2">
+                        <h1 class="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">🛡️ CyberSec Handbook</h1>
+                    </a>
+                </div>
+                <button @click="toggleDarkMode()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                    <svg x-show="!darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                    </svg>
+                    <svg x-show="darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+    <div x-show="sidebarOpen" @click="closeSidebar()" class="sidebar-overlay" x-cloak></div>
+    <div class="flex relative">
+        <aside :class="sidebarOpen ? 'open' : ''" class="sidebar">
+            <nav class="p-4 space-y-2">
+                <a href="../../index.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🏠 Inicio</a>
+                <div class="mt-4">
+                    <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-2">Cloud/DevSecOps</h3>
+                    <a href="iac-secure-guide.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">IaC Seguro</a>
+                    <a href="pipeline-security.html" class="nav-link block px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 font-medium">Seguridad en CI/CD</a>
+                    <a href="sbom-management.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Gestión SBOM</a>
+                </div>
+            </nav>
+        </aside>
+        <main class="flex-1 min-h-screen lg:ml-64">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <article>
+                    <header class="mb-8">
+                        <h1 class="text-4xl font-bold mb-4">Seguridad en Pipelines CI/CD</h1>
+                        <p class="text-xl text-gray-600 dark:text-gray-400 mb-4">SAST, DAST y seguridad en automatización</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="badge badge-advanced">Nivel: Avanzado</span>
+                            <span class="badge">🔄 CI/CD</span>
+                        </div>
+                    </header>
+                    <div id="table-of-contents" class="toc"></div>
+                    <div class="prose prose-lg dark:prose-invert max-w-none">
+                        <h2 id="sast">SAST (Static Application Security Testing)</h2>
+                        <h3>SonarQube</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('# Instalar SonarQube\n# Docker\ndocker run -d --name sonarqube -p 9000:9000 sonarqube:lts-community\n\n# Acceder a http://localhost:9000\n# Usuario por defecto: admin/admin\n\n# Analizar proyecto\n# Instalar sonar-scanner\n# sonar-scanner \\\n#   -Dsonar.projectKey=my-project \\\n#   -Dsonar.sources=. \\\n#   -Dsonar.host.url=http://localhost:9000 \\\n#   -Dsonar.login=token\n\n# GitHub Actions\n# - name: SonarQube Scan\n#   uses: sonarsource/sonarqube-scan-action@master\n#   env:\n#     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Instalar SonarQube
+# Docker
+docker run -d --name sonarqube -p 9000:9000 sonarqube:lts-community
+
+# Acceder a http://localhost:9000
+# Usuario por defecto: admin/admin
+
+# Analizar proyecto
+# Instalar sonar-scanner
+# sonar-scanner \
+#   -Dsonar.projectKey=my-project \
+#   -Dsonar.sources=. \
+#   -Dsonar.host.url=http://localhost:9000 \
+#   -Dsonar.login=token
+
+# GitHub Actions
+# - name: SonarQube Scan
+#   uses: sonarsource/sonarqube-scan-action@master
+#   env:
+#     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}</code></pre>
+                        </div>
+
+                        <h3>Semgrep</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('# Instalar Semgrep\npip install semgrep\n# O\nbrew install semgrep\n\n# Scan básico\nsemgrep --config=auto .\n\n# Scan con reglas específicas\nsemgrep --config=p/python .\n\n# Scan con output JSON\nsemgrep --json --output=results.json .\n\n# GitHub Actions\n# - name: Semgrep Scan\n#   uses: returntocorp/semgrep-action@v1\n#   with:\n#     config: >\n#       p/python\n#       p/javascript')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Instalar Semgrep
+pip install semgrep
+# O
+brew install semgrep
+
+# Scan básico
+semgrep --config=auto .
+
+# Scan con reglas específicas
+semgrep --config=p/python .
+
+# Scan con output JSON
+semgrep --json --output=results.json .
+
+# GitHub Actions
+# - name: Semgrep Scan
+#   uses: returntocorp/semgrep-action@v1
+#   with:
+#     config: >
+#       p/python
+#       p/javascript</code></pre>
+                        </div>
+
+                        <h2 id="dast">DAST (Dynamic Application Security Testing)</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('# OWASP ZAP en CI/CD\n# GitHub Actions\n# - name: ZAP Scan\n#   uses: zaproxy/action-baseline@v0.7.0\n#   with:\n#     target: \'https://mi-app.com\'\n\n# OWASP ZAP CLI\nzap-cli quick-scan --self-contained --start-options \'-config api.disablekey=true\' https://ejemplo.com\n\n# OWASP ZAP Baseline Scan\ndocker run -t owasp/zap2docker-stable zap-baseline.py -t https://ejemplo.com\n\n# Nikto en CI/CD\nnikto -h https://ejemplo.com -o report.html -Format htm')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># OWASP ZAP en CI/CD
+# GitHub Actions
+# - name: ZAP Scan
+#   uses: zaproxy/action-baseline@v0.7.0
+#   with:
+#     target: 'https://mi-app.com'
+
+# OWASP ZAP CLI
+zap-cli quick-scan --self-contained --start-options '-config api.disablekey=true' https://ejemplo.com
+
+# OWASP ZAP Baseline Scan
+docker run -t owasp/zap2docker-stable zap-baseline.py -t https://ejemplo.com
+
+# Nikto en CI/CD
+nikto -h https://ejemplo.com -o report.html -Format htm</code></pre>
+                        </div>
+
+                        <h2 id="github-actions">Ejemplo: GitHub Actions Pipeline Seguro</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('# .github/workflows/security.yml\nname: Security Scan\n\non:\n  push:\n    branches: [ main ]\n  pull_request:\n    branches: [ main ]\n\njobs:\n  sast:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v3\n      \n      - name: Run Semgrep\n        uses: returntocorp/semgrep-action@v1\n        \n      - name: Run Snyk\n        uses: snyk/actions/python@master\n        env:\n          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}\n  \n  dast:\n    runs-on: ubuntu-latest\n    steps:\n      - name: ZAP Scan\n        uses: zaproxy/action-baseline@v0.7.0\n        with:\n          target: \'https://staging.ejemplo.com\'')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># .github/workflows/security.yml
+name: Security Scan
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  sast:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Run Semgrep
+        uses: returntocorp/semgrep-action@v1
+        
+      - name: Run Snyk
+        uses: snyk/actions/python@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+  
+  dast:
+    runs-on: ubuntu-latest
+    steps:
+      - name: ZAP Scan
+        uses: zaproxy/action-baseline@v0.7.0
+        with:
+          target: 'https://staging.ejemplo.com'</code></pre>
+                        </div>
+
+                        <div class="alert alert-success mt-8">
+                            <p class="font-semibold mb-2">✅ Seguridad en CI/CD</p>
+                            <p>Integra SAST y DAST en tus pipelines desde el inicio. Falla el build si se encuentran vulnerabilidades críticas. Usa herramientas como Snyk, SonarQube o Semgrep para automatizar la detección.</p>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </main>
+    </div>
+    <footer class="bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-sm text-gray-600 dark:text-gray-400">Actualizado por mí en Enero 2026</p>
+                <a href="https://github.com/tu-usuario/cybersec-handbook" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">Editar en GitHub</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../../assets/js/search.js"></script>
+    <script src="../../assets/js/main.js"></script>
+    <style>[x-cloak] { display: none !important; }</style>
+</body>
+</html>
+

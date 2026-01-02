@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es" x-data="app" x-init="init()" :class="{ 'dark': darkMode }">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía de RHEL/CentOS - CyberSec Handbook</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <script>tailwind.config = { darkMode: 'class' }</script>
+</head>
+<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+    <header class="sticky top-0 z-30 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-4">
+                    <button @click="toggleSidebar()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 lg:hidden sidebar-toggle">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                    <a href="../../index.html" class="flex items-center gap-2">
+                        <h1 class="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">🛡️ CyberSec Handbook</h1>
+                    </a>
+                </div>
+                <button @click="toggleDarkMode()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                    <svg x-show="!darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                    </svg>
+                    <svg x-show="darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+    <div x-show="sidebarOpen" @click="closeSidebar()" class="sidebar-overlay" x-cloak></div>
+    <div class="flex relative">
+        <aside :class="sidebarOpen ? 'open' : ''" class="sidebar">
+            <nav class="p-4 space-y-2">
+                <a href="../../index.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🏠 Inicio</a>
+                <div class="mt-4">
+                    <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-2">Sistemas Operativos</h3>
+                    <a href="../linux/linux-essentials.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Linux Esencial</a>
+                    <a href="../ubuntu/ubuntu-guide.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Ubuntu</a>
+                    <a href="../fedora/fedora-guide.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Fedora</a>
+                    <a href="rhel-guide.html" class="nav-link block px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 font-medium">RHEL/CentOS</a>
+                </div>
+            </nav>
+        </aside>
+        <main class="flex-1 min-h-screen lg:ml-64">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <article>
+                    <header class="mb-8">
+                        <h1 class="text-4xl font-bold mb-4">Guía Completa de RHEL/CentOS</h1>
+                        <p class="text-xl text-gray-600 dark:text-gray-400 mb-4">Administración de sistemas empresariales Red Hat</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="badge badge-advanced">Nivel: Avanzado</span>
+                            <span class="badge">🔴 RHEL 8/9, CentOS Stream</span>
+                        </div>
+                    </header>
+                    <div id="table-of-contents" class="toc"></div>
+                    <div class="prose prose-lg dark:prose-invert max-w-none">
+                        <h2 id="instalacion">Instalación y Configuración</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('# Actualizar sistema\nsudo yum update -y  # RHEL 7/CentOS 7\nsudo dnf update -y  # RHEL 8+/CentOS Stream\n\n# Verificar versión\ncat /etc/redhat-release\n\n# Registrar RHEL (requiere suscripción)\nsudo subscription-manager register --username usuario --password contraseña\n\n# Ver suscripciones\nsudo subscription-manager list --available\n\n# Adjuntar suscripción\nsudo subscription-manager attach --pool=POOL_ID')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Actualizar sistema
+sudo yum update -y  # RHEL 7/CentOS 7
+sudo dnf update -y  # RHEL 8+/CentOS Stream
+
+# Verificar versión
+cat /etc/redhat-release
+
+# Registrar RHEL (requiere suscripción)
+sudo subscription-manager register --username usuario --password contraseña
+
+# Ver suscripciones
+sudo subscription-manager list --available
+
+# Adjuntar suscripción
+sudo subscription-manager attach --pool=POOL_ID</code></pre>
+                        </div>
+
+                        <h2 id="gestion-paquetes">Gestión de Paquetes</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('# YUM (RHEL 7/CentOS 7)\nsudo yum install nombre_paquete\nsudo yum update\nsudo yum remove nombre_paquete\nyum search nombre_paquete\n\n# DNF (RHEL 8+/CentOS Stream)\nsudo dnf install nombre_paquete\nsudo dnf update\nsudo dnf remove nombre_paquete\ndnf search nombre_paquete\n\n# Habilitar repositorios EPEL\nsudo yum install epel-release  # RHEL 7\nsudo dnf install epel-release  # RHEL 8+\n\n# Ver repositorios habilitados\nyum repolist  # RHEL 7\ndnf repolist  # RHEL 8+')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># YUM (RHEL 7/CentOS 7)
+sudo yum install nombre_paquete
+sudo yum update
+sudo yum remove nombre_paquete
+yum search nombre_paquete
+
+# DNF (RHEL 8+/CentOS Stream)
+sudo dnf install nombre_paquete
+sudo dnf update
+sudo dnf remove nombre_paquete
+dnf search nombre_paquete
+
+# Habilitar repositorios EPEL
+sudo yum install epel-release  # RHEL 7
+sudo dnf install epel-release  # RHEL 8+
+
+# Ver repositorios habilitados
+yum repolist  # RHEL 7
+dnf repolist  # RHEL 8+</code></pre>
+                        </div>
+
+                        <h2 id="selinux">SELinux</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('# Estado de SELinux\ngetenforce\nsestatus\n\n# Cambiar modo temporal\nsudo setenforce 0  # Permissive\nsudo setenforce 1  # Enforcing\n\n# Cambiar modo permanente\nsudo vi /etc/selinux/config\n# SELINUX=enforcing\n\n# Ver contexto de archivo\nls -Z /var/www/html\n\n# Cambiar contexto\nsudo chcon -t httpd_sys_content_t /var/www/html\n\n# Ver alertas\nsudo ausearch -m AVC -ts recent')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Estado de SELinux
+getenforce
+sestatus
+
+# Cambiar modo temporal
+sudo setenforce 0  # Permissive
+sudo setenforce 1  # Enforcing
+
+# Cambiar modo permanente
+sudo vi /etc/selinux/config
+# SELINUX=enforcing
+
+# Ver contexto de archivo
+ls -Z /var/www/html
+
+# Cambiar contexto
+sudo chcon -t httpd_sys_content_t /var/www/html
+
+# Ver alertas
+sudo ausearch -m AVC -ts recent</code></pre>
+                        </div>
+
+                        <h2 id="firewall">Firewall (firewalld)</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('# Estado del firewall\nsudo firewall-cmd --state\n\n# Ver zonas activas\nsudo firewall-cmd --get-active-zones\n\n# Permitir puerto\nsudo firewall-cmd --permanent --add-port=80/tcp\nsudo firewall-cmd --reload\n\n# Permitir servicio\nsudo firewall-cmd --permanent --add-service=http\nsudo firewall-cmd --reload\n\n# Listar reglas\nsudo firewall-cmd --list-all')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Estado del firewall
+sudo firewall-cmd --state
+
+# Ver zonas activas
+sudo firewall-cmd --get-active-zones
+
+# Permitir puerto
+sudo firewall-cmd --permanent --add-port=80/tcp
+sudo firewall-cmd --reload
+
+# Permitir servicio
+sudo firewall-cmd --permanent --add-service=http
+sudo firewall-cmd --reload
+
+# Listar reglas
+sudo firewall-cmd --list-all</code></pre>
+                        </div>
+
+                        <div class="alert alert-success mt-8">
+                            <p class="font-semibold mb-2">✅ RHEL/CentOS</p>
+                            <p>RHEL es la distribución empresarial de Red Hat. CentOS Stream es la versión community. Ambos usan SELinux por defecto y son ideales para entornos de producción que requieren estabilidad y soporte a largo plazo.</p>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </main>
+    </div>
+    <footer class="bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-sm text-gray-600 dark:text-gray-400">Actualizado por mí en Enero 2026</p>
+                <a href="https://github.com/tu-usuario/cybersec-handbook" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">Editar en GitHub</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../../assets/js/search.js"></script>
+    <script src="../../assets/js/main.js"></script>
+    <style>[x-cloak] { display: none !important; }</style>
+</body>
+</html>
+

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es" x-data="app" x-init="init()" :class="{ 'dark': darkMode }">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GCP Hardening - CyberSec Handbook</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <script>tailwind.config = { darkMode: 'class' }</script>
+</head>
+<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+    <header class="sticky top-0 z-30 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-4">
+                    <button @click="toggleSidebar()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 lg:hidden sidebar-toggle">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                    <a href="../../index.html" class="flex items-center gap-2">
+                        <h1 class="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">🛡️ CyberSec Handbook</h1>
+                    </a>
+                </div>
+                <button @click="toggleDarkMode()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                    <svg x-show="!darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                    </svg>
+                    <svg x-show="darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+    <div x-show="sidebarOpen" @click="closeSidebar()" class="sidebar-overlay" x-cloak></div>
+    <div class="flex relative">
+        <aside :class="sidebarOpen ? 'open' : ''" class="sidebar">
+            <nav class="p-4 space-y-2">
+                <a href="../../index.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🏠 Inicio</a>
+                <div class="mt-4">
+                    <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-2">Cloud Hardening</h3>
+                    <a href="aws-guide.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">AWS Hardening</a>
+                    <a href="azure-guide.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Azure Hardening</a>
+                    <a href="gcp-guide.html" class="nav-link block px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 font-medium">GCP Hardening</a>
+                </div>
+            </nav>
+        </aside>
+        <main class="flex-1 min-h-screen lg:ml-64">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <article>
+                    <header class="mb-8">
+                        <h1 class="text-4xl font-bold mb-4">GCP Hardening</h1>
+                        <p class="text-xl text-gray-600 dark:text-gray-400 mb-4">Guía de seguridad y hardening para Google Cloud Platform</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="badge badge-intermediate">Nivel: Intermedio</span>
+                            <span class="badge">☁️ GCP</span>
+                        </div>
+                    </header>
+                    <div id="table-of-contents" class="toc"></div>
+                    <div class="prose prose-lg dark:prose-invert max-w-none">
+                        <h2 id="iam-gcp">IAM y Permisos</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('# Listar roles disponibles\ngcloud iam roles list\n\n# Crear custom role\ngcloud iam roles create myCustomRole --project=PROJECT_ID --title=\"Custom Role\" --description=\"Role personalizado\" --permissions=compute.instances.list,compute.instances.get\n\n# Asignar rol a usuario\ngcloud projects add-iam-policy-binding PROJECT_ID --member=\"user:usuario@dominio.com\" --role=\"roles/compute.instanceAdmin\"\n\n# Asignar rol a service account\ngcloud projects add-iam-policy-binding PROJECT_ID --member=\"serviceAccount:sa@project.iam.gserviceaccount.com\" --role=\"roles/storage.objectViewer\"\n\n# Listar políticas IAM del proyecto\ngcloud projects get-iam-policy PROJECT_ID\n\n# Listar service accounts\ngcloud iam service-accounts list')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Listar roles disponibles
+gcloud iam roles list
+
+# Crear custom role
+gcloud iam roles create myCustomRole --project=PROJECT_ID --title="Custom Role" --description="Role personalizado" --permissions=compute.instances.list,compute.instances.get
+
+# Asignar rol a usuario
+gcloud projects add-iam-policy-binding PROJECT_ID --member="user:usuario@dominio.com" --role="roles/compute.instanceAdmin"
+
+# Asignar rol a service account
+gcloud projects add-iam-policy-binding PROJECT_ID --member="serviceAccount:sa@project.iam.gserviceaccount.com" --role="roles/storage.objectViewer"
+
+# Listar políticas IAM del proyecto
+gcloud projects get-iam-policy PROJECT_ID
+
+# Listar service accounts
+gcloud iam service-accounts list</code></pre>
+                        </div>
+
+                        <h2 id="firewall-gcp">Firewall Rules</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('# Crear regla de firewall para permitir HTTP\ngcloud compute firewall-rules create allow-http --allow tcp:80 --source-ranges 0.0.0.0/0 --description \"Allow HTTP traffic\"\n\n# Crear regla para permitir SSH solo desde IP específica\ngcloud compute firewall-rules create allow-ssh-from-office --allow tcp:22 --source-ranges 203.0.113.0/24 --description \"Allow SSH from office\"\n\n# Crear regla de firewall con tags\ngcloud compute firewall-rules create allow-internal --allow tcp:8080 --source-tags web-server --target-tags app-server\n\n# Listar reglas de firewall\ngcloud compute firewall-rules list\n\n# Eliminar regla\ngcloud compute firewall-rules delete allow-http')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Crear regla de firewall para permitir HTTP
+gcloud compute firewall-rules create allow-http --allow tcp:80 --source-ranges 0.0.0.0/0 --description "Allow HTTP traffic"
+
+# Crear regla para permitir SSH solo desde IP específica
+gcloud compute firewall-rules create allow-ssh-from-office --allow tcp:22 --source-ranges 203.0.113.0/24 --description "Allow SSH from office"
+
+# Crear regla de firewall con tags
+gcloud compute firewall-rules create allow-internal --allow tcp:8080 --source-tags web-server --target-tags app-server
+
+# Listar reglas de firewall
+gcloud compute firewall-rules list
+
+# Eliminar regla
+gcloud compute firewall-rules delete allow-http</code></pre>
+                        </div>
+
+                        <h2 id="secret-manager">Secret Manager</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('# Crear secreto\necho -n \"ContraseñaSegura123\" | gcloud secrets create db-password --data-file=-\n\n# Crear secreto desde archivo\ngcloud secrets create api-key --data-file=api-key.txt\n\n# Obtener secreto\ngcloud secrets versions access latest --secret=\"db-password\"\n\n# Listar secretos\ngcloud secrets list\n\n# Otorgar acceso a secret\ngcloud secrets add-iam-policy-binding db-password --member=\"serviceAccount:sa@project.iam.gserviceaccount.com\" --role=\"roles/secretmanager.secretAccessor\"\n\n# Habilitar versión automática\ngcloud secrets add-version db-password --data-file=new-password.txt')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Crear secreto
+echo -n "ContraseñaSegura123" | gcloud secrets create db-password --data-file=-
+
+# Crear secreto desde archivo
+gcloud secrets create api-key --data-file=api-key.txt
+
+# Obtener secreto
+gcloud secrets versions access latest --secret="db-password"
+
+# Listar secretos
+gcloud secrets list
+
+# Otorgar acceso a secret
+gcloud secrets add-iam-policy-binding db-password --member="serviceAccount:sa@project.iam.gserviceaccount.com" --role="roles/secretmanager.secretAccessor"
+
+# Habilitar versión automática
+gcloud secrets add-version db-password --data-file=new-password.txt</code></pre>
+                        </div>
+
+                        <div class="alert alert-success mt-8">
+                            <p class="font-semibold mb-2">✅ GCP Hardening</p>
+                            <p>GCP Security Command Center proporciona visibilidad y recomendaciones de seguridad. Activa Security Health Analytics y revisa regularmente los findings. Usa Organization Policies para aplicar restricciones a nivel de organización.</p>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </main>
+    </div>
+    <footer class="bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-sm text-gray-600 dark:text-gray-400">Actualizado por mí en Enero 2026</p>
+                <a href="https://github.com/tu-usuario/cybersec-handbook" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">Editar en GitHub</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../../assets/js/search.js"></script>
+    <script src="../../assets/js/main.js"></script>
+    <style>[x-cloak] { display: none !important; }</style>
+</body>
+</html>

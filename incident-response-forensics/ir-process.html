@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es" x-data="app" x-init="init()" :class="{ 'dark': darkMode }">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proceso de Incident Response - CyberSec Handbook</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <script>tailwind.config = { darkMode: 'class' }</script>
+</head>
+<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+    <header class="sticky top-0 z-30 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-4">
+                    <button @click="toggleSidebar()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 lg:hidden sidebar-toggle">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                    <a href="../../index.html" class="flex items-center gap-2">
+                        <h1 class="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">🛡️ CyberSec Handbook</h1>
+                    </a>
+                </div>
+                <button @click="toggleDarkMode()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                    <svg x-show="!darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                    </svg>
+                    <svg x-show="darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+    <div x-show="sidebarOpen" @click="closeSidebar()" class="sidebar-overlay" x-cloak></div>
+    <div class="flex relative">
+        <aside :class="sidebarOpen ? 'open' : ''" class="sidebar">
+            <nav class="p-4 space-y-2">
+                <a href="../../index.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🏠 Inicio</a>
+                <div class="mt-4">
+                    <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-2">IR y Forensics</h3>
+                    <a href="ir-process.html" class="nav-link block px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 font-medium">Proceso IR</a>
+                    <a href="forensics-tools-guide.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Herramientas Forensics</a>
+                </div>
+            </nav>
+        </aside>
+        <main class="flex-1 min-h-screen lg:ml-64">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <article>
+                    <header class="mb-8">
+                        <h1 class="text-4xl font-bold mb-4">Proceso de Incident Response</h1>
+                        <p class="text-xl text-gray-600 dark:text-gray-400 mb-4">Playbook NIST y proceso estructurado</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="badge badge-advanced">Nivel: Avanzado</span>
+                            <span class="badge">🚨 Incident Response</span>
+                        </div>
+                    </header>
+                    <div id="table-of-contents" class="toc"></div>
+                    <div class="prose prose-lg dark:prose-invert max-w-none">
+                        <h2 id="nist-framework">Framework NIST (6 Fases)</h2>
+                        <div class="steps-container">
+                            <div class="step">
+                                <h3>1. Preparation</h3>
+                                <ul>
+                                    <li>Preparar herramientas y procesos</li>
+                                    <li>Entrenar al equipo</li>
+                                    <li>Establecer comunicación</li>
+                                    <li>Documentar procedimientos</li>
+                                </ul>
+                            </div>
+                            <div class="step">
+                                <h3>2. Detection & Analysis</h3>
+                                <ul>
+                                    <li>Detectar el incidente</li>
+                                    <li>Analizar alcance e impacto</li>
+                                    <li>Clasificar severidad</li>
+                                    <li>Documentar evidencia inicial</li>
+                                </ul>
+                            </div>
+                            <div class="step">
+                                <h3>3. Containment</h3>
+                                <ul>
+                                    <li>Contención a corto plazo</li>
+                                    <li>Contención a largo plazo</li>
+                                    <li>Preservar evidencia</li>
+                                </ul>
+                            </div>
+                            <div class="step">
+                                <h3>4. Eradication</h3>
+                                <ul>
+                                    <li>Eliminar amenaza</li>
+                                    <li>Remover accesos no autorizados</li>
+                                    <li>Parchear vulnerabilidades</li>
+                                </ul>
+                            </div>
+                            <div class="step">
+                                <h3>5. Recovery</h3>
+                                <ul>
+                                    <li>Restaurar sistemas</li>
+                                    <li>Validar funcionamiento</li>
+                                    <li>Monitorear actividad</li>
+                                </ul>
+                            </div>
+                            <div class="step">
+                                <h3>6. Post-Incident Activity</h3>
+                                <ul>
+                                    <li>Lessons learned</li>
+                                    <li>Actualizar procesos</li>
+                                    <li>Mejorar detección</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <h2 id="checklist-ir">Checklist de Incident Response</h2>
+                        <div class="checklist-container bg-gray-50 dark:bg-gray-800 rounded-lg p-4 mb-6" data-checklist-id="ir-process">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="font-semibold">Proceso IR</h3>
+                                <div class="flex gap-2">
+                                    <button onclick="resetChecklist(this.closest('.checklist-container'))" class="text-sm px-3 py-1 bg-gray-200 dark:bg-gray-700 rounded hover:bg-gray-300 dark:hover:bg-gray-600">Resetear</button>
+                                    <button onclick="exportChecklist(this.closest('.checklist-container'))" class="text-sm px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700">Exportar</button>
+                                </div>
+                            </div>
+                            <div class="progress-bar mb-4">
+                                <div class="progress-fill" style="width: 0%"></div>
+                            </div>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-4 progress-text">0/12 completado (0%)</p>
+                            <div class="space-y-2">
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))">
+                                    <span>Incidente detectado y reportado</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))">
+                                    <span>Análisis inicial completado</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))">
+                                    <span>Severidad clasificada</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))">
+                                    <span>Evidencia preservada</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))">
+                                    <span>Contención aplicada</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))">
+                                    <span>Amenaza erradicada</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))">
+                                    <span>Sistemas restaurados</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))">
+                                    <span>Monitoreo post-recovery activo</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))">
+                                    <span>Reporte de incidente documentado</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))">
+                                    <span>Lessons learned realizados</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))">
+                                    <span>Procesos actualizados</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))">
+                                    <span>Comunicación con stakeholders completada</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <h2 id="comandos-rapidos">Comandos Rápidos de IR</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('# Linux - Proceso sospechoso\nps aux | grep -i suspicious\nnetstat -tulpn | grep ESTABLISHED\nlsof -i -P -n\n\n# Windows - Proceso sospechoso\nGet-Process | Where-Object {$_.CPU -gt 100}\nGet-NetTCPConnection | Where-Object {$_.State -eq \"Established\"}\n\n# Capturar memoria (Linux)\nsudo dd if=/dev/mem of=/tmp/memory.dump bs=1M\n\n# Capturar memoria (Windows)\n# Usar DumpIt.exe o WinPmem\n\n# Verificar integridad de archivos\nfind /usr/bin -type f -exec md5sum {} \\; > /tmp/baseline.md5\nmd5sum -c /tmp/baseline.md5\n\n# Verificar conexiones de red\nss -tulpn\nnetstat -an | grep ESTABLISHED')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Linux - Proceso sospechoso
+ps aux | grep -i suspicious
+netstat -tulpn | grep ESTABLISHED
+lsof -i -P -n
+
+# Windows - Proceso sospechoso
+Get-Process | Where-Object {$_.CPU -gt 100}
+Get-NetTCPConnection | Where-Object {$_.State -eq "Established"}
+
+# Capturar memoria (Linux)
+sudo dd if=/dev/mem of=/tmp/memory.dump bs=1M
+
+# Capturar memoria (Windows)
+# Usar DumpIt.exe o WinPmem
+
+# Verificar integridad de archivos
+find /usr/bin -type f -exec md5sum {} \; > /tmp/baseline.md5
+md5sum -c /tmp/baseline.md5
+
+# Verificar conexiones de red
+ss -tulpn
+netstat -an | grep ESTABLISHED</code></pre>
+                        </div>
+
+                        <div class="alert alert-success mt-8">
+                            <p class="font-semibold mb-2">✅ Incident Response</p>
+                            <p>El tiempo es crítico en IR. Ten playbooks preparados y practica regularmente con ejercicios de tabletop. Documenta todo para facilitar el análisis post-incidente y cumplir con requisitos legales si es necesario.</p>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </main>
+    </div>
+    <footer class="bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-sm text-gray-600 dark:text-gray-400">Actualizado por mí en Enero 2026</p>
+                <a href="https://github.com/tu-usuario/cybersec-handbook" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">Editar en GitHub</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../../assets/js/search.js"></script>
+    <script src="../../assets/js/main.js"></script>
+    <style>[x-cloak] { display: none !important; }</style>
+</body>
+</html>
+

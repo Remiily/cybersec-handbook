@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="es" x-data="app" x-init="init()" :class="{ 'dark': darkMode }">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IaC Seguro - CyberSec Handbook</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <script>tailwind.config = { darkMode: 'class' }</script>
+</head>
+<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+    <header class="sticky top-0 z-30 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-4">
+                    <button @click="toggleSidebar()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 lg:hidden sidebar-toggle">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                    <a href="../../index.html" class="flex items-center gap-2">
+                        <h1 class="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">🛡️ CyberSec Handbook</h1>
+                    </a>
+                </div>
+                <button @click="toggleDarkMode()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                    <svg x-show="!darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                    </svg>
+                    <svg x-show="darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+    <div x-show="sidebarOpen" @click="closeSidebar()" class="sidebar-overlay" x-cloak></div>
+    <div class="flex relative">
+        <aside :class="sidebarOpen ? 'open' : ''" class="sidebar">
+            <nav class="p-4 space-y-2">
+                <a href="../../index.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🏠 Inicio</a>
+                <div class="mt-4">
+                    <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-2">Cloud/DevSecOps</h3>
+                    <a href="iac-secure-guide.html" class="nav-link block px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 font-medium">IaC Seguro</a>
+                    <a href="pipeline-security.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Seguridad en CI/CD</a>
+                    <a href="sbom-management.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Gestión SBOM</a>
+                </div>
+            </nav>
+        </aside>
+        <main class="flex-1 min-h-screen lg:ml-64">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <article>
+                    <header class="mb-8">
+                        <h1 class="text-4xl font-bold mb-4">Infrastructure as Code Seguro</h1>
+                        <p class="text-xl text-gray-600 dark:text-gray-400 mb-4">Terraform, CloudFormation y mejores prácticas</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="badge badge-advanced">Nivel: Avanzado</span>
+                            <span class="badge">☁️ IaC</span>
+                        </div>
+                    </header>
+                    <div id="table-of-contents" class="toc"></div>
+                    <div class="prose prose-lg dark:prose-invert max-w-none">
+                        <h2 id="checklist-iac">Checklist de IaC Seguro</h2>
+                        <div class="checklist-container bg-gray-50 dark:bg-gray-800 rounded-lg p-4 mb-6" data-checklist-id="iac-secure">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="font-semibold">IaC Seguro</h3>
+                                <div class="flex gap-2">
+                                    <button onclick="resetChecklist(this.closest('.checklist-container'))" class="text-sm px-3 py-1 bg-gray-200 dark:bg-gray-700 rounded hover:bg-gray-300 dark:hover:bg-gray-600">Resetear</button>
+                                    <button onclick="exportChecklist(this.closest('.checklist-container'))" class="text-sm px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700">Exportar</button>
+                                </div>
+                            </div>
+                            <div class="progress-bar mb-4">
+                                <div class="progress-fill" style="width: 0%"></div>
+                            </div>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-4 progress-text">0/10 completado (0%)</p>
+                            <div class="space-y-2">
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))">
+                                    <span>Secrets en variables de entorno o secret managers</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))">
+                                    <span>Estado de Terraform en backend seguro</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))">
+                                    <span>Scanning con Checkov/tfsec antes de aplicar</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))">
+                                    <span>Principio de menor privilegio en IAM</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))">
+                                    <span>Encriptación habilitada por defecto</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))">
+                                    <span>Network segmentation configurada</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))">
+                                    <span>Logging y monitoreo habilitado</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))">
+                                    <span>Versionado de código IaC</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))">
+                                    <span>Code review de cambios IaC</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))">
+                                    <span>Testing de IaC (Terratest, etc.)</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <h2 id="terraform-seguro">Terraform Seguro</h2>
+                        <h3>Ejemplo de Configuración Segura</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('# main.tf - Ejemplo seguro\nprovider \"aws\" {\n  region = var.aws_region\n}\n\n# S3 bucket con encriptación\nresource \"aws_s3_bucket\" \"secure_bucket\" {\n  bucket = var.bucket_name\n\n  server_side_encryption_configuration {\n    rule {\n      apply_server_side_encryption_by_default {\n        sse_algorithm = \"AES256\"\n      }\n    }\n  }\n\n  versioning {\n    enabled = true\n  }\n\n  public_access_block_configuration {\n    block_public_acls       = true\n    block_public_policy     = true\n    ignore_public_acls      = true\n    restrict_public_buckets = true\n  }\n}\n\n# EC2 con security group restrictivo\nresource \"aws_security_group\" \"web_sg\" {\n  name = \"web-sg\"\n\n  ingress {\n    from_port   = 80\n    to_port     = 80\n    protocol    = \"tcp\"\n    cidr_blocks = [\"0.0.0.0/0\"]\n  }\n\n  ingress {\n    from_port   = 443\n    to_port     = 443\n    protocol    = \"tcp\"\n    cidr_blocks = [\"0.0.0.0/0\"]\n  }\n\n  egress {\n    from_port   = 0\n    to_port     = 0\n    protocol    = \"-1\"\n    cidr_blocks = [\"0.0.0.0/0\"]\n  }\n}')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># main.tf - Ejemplo seguro
+provider "aws" {
+  region = var.aws_region
+}
+
+# S3 bucket con encriptación
+resource "aws_s3_bucket" "secure_bucket" {
+  bucket = var.bucket_name
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
+
+  versioning {
+    enabled = true
+  }
+
+  public_access_block_configuration {
+    block_public_acls       = true
+    block_public_policy     = true
+    ignore_public_acls      = true
+    restrict_public_buckets = true
+  }
+}
+
+# EC2 con security group restrictivo
+resource "aws_security_group" "web_sg" {
+  name = "web-sg"
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}</code></pre>
+                        </div>
+
+                        <h2 id="checkov">Checkov - Scanning de Terraform</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('# Instalar Checkov\npip install checkov\n\n# Scan de directorio Terraform\ncheckov -d .\n\n# Scan con output JSON\ncheckov -d . --output json --output-file results.json\n\n# Scan solo políticas específicas\ncheckov -d . --check CKV_AWS_20,CKV_AWS_21\n\n# Scan con framework específico\ncheckov -d . --framework terraform\n\n# Ver políticas disponibles\ncheckov --list\n\n# Scan con configuración personalizada\ncheckov -d . --config-file .checkov.yml')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Instalar Checkov
+pip install checkov
+
+# Scan de directorio Terraform
+checkov -d .
+
+# Scan con output JSON
+checkov -d . --output json --output-file results.json
+
+# Scan solo políticas específicas
+checkov -d . --check CKV_AWS_20,CKV_AWS_21
+
+# Scan con framework específico
+checkov -d . --framework terraform
+
+# Ver políticas disponibles
+checkov --list
+
+# Scan con configuración personalizada
+checkov -d . --config-file .checkov.yml</code></pre>
+                        </div>
+
+                        <h2 id="tfsec">tfsec - Scanner de Terraform</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('# Instalar tfsec\n# macOS\nbrew install tfsec\n\n# Linux\nwget https://github.com/aquasecurity/tfsec/releases/download/v1.28.1/tfsec-linux-amd64\nsudo mv tfsec-linux-amd64 /usr/local/bin/tfsec\nsudo chmod +x /usr/local/bin/tfsec\n\n# Scan de directorio\ntfsec .\n\n# Scan con output JSON\ntfsec --format json --out results.json .\n\n# Scan con mínimo de severidad\ntfsec --minimum-severity HIGH .\n\n# Excluir checks específicos\ntfsec --exclude AWS002,AWS003 .')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Instalar tfsec
+# macOS
+brew install tfsec
+
+# Linux
+wget https://github.com/aquasecurity/tfsec/releases/download/v1.28.1/tfsec-linux-amd64
+sudo mv tfsec-linux-amd64 /usr/local/bin/tfsec
+sudo chmod +x /usr/local/bin/tfsec
+
+# Scan de directorio
+tfsec .
+
+# Scan con output JSON
+tfsec --format json --out results.json .
+
+# Scan con mínimo de severidad
+tfsec --minimum-severity HIGH .
+
+# Excluir checks específicos
+tfsec --exclude AWS002,AWS003 .</code></pre>
+                        </div>
+
+                        <div class="alert alert-success mt-8">
+                            <p class="font-semibold mb-2">✅ IaC Seguro</p>
+                            <p>El código de infraestructura debe tratarse con el mismo nivel de seguridad que el código de aplicación. Siempre escanea antes de aplicar cambios y usa secret managers para credenciales.</p>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </main>
+    </div>
+    <footer class="bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-sm text-gray-600 dark:text-gray-400">Actualizado por mí en Enero 2026</p>
+                <a href="https://github.com/tu-usuario/cybersec-handbook" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">Editar en GitHub</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../../assets/js/search.js"></script>
+    <script src="../../assets/js/main.js"></script>
+    <style>[x-cloak] { display: none !important; }</style>
+</body>
+</html>
+

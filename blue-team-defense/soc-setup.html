@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="es" x-data="app" x-init="init()" :class="{ 'dark': darkMode }">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setup de SOC - CyberSec Handbook</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <script>tailwind.config = { darkMode: 'class' }</script>
+</head>
+<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+    <header class="sticky top-0 z-30 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-4">
+                    <button @click="toggleSidebar()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 lg:hidden sidebar-toggle">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                    <a href="../../index.html" class="flex items-center gap-2">
+                        <h1 class="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">🛡️ CyberSec Handbook</h1>
+                    </a>
+                </div>
+                <button @click="toggleDarkMode()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                    <svg x-show="!darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                    </svg>
+                    <svg x-show="darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+    <div x-show="sidebarOpen" @click="closeSidebar()" class="sidebar-overlay" x-cloak></div>
+    <div class="flex relative">
+        <aside :class="sidebarOpen ? 'open' : ''" class="sidebar">
+            <nav class="p-4 space-y-2">
+                <a href="../../index.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🏠 Inicio</a>
+                <div class="mt-4">
+                    <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-2">Blue Team</h3>
+                    <a href="soc-setup.html" class="nav-link block px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 font-medium">Setup de SOC</a>
+                    <a href="hunting-guide.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Threat Hunting</a>
+                    <a href="detection-rules.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Reglas de Detección</a>
+                </div>
+            </nav>
+        </aside>
+        <main class="flex-1 min-h-screen lg:ml-64">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <article>
+                    <header class="mb-8">
+                        <h1 class="text-4xl font-bold mb-4">Setup de SOC (Security Operations Center)</h1>
+                        <p class="text-xl text-gray-600 dark:text-gray-400 mb-4">Configuración de un centro de operaciones de seguridad</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="badge badge-advanced">Nivel: Avanzado</span>
+                            <span class="badge">🔵 Blue Team</span>
+                        </div>
+                    </header>
+                    <div id="table-of-contents" class="toc"></div>
+                    <div class="prose prose-lg dark:prose-invert max-w-none">
+                        <h2 id="checklist-soc">Checklist de Setup SOC</h2>
+                        <div class="checklist-container bg-gray-50 dark:bg-gray-800 rounded-lg p-4 mb-6" data-checklist-id="soc-setup">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="font-semibold">Setup SOC</h3>
+                                <div class="flex gap-2">
+                                    <button onclick="resetChecklist(this.closest('.checklist-container'))" class="text-sm px-3 py-1 bg-gray-200 dark:bg-gray-700 rounded hover:bg-gray-300 dark:hover:bg-gray-600">Resetear</button>
+                                    <button onclick="exportChecklist(this.closest('.checklist-container'))" class="text-sm px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700">Exportar</button>
+                                </div>
+                            </div>
+                            <div class="progress-bar mb-4">
+                                <div class="progress-fill" style="width: 0%"></div>
+                            </div>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-4 progress-text">0/12 completado (0%)</p>
+                            <div class="space-y-2">
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))">
+                                    <span>SIEM configurado y funcionando</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))">
+                                    <span>EDR/XDR desplegado en endpoints</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))">
+                                    <span>Logs centralizados (syslog, Windows Event Logs)</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))">
+                                    <span>Reglas de detección configuradas</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))">
+                                    <span>Playbooks de respuesta a incidentes</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))">
+                                    <span>Threat Intelligence integrado</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))">
+                                    <span>Dashboards y métricas configurados</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))">
+                                    <span>Escalación y comunicación definida</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))">
+                                    <span>Retención de logs configurada</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))">
+                                    <span>Backup y disaster recovery</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))">
+                                    <span>Training del equipo SOC</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))">
+                                    <span>Runbooks documentados</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <h2 id="siem-setup">Setup de SIEM</h2>
+                        <h3>ELK Stack (Elasticsearch, Logstash, Kibana)</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('# Instalar ELK Stack\n# Elasticsearch\nwget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-8.11.0-amd64.deb\nsudo dpkg -i elasticsearch-8.11.0-amd64.deb\n\n# Logstash\nwget https://artifacts.elastic.co/downloads/logstash/logstash-8.11.0-amd64.deb\nsudo dpkg -i logstash-8.11.0-amd64.deb\n\n# Kibana\nwget https://artifacts.elastic.co/downloads/kibana/kibana-8.11.0-amd64.deb\nsudo dpkg -i kibana-8.11.0-amd64.deb\n\n# Configurar Elasticsearch\nsudo systemctl start elasticsearch\nsudo systemctl enable elasticsearch\n\n# Configurar Logstash\n# /etc/logstash/conf.d/syslog.conf\ninput {\n  syslog {\n    port => 514\n    type => \"syslog\"\n  }\n}\n\noutput {\n  elasticsearch {\n    hosts => [\"localhost:9200\"]\n  }\n}\n\n# Iniciar servicios\nsudo systemctl start logstash\nsudo systemctl start kibana')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Instalar ELK Stack
+# Elasticsearch
+wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-8.11.0-amd64.deb
+sudo dpkg -i elasticsearch-8.11.0-amd64.deb
+
+# Logstash
+wget https://artifacts.elastic.co/downloads/logstash/logstash-8.11.0-amd64.deb
+sudo dpkg -i logstash-8.11.0-amd64.deb
+
+# Kibana
+wget https://artifacts.elastic.co/downloads/kibana/kibana-8.11.0-amd64.deb
+sudo dpkg -i kibana-8.11.0-amd64.deb
+
+# Configurar Elasticsearch
+sudo systemctl start elasticsearch
+sudo systemctl enable elasticsearch
+
+# Configurar Logstash
+# /etc/logstash/conf.d/syslog.conf
+input {
+  syslog {
+    port => 514
+    type => "syslog"
+  }
+}
+
+output {
+  elasticsearch {
+    hosts => ["localhost:9200"]
+  }
+}
+
+# Iniciar servicios
+sudo systemctl start logstash
+sudo systemctl start kibana</code></pre>
+                        </div>
+
+                        <h3>Splunk</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('# Instalar Splunk\n# Descargar de splunk.com\n# wget -O splunk-9.x.x-linux-x86_64.tgz https://download.splunk.com/products/splunk/releases/...\n# tar -xzf splunk-9.x.x-linux-x86_64.tgz\n# cd splunk/bin\n# ./splunk start --accept-license\n\n# Configurar inputs (inputs.conf)\n# [monitor:///var/log]\n# disabled = false\n# sourcetype = linux_syslog\n\n# Búsquedas comunes en Splunk\n# Buscar eventos de login fallidos\nindex=main \"failed password\" | stats count by host\n\n# Buscar actividad sospechosa\nindex=main \"suspicious\" OR \"malware\" | head 100\n\n# Buscar por IP\nindex=main src_ip=192.168.1.100')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Instalar Splunk
+# Descargar de splunk.com
+# wget -O splunk-9.x.x-linux-x86_64.tgz https://download.splunk.com/products/splunk/releases/...
+# tar -xzf splunk-9.x.x-linux-x86_64.tgz
+# cd splunk/bin
+# ./splunk start --accept-license
+
+# Configurar inputs (inputs.conf)
+# [monitor:///var/log]
+# disabled = false
+# sourcetype = linux_syslog
+
+# Búsquedas comunes en Splunk
+# Buscar eventos de login fallidos
+index=main "failed password" | stats count by host
+
+# Buscar actividad sospechosa
+index=main "suspicious" OR "malware" | head 100
+
+# Buscar por IP
+index=main src_ip=192.168.1.100</code></pre>
+                        </div>
+
+                        <h2 id="edr-setup">Setup de EDR/XDR</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('# Herramientas EDR populares:\n# - CrowdStrike Falcon\n# - SentinelOne\n# - Microsoft Defender for Endpoint\n# - Carbon Black\n# - Cortex XDR\n\n# Configuración básica:\n# 1. Instalar agente en endpoints\n# 2. Configurar políticas de detección\n# 3. Integrar con SIEM\n# 4. Configurar alertas\n\n# Ejemplo: Microsoft Defender for Endpoint\n# PowerShell - Instalar agente\n# Set-MpPreference -DisableRealtimeMonitoring $false\n# Update-MpSignature\n\n# Verificar estado\nGet-MpComputerStatus')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Herramientas EDR populares:
+# - CrowdStrike Falcon
+# - SentinelOne
+# - Microsoft Defender for Endpoint
+# - Carbon Black
+# - Cortex XDR
+
+# Configuración básica:
+# 1. Instalar agente en endpoints
+# 2. Configurar políticas de detección
+# 3. Integrar con SIEM
+# 4. Configurar alertas
+
+# Ejemplo: Microsoft Defender for Endpoint
+# PowerShell - Instalar agente
+# Set-MpPreference -DisableRealtimeMonitoring $false
+# Update-MpSignature
+
+# Verificar estado
+Get-MpComputerStatus</code></pre>
+                        </div>
+
+                        <h2 id="reglas-deteccion">Reglas de Detección Básicas</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('# Ejemplo: Regla para detectar múltiples logins fallidos\n# Splunk SPL\nindex=main \"failed password\" | stats count by host, user | where count > 5\n\n# ELK/Kibana Query\n{\n  \"query\": {\n    \"bool\": {\n      \"must\": [\n        { \"match\": { \"message\": \"failed password\" } }\n      ]\n    }\n  },\n  \"aggs\": {\n    \"failed_logins\": {\n      \"terms\": {\n        \"field\": \"host.keyword\",\n        \"size\": 10\n      }\n    }\n  }\n}\n\n# Sigma Rule (formato estándar)\n# title: Multiple Failed Logins\n# description: Detecta múltiples intentos de login fallidos\n# logsource:\n#   product: linux\n#   service: sshd\n# detection:\n#   selection:\n#     message: \"Failed password\"\n#   condition: selection | count(user) > 5')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Ejemplo: Regla para detectar múltiples logins fallidos
+# Splunk SPL
+index=main "failed password" | stats count by host, user | where count > 5
+
+# ELK/Kibana Query
+{
+  "query": {
+    "bool": {
+      "must": [
+        { "match": { "message": "failed password" } }
+      ]
+    }
+  },
+  "aggs": {
+    "failed_logins": {
+      "terms": {
+        "field": "host.keyword",
+        "size": 10
+      }
+    }
+  }
+}
+
+# Sigma Rule (formato estándar)
+# title: Multiple Failed Logins
+# description: Detecta múltiples intentos de login fallidos
+# logsource:
+#   product: linux
+#   service: sshd
+# detection:
+#   selection:
+#     message: "Failed password"
+#   condition: selection | count(user) > 5</code></pre>
+                        </div>
+
+                        <div class="alert alert-success mt-8">
+                            <p class="font-semibold mb-2">✅ SOC Setup Completado</p>
+                            <p>Un SOC efectivo requiere herramientas, procesos y personas. Asegúrate de tener runbooks claros, escalación definida y métricas para medir la efectividad del SOC.</p>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </main>
+    </div>
+    <footer class="bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-sm text-gray-600 dark:text-gray-400">Actualizado por mí en Enero 2026</p>
+                <a href="https://github.com/tu-usuario/cybersec-handbook" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">Editar en GitHub</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../../assets/js/search.js"></script>
+    <script src="../../assets/js/main.js"></script>
+    <style>[x-cloak] { display: none !important; }</style>
+</body>
+</html>
+

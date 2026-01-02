@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es" x-data="app" x-init="init()" :class="{ 'dark': darkMode }">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azure Hardening - CyberSec Handbook</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <script>tailwind.config = { darkMode: 'class' }</script>
+</head>
+<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+    <header class="sticky top-0 z-30 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-4">
+                    <button @click="toggleSidebar()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 lg:hidden sidebar-toggle">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                    <a href="../../index.html" class="flex items-center gap-2">
+                        <h1 class="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">🛡️ CyberSec Handbook</h1>
+                    </a>
+                </div>
+                <button @click="toggleDarkMode()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                    <svg x-show="!darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                    </svg>
+                    <svg x-show="darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+    <div x-show="sidebarOpen" @click="closeSidebar()" class="sidebar-overlay" x-cloak></div>
+    <div class="flex relative">
+        <aside :class="sidebarOpen ? 'open' : ''" class="sidebar">
+            <nav class="p-4 space-y-2">
+                <a href="../../index.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🏠 Inicio</a>
+                <div class="mt-4">
+                    <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-2">Cloud Hardening</h3>
+                    <a href="aws-guide.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">AWS Hardening</a>
+                    <a href="azure-guide.html" class="nav-link block px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 font-medium">Azure Hardening</a>
+                    <a href="gcp-guide.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">GCP Hardening</a>
+                </div>
+            </nav>
+        </aside>
+        <main class="flex-1 min-h-screen lg:ml-64">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <article>
+                    <header class="mb-8">
+                        <h1 class="text-4xl font-bold mb-4">Azure Hardening</h1>
+                        <p class="text-xl text-gray-600 dark:text-gray-400 mb-4">Guía de seguridad y hardening para Microsoft Azure</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="badge badge-intermediate">Nivel: Intermedio</span>
+                            <span class="badge">☁️ Azure</span>
+                        </div>
+                    </header>
+                    <div id="table-of-contents" class="toc"></div>
+                    <div class="prose prose-lg dark:prose-invert max-w-none">
+                        <h2 id="iam-azure">IAM y RBAC</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('# Listar roles disponibles\naz role definition list --query \"[].{Name:name, RoleName:roleName}\" --output table\n\n# Asignar rol a usuario\naz role assignment create --assignee usuario@dominio.com --role \"Contributor\" --scope /subscriptions/SUBSCRIPTION_ID/resourceGroups/RG_NAME\n\n# Listar asignaciones de roles\naz role assignment list --assignee usuario@dominio.com --output table\n\n# Crear custom role (desde archivo JSON)\naz role definition create --role-definition custom-role.json\n\n# Habilitar MFA para usuario\naz ad user update --id usuario@dominio.com --force-change-password-next-login false')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Listar roles disponibles
+az role definition list --query "[].{Name:name, RoleName:roleName}" --output table
+
+# Asignar rol a usuario
+az role assignment create --assignee usuario@dominio.com --role "Contributor" --scope /subscriptions/SUBSCRIPTION_ID/resourceGroups/RG_NAME
+
+# Listar asignaciones de roles
+az role assignment list --assignee usuario@dominio.com --output table
+
+# Crear custom role (desde archivo JSON)
+az role definition create --role-definition custom-role.json
+
+# Habilitar MFA para usuario
+az ad user update --id usuario@dominio.com --force-change-password-next-login false</code></pre>
+                        </div>
+
+                        <h2 id="network-security">Network Security (NSG)</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('# Crear NSG\naz network nsg create --resource-group RG_NAME --name NSG_NAME --location eastus\n\n# Crear regla para permitir SSH\naz network nsg rule create --resource-group RG_NAME --nsg-name NSG_NAME --name AllowSSH --priority 100 --source-address-prefixes * --source-port-ranges * --destination-address-prefixes * --destination-port-ranges 22 --access Allow --protocol Tcp\n\n# Crear regla para permitir HTTP\naz network nsg rule create --resource-group RG_NAME --nsg-name NSG_NAME --name AllowHTTP --priority 200 --source-address-prefixes Internet --destination-port-ranges 80 --access Allow --protocol Tcp\n\n# Denegar todo lo demás (regla por defecto)\n# Las NSG tienen reglas de denegación por defecto\n\n# Listar reglas de NSG\naz network nsg rule list --resource-group RG_NAME --nsg-name NSG_NAME --output table')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Crear NSG
+az network nsg create --resource-group RG_NAME --name NSG_NAME --location eastus
+
+# Crear regla para permitir SSH
+az network nsg rule create --resource-group RG_NAME --nsg-name NSG_NAME --name AllowSSH --priority 100 --source-address-prefixes * --source-port-ranges * --destination-address-prefixes * --destination-port-ranges 22 --access Allow --protocol Tcp
+
+# Crear regla para permitir HTTP
+az network nsg rule create --resource-group RG_NAME --nsg-name NSG_NAME --name AllowHTTP --priority 200 --source-address-prefixes Internet --destination-port-ranges 80 --access Allow --protocol Tcp
+
+# Denegar todo lo demás (regla por defecto)
+# Las NSG tienen reglas de denegación por defecto
+
+# Listar reglas de NSG
+az network nsg rule list --resource-group RG_NAME --nsg-name NSG_NAME --output table</code></pre>
+                        </div>
+
+                        <h2 id="key-vault">Azure Key Vault</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('# Crear Key Vault\naz keyvault create --name KV_NAME --resource-group RG_NAME --location eastus --sku standard\n\n# Habilitar soft delete y purge protection\naz keyvault update --name KV_NAME --enable-soft-delete true --enable-purge-protection true\n\n# Crear secreto\naz keyvault secret set --vault-name KV_NAME --name \"db-password\" --value \"ContraseñaSegura123\"\n\n# Obtener secreto\naz keyvault secret show --vault-name KV_NAME --name \"db-password\" --query value -o tsv\n\n# Listar secretos\naz keyvault secret list --vault-name KV_NAME --output table\n\n# Establecer política de acceso\naz keyvault set-policy --name KV_NAME --upn usuario@dominio.com --secret-permissions get list')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Crear Key Vault
+az keyvault create --name KV_NAME --resource-group RG_NAME --location eastus --sku standard
+
+# Habilitar soft delete y purge protection
+az keyvault update --name KV_NAME --enable-soft-delete true --enable-purge-protection true
+
+# Crear secreto
+az keyvault secret set --vault-name KV_NAME --name "db-password" --value "ContraseñaSegura123"
+
+# Obtener secreto
+az keyvault secret show --vault-name KV_NAME --name "db-password" --query value -o tsv
+
+# Listar secretos
+az keyvault secret list --vault-name KV_NAME --output table
+
+# Establecer política de acceso
+az keyvault set-policy --name KV_NAME --upn usuario@dominio.com --secret-permissions get list</code></pre>
+                        </div>
+
+                        <h2 id="azure-policy">Azure Policy</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('# Listar políticas disponibles\naz policy definition list --query \"[?contains(displayName, \\'encryption\\')].{Name:name, DisplayName:displayName}\" --output table\n\n# Asignar política a resource group\naz policy assignment create --name \"EnforceHTTPS\" --policy \"/providers/Microsoft.Authorization/policyDefinitions/1f314fd2-4c83-4f2d-9ef8-12b0c0b0f4b6\" --scope /subscriptions/SUBSCRIPTION_ID/resourceGroups/RG_NAME\n\n# Listar políticas asignadas\naz policy assignment list --scope /subscriptions/SUBSCRIPTION_ID/resourceGroups/RG_NAME --output table\n\n# Crear initiative (policy set)\naz policy set-definition create --name \"SecurityBaseline\" --definitions security-baseline.json')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Listar políticas disponibles
+az policy definition list --query "[?contains(displayName, 'encryption')].{Name:name, DisplayName:displayName}" --output table
+
+# Asignar política a resource group
+az policy assignment create --name "EnforceHTTPS" --policy "/providers/Microsoft.Authorization/policyDefinitions/1f314fd2-4c83-4f2d-9ef8-12b0c0b0f4b6" --scope /subscriptions/SUBSCRIPTION_ID/resourceGroups/RG_NAME
+
+# Listar políticas asignadas
+az policy assignment list --scope /subscriptions/SUBSCRIPTION_ID/resourceGroups/RG_NAME --output table
+
+# Crear initiative (policy set)
+az policy set-definition create --name "SecurityBaseline" --definitions security-baseline.json</code></pre>
+                        </div>
+
+                        <div class="alert alert-success mt-8">
+                            <p class="font-semibold mb-2">✅ Azure Hardening</p>
+                            <p>Azure Security Center (ahora Microsoft Defender for Cloud) proporciona recomendaciones de seguridad automatizadas. Actívalo y revisa regularmente sus recomendaciones. Usa Azure Policy para aplicar estándares de seguridad de forma consistente.</p>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </main>
+    </div>
+    <footer class="bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-sm text-gray-600 dark:text-gray-400">Actualizado por mí en Enero 2026</p>
+                <a href="https://github.com/tu-usuario/cybersec-handbook" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">Editar en GitHub</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../../assets/js/search.js"></script>
+    <script src="../../assets/js/main.js"></script>
+    <style>[x-cloak] { display: none !important; }</style>
+</body>
+</html>
