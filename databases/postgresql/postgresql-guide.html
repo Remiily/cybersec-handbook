@@ -14,7 +14,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
                 <div class="flex items-center gap-4">
-                    <button @click="toggleSidebar()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 lg:hidden">
+                    <button @click="toggleSidebar()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 lg:hidden sidebar-toggle">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                         </svg>
@@ -34,8 +34,9 @@
             </div>
         </div>
     </header>
-    <div class="flex">
-        <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'" class="sidebar fixed lg:static">
+    <div x-show="sidebarOpen" @click="closeSidebar()" class="sidebar-overlay" x-cloak></div>
+    <div class="flex relative">
+        <aside :class="sidebarOpen ? 'open' : ''" class="sidebar">
             <nav class="p-4 space-y-2">
                 <a href="../../index.html" class="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🏠 Inicio</a>
                 <div class="mt-4">
@@ -45,7 +46,7 @@
                 </div>
             </nav>
         </aside>
-        <main class="flex-1 min-h-screen">
+        <main class="flex-1 min-h-screen lg:ml-64">
             <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <article>
                     <header class="mb-8">
@@ -73,6 +74,9 @@ sudo apt install postgresql postgresql-contrib -y
 sudo systemctl start postgresql
 sudo systemctl enable postgresql
 sudo -u postgres psql  # Acceder como usuario postgres</code></pre>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                                <strong>Nota:</strong> PostgreSQL crea un usuario 'postgres' por defecto. Cambia la contraseña con <code>ALTER USER postgres PASSWORD 'nueva_contraseña';</code>
+                            </p>
                         </div>
 
                         <h2 id="comandos-basicos">Comandos Básicos</h2>
@@ -98,6 +102,38 @@ DROP DATABASE nombre_base;</code></pre>
                             </p>
                         </div>
 
+                        <h2 id="queries-basicas">Queries Básicas</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('-- Crear tabla\nCREATE TABLE usuarios (\n    id SERIAL PRIMARY KEY,\n    nombre VARCHAR(100) NOT NULL,\n    email VARCHAR(255) UNIQUE NOT NULL,\n    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP\n);\n\n-- Insertar datos\nINSERT INTO usuarios (nombre, email) VALUES (\'Juan\', \'juan@ejemplo.com\');\n\n-- Consultar\nSELECT * FROM usuarios;\nSELECT nombre, email FROM usuarios WHERE id = 1;\n\n-- Actualizar\nUPDATE usuarios SET nombre = \'Juan García\' WHERE id = 1;\n\n-- Eliminar\nDELETE FROM usuarios WHERE id = 1;')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code>-- Crear tabla
+CREATE TABLE usuarios (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Insertar datos
+INSERT INTO usuarios (nombre, email) VALUES ('Juan', 'juan@ejemplo.com');
+
+-- Consultar
+SELECT * FROM usuarios;
+SELECT nombre, email FROM usuarios WHERE id = 1;
+
+-- Actualizar
+UPDATE usuarios SET nombre = 'Juan García' WHERE id = 1;
+
+-- Eliminar
+DELETE FROM usuarios WHERE id = 1;</code></pre>
+                        </div>
+
                         <h2 id="backup-restore">Backup y Restore</h2>
                         <div class="command-block mb-4" x-data="copyCommand">
                             <button @click="copy('pg_dump nombre_base > backup.sql\npg_dump -U usuario -h localhost nombre_base > backup.sql\npg_dump -Fc nombre_base > backup.dump\npsql nombre_base < backup.sql\npg_restore -d nombre_base backup.dump')" class="copy-btn" :class="{ 'copied': copied }">
@@ -113,11 +149,57 @@ pg_dump -U usuario -h localhost nombre_base > backup.sql
 pg_dump -Fc nombre_base > backup.dump  # Formato custom (más eficiente)
 psql nombre_base < backup.sql
 pg_restore -d nombre_base backup.dump</code></pre>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                                <strong>Formato custom:</strong> <code>-Fc</code> crea un archivo comprimido más eficiente. Usa <code>pg_restore</code> para restaurarlo.
+                            </p>
+                        </div>
+
+                        <h2 id="seguridad-postgresql">Seguridad en PostgreSQL</h2>
+                        <h3>Usuarios y Permisos</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('-- Crear usuario\nCREATE USER usuario WITH PASSWORD \'contraseña_segura\';\n\n-- Otorgar permisos\nGRANT SELECT, INSERT ON nombre_tabla TO usuario;\nGRANT ALL PRIVILEGES ON DATABASE nombre_base TO usuario;\n\n-- Ver permisos\n\\dp nombre_tabla\n\n-- Revocar permisos\nREVOKE SELECT ON nombre_tabla FROM usuario;')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code>-- Crear usuario
+CREATE USER usuario WITH PASSWORD 'contraseña_segura';
+
+-- Otorgar permisos
+GRANT SELECT, INSERT ON nombre_tabla TO usuario;
+GRANT ALL PRIVILEGES ON DATABASE nombre_base TO usuario;
+
+-- Ver permisos
+\dp nombre_tabla
+
+-- Revocar permisos
+REVOKE SELECT ON nombre_tabla FROM usuario;</code></pre>
+                        </div>
+
+                        <h2 id="cheatsheet-postgresql">Cheatsheet PostgreSQL</h2>
+                        <div class="overflow-x-auto">
+                            <table>
+                                <thead>
+                                    <tr><th>Comando</th><th>Uso</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td><code>\l</code></td><td>Listar bases de datos</td></tr>
+                                    <tr><td><code>\c nombre_base</code></td><td>Conectar a base</td></tr>
+                                    <tr><td><code>\dt</code></td><td>Listar tablas</td></tr>
+                                    <tr><td><code>\d tabla</code></td><td>Estructura de tabla</td></tr>
+                                    <tr><td><code>\du</code></td><td>Listar usuarios</td></tr>
+                                    <tr><td><code>pg_dump base > backup.sql</code></td><td>Backup</td></tr>
+                                    <tr><td><code>psql base < backup.sql</code></td><td>Restore</td></tr>
+                                </tbody>
+                            </table>
                         </div>
 
                         <div class="alert alert-success mt-8">
                             <p class="font-semibold mb-2">✅ PostgreSQL</p>
-                            <p>PostgreSQL es más avanzado que MySQL en características. Similar sintaxis SQL pero con comandos meta propios usando <code>\</code>.</p>
+                            <p>PostgreSQL es más avanzado que MySQL en características (JSON, arrays, full-text search). Similar sintaxis SQL pero con comandos meta propios usando <code>\</code>. Ideal para aplicaciones complejas.</p>
                         </div>
                     </div>
                 </article>

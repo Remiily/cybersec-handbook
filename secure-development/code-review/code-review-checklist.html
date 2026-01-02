@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es" x-data="app" x-init="init()" :class="{ 'dark': darkMode }">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checklist Code Review - CyberSec Handbook</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <script>tailwind.config = { darkMode: 'class' }</script>
+</head>
+<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+    <header class="sticky top-0 z-30 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-4">
+                    <button @click="toggleSidebar()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 lg:hidden sidebar-toggle">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                    <a href="../../index.html" class="flex items-center gap-2">
+                        <h1 class="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">🛡️ CyberSec Handbook</h1>
+                    </a>
+                </div>
+                <button @click="toggleDarkMode()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                    <svg x-show="!darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                    </svg>
+                    <svg x-show="darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+    <div x-show="sidebarOpen" @click="closeSidebar()" class="sidebar-overlay" x-cloak></div>
+    <div class="flex relative">
+        <aside :class="sidebarOpen ? 'open' : ''" class="sidebar">
+            <nav class="p-4 space-y-2">
+                <a href="../../index.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🏠 Inicio</a>
+                <div class="mt-4">
+                    <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-2">Desarrollo Seguro</h3>
+                    <a href="../owasp/owasp-top-10-guide.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">OWASP Top 10</a>
+                    <a href="../secure-coding-practices/secure-coding-guide.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Prácticas de Código Seguro</a>
+                    <a href="code-review-checklist.html" class="nav-link block px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 font-medium">Checklist Code Review</a>
+                </div>
+            </nav>
+        </aside>
+        <main class="flex-1 min-h-screen lg:ml-64">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <article>
+                    <header class="mb-8">
+                        <h1 class="text-4xl font-bold mb-4">Checklist de Code Review de Seguridad</h1>
+                        <p class="text-xl text-gray-600 dark:text-gray-400 mb-4">Guía sistemática para revisar código desde perspectiva de seguridad</p>
+                    </header>
+                    <div id="table-of-contents" class="toc"></div>
+                    <div class="prose prose-lg dark:prose-invert max-w-none">
+                        <h2 id="proceso-revision">Proceso de Revisión</h2>
+                        <div class="steps-container">
+                            <div class="step">
+                                <h3>1. Revisión Inicial</h3>
+                                <ul>
+                                    <li>Entender el propósito del cambio</li>
+                                    <li>Identificar componentes afectados</li>
+                                    <li>Revisar tests y cobertura</li>
+                                </ul>
+                            </div>
+                            <div class="step">
+                                <h3>2. Análisis de Seguridad</h3>
+                                <ul>
+                                    <li>Buscar patrones de vulnerabilidades comunes</li>
+                                    <li>Verificar manejo de input/output</li>
+                                    <li>Revisar autenticación y autorización</li>
+                                </ul>
+                            </div>
+                            <div class="step">
+                                <h3>3. Verificación Final</h3>
+                                <ul>
+                                    <li>Confirmar que se siguen las prácticas seguras</li>
+                                    <li>Documentar hallazgos</li>
+                                    <li>Aprobar o solicitar cambios</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <h2 id="checklist-completo">Checklist Completo de Code Review</h2>
+                        <div class="checklist-container bg-gray-50 dark:bg-gray-800 rounded-lg p-4 mb-6" data-checklist-id="code-review-security">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="font-semibold">Revisión de Seguridad</h3>
+                                <div class="flex gap-2">
+                                    <button onclick="resetChecklist(this.closest('.checklist-container'))" class="text-sm px-3 py-1 bg-gray-200 dark:bg-gray-700 rounded hover:bg-gray-300 dark:hover:bg-gray-600">Resetear</button>
+                                    <button onclick="exportChecklist(this.closest('.checklist-container'))" class="text-sm px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700">Exportar</button>
+                                </div>
+                            </div>
+                            <div class="progress-bar mb-4">
+                                <div class="progress-fill" style="width: 0%"></div>
+                            </div>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-4 progress-text">0/20 completado (0%)</p>
+                            <div class="space-y-2">
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))">
+                                    <span>Input validado y sanitizado</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))">
+                                    <span>No hay uso de eval(), exec(), o similar</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))">
+                                    <span>Prepared statements para queries SQL</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))">
+                                    <span>Output encoding apropiado</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))">
+                                    <span>Autenticación verificada en endpoints protegidos</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))">
+                                    <span>Autorización verificada (permisos correctos)</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))">
+                                    <span>No hay secrets hardcodeados</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))">
+                                    <span>Manejo de errores seguro (sin info sensible)</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))">
+                                    <span>Logging apropiado (sin datos sensibles)</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))">
+                                    <span>Contraseñas hasheadas (no en texto plano)</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))">
+                                    <span>Protección CSRF (tokens)</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))">
+                                    <span>Rate limiting donde sea apropiado</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))">
+                                    <span>Validación de tipos y rangos</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))">
+                                    <span>No hay paths relativos peligrosos (path traversal)</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))">
+                                    <span>Dependencias actualizadas (sin vulnerabilidades)</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))">
+                                    <span>Configuración segura (HTTPS, headers de seguridad)</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))">
+                                    <span>Principio de menor privilegio aplicado</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))">
+                                    <span>Tests de seguridad incluidos</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))">
+                                    <span>Documentación de seguridad actualizada</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox" onchange="handleChecklistChange(event, this.closest('.checklist-container'))">
+                                    <span>Revisión de permisos de archivos</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <h2 id="patrones-riesgo">Patrones de Alto Riesgo a Buscar</h2>
+                        <div class="overflow-x-auto">
+                            <table>
+                                <thead>
+                                    <tr><th>Patrón</th><th>Riesgo</th><th>Ejemplo</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><code>eval()</code>, <code>exec()</code></td>
+                                        <td>Code injection</td>
+                                        <td><code>eval(userInput)</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td>String concatenation en SQL</td>
+                                        <td>SQL Injection</td>
+                                        <td><code>"SELECT * FROM users WHERE id = " + id</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>innerHTML</code> con user input</td>
+                                        <td>XSS</td>
+                                        <td><code>element.innerHTML = userInput</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Secrets en código</td>
+                                        <td>Exposición de credenciales</td>
+                                        <td><code>const API_KEY = "sk_123..."</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Paths relativos sin validar</td>
+                                        <td>Path Traversal</td>
+                                        <td><code>readFile("../etc/passwd")</code></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="alert alert-success mt-8">
+                            <p class="font-semibold mb-2">✅ Code Review Efectivo</p>
+                            <p>Usa este checklist sistemáticamente. La revisión de seguridad debe ser parte integral del proceso de desarrollo, no una actividad separada.</p>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </main>
+    </div>
+    <footer class="bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-sm text-gray-600 dark:text-gray-400">Actualizado por mí en Enero 2026</p>
+                <a href="https://github.com/tu-usuario/cybersec-handbook" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">Editar en GitHub</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../../assets/js/search.js"></script>
+    <script src="../../assets/js/main.js"></script>
+    <style>[x-cloak] { display: none !important; }</style>
+</body>
+</html>
+
