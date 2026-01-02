@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Herramientas de Pentesting - CyberSec Handbook</title>
+    <title>Threat Hunting - CyberSec Handbook</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link rel="stylesheet" href="../../assets/css/main.css">
@@ -40,10 +40,10 @@
             <nav class="p-4 space-y-2">
                 <a href="../../index.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🏠 Inicio</a>
                 <div class="mt-4">
-                    <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-2">Pentesting</h3>
-                    <a href="web-security-quick-check.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Pentesting Rápido Web</a>
-                    <a href="methodology-guide.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Metodología Pentesting</a>
-                    <a href="tools-setup.html" class="nav-link block px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 font-medium">Herramientas</a>
+                    <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-2">Blue Team</h3>
+                    <a href="soc-setup.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">SOC Setup</a>
+                    <a href="siem-config.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">SIEM Configuration</a>
+                    <a href="threat-hunting.html" class="nav-link block px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 font-medium">Threat Hunting</a>
                 </div>
             </nav>
         </aside>
@@ -51,18 +51,50 @@
             <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <article>
                     <header class="mb-8">
-                        <h1 class="text-4xl font-bold mb-4">Setup de Herramientas de Pentesting</h1>
-                        <p class="text-xl text-gray-600 dark:text-gray-400 mb-4">Instalación y configuración de herramientas esenciales</p>
+                        <h1 class="text-4xl font-bold mb-4">Threat Hunting</h1>
+                        <p class="text-xl text-gray-600 dark:text-gray-400 mb-4">Búsqueda proactiva de amenazas en el entorno</p>
                         <div class="flex flex-wrap gap-2 mb-4">
-                            <span class="badge badge-intermediate">Nivel: Intermedio</span>
-                            <span class="badge">🛠️ Herramientas</span>
+                            <span class="badge badge-advanced">Nivel: Avanzado</span>
+                            <span class="badge">🔍 Threat Hunting</span>
                         </div>
                     </header>
                     <div id="table-of-contents" class="toc"></div>
                     <div class="prose prose-lg dark:prose-invert max-w-none">
-                        <h2 id="kali-linux">Kali Linux (Distribución Completa)</h2>
+                        <h2 id="metodologia">Metodología de Threat Hunting</h2>
+                        <div class="steps-container">
+                            <div class="step">
+                                <h3>1. Hypothesis</h3>
+                                <p>Formular hipótesis basadas en:</p>
+                                <ul>
+                                    <li>Intel de amenazas</li>
+                                    <li>Comportamientos anómalos</li>
+                                    <li>Tácticas MITRE ATT&CK</li>
+                                </ul>
+                            </div>
+                            <div class="step">
+                                <h3>2. Investigation</h3>
+                                <p>Investigar usando:</p>
+                                <ul>
+                                    <li>Queries en SIEM</li>
+                                    <li>Análisis de logs</li>
+                                    <li>Correlación de eventos</li>
+                                </ul>
+                            </div>
+                            <div class="step">
+                                <h3>3. Pattern Discovery</h3>
+                                <p>Identificar patrones de:</p>
+                                <ul>
+                                    <li>Actividad maliciosa</li>
+                                    <li>IOCs (Indicators of Compromise)</li>
+                                    <li>Comportamientos sospechosos</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <h2 id="queries-hunting">Queries para Threat Hunting</h2>
+                        <h3>Detección de PowerShell Obfuscado</h3>
                         <div class="command-block mb-4" x-data="copyCommand">
-                            <button @click="copy('# Descargar e instalar Kali Linux\n# Desde: https://www.kali.org/get-kali/\n# Incluye la mayoría de herramientas pre-instaladas\n\n# Actualizar sistema\nsudo apt update && sudo apt upgrade -y\n\n# Instalar herramientas adicionales\nsudo apt install -y exploitdb metasploit-framework\n\n# Configurar Metasploit por primera vez\nsudo msfdb init\n\n# Iniciar servicios\nsudo systemctl start postgresql\nsudo systemctl enable postgresql')" class="copy-btn" :class="{ 'copied': copied }">
+                            <button @click="copy("# Splunk Query\nindex=windows EventCode=4688 CommandLine=\"*powershell*\" CommandLine=\"*-enc*\" OR CommandLine=\"*Base64*\"\n\n# Elasticsearch/Kibana Query\nEventCode:4688 AND CommandLine:(*powershell* AND (*-enc* OR *Base64* OR *FromBase64String*))\n\n# Buscar PowerShell con ejecución remota\nindex=windows EventCode=4688 CommandLine=\"*IEX*\" OR CommandLine=\"*Invoke-Expression*\"")" class="copy-btn" :class="{ 'copied': copied }">
                                 <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
                                 </svg>
@@ -70,27 +102,19 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                                 </svg>
                             </button>
-                            <pre><code># Descargar e instalar Kali Linux
-# Desde: https://www.kali.org/get-kali/
-# Incluye la mayoría de herramientas pre-instaladas
+                            <pre><code># Splunk Query
+index=windows EventCode=4688 CommandLine="*powershell*" CommandLine="*-enc*" OR CommandLine="*Base64*"
 
-# Actualizar sistema
-sudo apt update && sudo apt upgrade -y
+# Elasticsearch/Kibana Query
+EventCode:4688 AND CommandLine:(*powershell* AND (*-enc* OR *Base64* OR *FromBase64String*))
 
-# Instalar herramientas adicionales
-sudo apt install -y exploitdb metasploit-framework
-
-# Configurar Metasploit por primera vez
-sudo msfdb init
-
-# Iniciar servicios
-sudo systemctl start postgresql
-sudo systemctl enable postgresql</code></pre>
+# Buscar PowerShell con ejecución remota
+index=windows EventCode=4688 CommandLine="*IEX*" OR CommandLine="*Invoke-Expression*"</code></pre>
                         </div>
 
-                        <h2 id="burp-suite">Burp Suite</h2>
+                        <h3>Detección de Lateral Movement</h3>
                         <div class="command-block mb-4" x-data="copyCommand">
-                            <button @click="copy('# Descargar Burp Suite Community (gratuito)\n# Desde: https://portswigger.net/burp/communitydownload\n\n# Ejecutar (requiere Java)\njava -jar burpsuite_community.jar\n\n# Configurar proxy:\n# Proxy > Options > Proxy Listeners > Add\n# Bind to port: 8080\n\n# Configurar navegador:\n# Firefox/Chrome: Settings > Network > Manual proxy\n# HTTP Proxy: 127.0.0.1:8080\n\n# Instalar certificado CA de Burp:\n# http://burpsuite\n# Descargar y añadir a certificados del sistema')" class="copy-btn" :class="{ 'copied': copied }">
+                            <button @click="copy("# Múltiples logins desde mismo usuario\nindex=windows EventCode=4624 | stats count by AccountName, ComputerName | where count > 5\n\n# Conexiones RDP desde múltiples IPs\nindex=windows EventCode=4624 LogonType=10 | stats count by AccountName, SourceIP | where count > 3\n\n# WMI execution remota\nindex=windows EventCode=4688 CommandLine=\"*wmic*\" CommandLine=\"*/node:*\"")" class="copy-btn" :class="{ 'copied': copied }">
                                 <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
                                 </svg>
@@ -98,28 +122,20 @@ sudo systemctl enable postgresql</code></pre>
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                                 </svg>
                             </button>
-                            <pre><code># Descargar Burp Suite Community (gratuito)
-# Desde: https://portswigger.net/burp/communitydownload
+                            <pre><code># Múltiples logins desde mismo usuario
+index=windows EventCode=4624 | stats count by AccountName, ComputerName | where count > 5
 
-# Ejecutar (requiere Java)
-java -jar burpsuite_community.jar
+# Conexiones RDP desde múltiples IPs
+index=windows EventCode=4624 LogonType=10 | stats count by AccountName, SourceIP | where count > 3
 
-# Configurar proxy:
-# Proxy > Options > Proxy Listeners > Add
-# Bind to port: 8080
-
-# Configurar navegador:
-# Firefox/Chrome: Settings > Network > Manual proxy
-# HTTP Proxy: 127.0.0.1:8080
-
-# Instalar certificado CA de Burp:
-# http://burpsuite
-# Descargar y añadir a certificados del sistema</code></pre>
+# WMI execution remota
+index=windows EventCode=4688 CommandLine="*wmic*" CommandLine="*/node:*"</code></pre>
                         </div>
 
-                        <h2 id="metasploit">Metasploit Framework</h2>
+                        <h2 id="sigma-rules">Sigma Rules</h2>
+                        <p>Sigma es un formato estandarizado para reglas de detección:</p>
                         <div class="command-block mb-4" x-data="copyCommand">
-                            <button @click="copy('# Instalar Metasploit (Kali ya lo incluye)\nsudo apt install metasploit-framework\n\n# O en otras distribuciones:\ncurl https://raw.githubusercontent.com/rapid7/metasploit-omnibus/master/config/templates/metasploit-framework-wrappers/msfupdate.erb | sudo bash\n\n# Inicializar base de datos\nsudo msfdb init\n\n# Iniciar Metasploit\nmsfconsole\n\n# Comandos básicos:\n# search <término>        # Buscar exploit/modulo\n# use exploit/...        # Usar exploit\n# set RHOSTS <ip>        # Establecer target\n# exploit                # Ejecutar exploit\n\n# Actualizar base de datos\nsudo msfupdate')" class="copy-btn" :class="{ 'copied': copied }">
+                            <button @click="copy("# Ejemplo de regla Sigma\n---\ntitle: Suspicious PowerShell Execution\nid: 12345678-1234-1234-1234-123456789012\nstatus: experimental\ndescription: Detects suspicious PowerShell execution patterns\nreferences:\n    - https://attack.mitre.org/techniques/T1059/001/\nauthor: Tu Nombre\ndate: 2024/01/01\nlogsource:\n    product: windows\n    service: security\ndetection:\n    selection:\n        EventID: 4688\n        CommandLine|contains:\n            - '-enc'\n            - 'FromBase64String'\n            - 'IEX'\n    condition: selection\nfalsepositives:\n    - Legitimate administrative scripts\nlevel: high\n---")" class="copy-btn" :class="{ 'copied': copied }">
                                 <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
                                 </svg>
@@ -127,63 +143,36 @@ java -jar burpsuite_community.jar
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                                 </svg>
                             </button>
-                            <pre><code># Instalar Metasploit (Kali ya lo incluye)
-sudo apt install metasploit-framework
-
-# O en otras distribuciones:
-curl https://raw.githubusercontent.com/rapid7/metasploit-omnibus/master/config/templates/metasploit-framework-wrappers/msfupdate.erb | sudo bash
-
-# Inicializar base de datos
-sudo msfdb init
-
-# Iniciar Metasploit
-msfconsole
-
-# Comandos básicos:
-# search <término>        # Buscar exploit/modulo
-# use exploit/...        # Usar exploit
-# set RHOSTS <ip>        # Establecer target
-# exploit                # Ejecutar exploit
-
-# Actualizar base de datos
-sudo msfupdate</code></pre>
+                            <pre><code># Ejemplo de regla Sigma
+---
+title: Suspicious PowerShell Execution
+id: 12345678-1234-1234-1234-123456789012
+status: experimental
+description: Detects suspicious PowerShell execution patterns
+references:
+    - https://attack.mitre.org/techniques/T1059/001/
+author: Tu Nombre
+date: 2024/01/01
+logsource:
+    product: windows
+    service: security
+detection:
+    selection:
+        EventID: 4688
+        CommandLine|contains:
+            - '-enc'
+            - 'FromBase64String'
+            - 'IEX'
+    condition: selection
+falsepositives:
+    - Legitimate administrative scripts
+level: high
+---</code></pre>
                         </div>
 
-                        <h2 id="nmap">Nmap</h2>
-                        <div class="command-block mb-4" x-data="copyCommand">
-                            <button @click="copy('# Instalar Nmap\nsudo apt install nmap\n\n# Scan básico\nnmap 192.168.1.0/24\n\n# Scan con detección de OS y servicios\nnmap -A 192.168.1.100\n\n# Scan de puertos específicos\nnmap -p 80,443,8080 192.168.1.100\n\n# Scan completo (todos los puertos)\nnmap -p- 192.168.1.100\n\n# Scan con scripts NSE\nnmap --script vuln 192.168.1.100\n\n# Scan sigiloso (SYN scan)\nnmap -sS 192.168.1.100')" class="copy-btn" :class="{ 'copied': copied }">
-                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
-                                </svg>
-                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                </svg>
-                            </button>
-                            <pre><code># Instalar Nmap
-sudo apt install nmap
-
-# Scan básico
-nmap 192.168.1.0/24
-
-# Scan con detección de OS y servicios
-nmap -A 192.168.1.100
-
-# Scan de puertos específicos
-nmap -p 80,443,8080 192.168.1.100
-
-# Scan completo (todos los puertos)
-nmap -p- 192.168.1.100
-
-# Scan con scripts NSE
-nmap --script vuln 192.168.1.100
-
-# Scan sigiloso (SYN scan)
-nmap -sS 192.168.1.100</code></pre>
-                        </div>
-
-                        <div class="alert alert-info mt-8">
-                            <p class="font-semibold mb-2">💡 Recomendación</p>
-                            <p>Kali Linux es la distribución más completa para pentesting, pero puedes instalar herramientas individualmente en cualquier distribución Linux. Considera usar máquinas virtuales o contenedores para aislar el entorno de testing.</p>
+                        <div class="alert alert-success mt-8">
+                            <p class="font-semibold mb-2">✅ Threat Hunting</p>
+                            <p>El threat hunting es proactivo, no reactivo. Usa MITRE ATT&CK como framework de referencia y desarrolla hipótesis basadas en amenazas conocidas. Sigma rules permite compartir conocimiento de detección entre equipos.</p>
                         </div>
                     </div>
                 </article>
@@ -203,3 +192,4 @@ nmap -sS 192.168.1.100</code></pre>
     <style>[x-cloak] { display: none !important; }</style>
 </body>
 </html>
+

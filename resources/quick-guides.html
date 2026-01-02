@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es" x-data="app" x-init="init()" :class="{ 'dark': darkMode }">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guías Rápidas - CyberSec Handbook</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <script>tailwind.config = { darkMode: 'class' }</script>
+</head>
+<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+    <header class="sticky top-0 z-30 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-4">
+                    <button @click="toggleSidebar()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 lg:hidden sidebar-toggle">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                    <a href="../index.html" class="flex items-center gap-2">
+                        <h1 class="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">🛡️ CyberSec Handbook</h1>
+                    </a>
+                </div>
+                <button @click="toggleDarkMode()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                    <svg x-show="!darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                    </svg>
+                    <svg x-show="darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+    <div x-show="sidebarOpen" @click="closeSidebar()" class="sidebar-overlay" x-cloak></div>
+    <div class="flex relative">
+        <aside :class="sidebarOpen ? 'open' : ''" class="sidebar">
+            <nav class="p-4 space-y-2">
+                <a href="../index.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🏠 Inicio</a>
+                <div class="mt-4">
+                    <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-2">Recursos</h3>
+                    <a href="cheatsheets-collection/index.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Colección de Cheatsheets</a>
+                    <a href="tools-recommendations.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Herramientas Recomendadas</a>
+                    <a href="quick-guides.html" class="nav-link block px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 font-medium">Guías Rápidas</a>
+                </div>
+            </nav>
+        </aside>
+        <main class="flex-1 min-h-screen lg:ml-64">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <article>
+                    <header class="mb-8">
+                        <h1 class="text-4xl font-bold mb-4">Guías Rápidas</h1>
+                        <p class="text-xl text-gray-600 dark:text-gray-400 mb-4">Referencias rápidas de 1 página para consulta inmediata</p>
+                    </header>
+                    <div id="table-of-contents" class="toc"></div>
+                    <div class="prose prose-lg dark:prose-invert max-w-none">
+                        <h2 id="nist-functions">NIST CSF - 5 Funciones</h2>
+                        <div class="overflow-x-auto mb-6">
+                            <table>
+                                <thead>
+                                    <tr><th>Función</th><th>Descripción</th><th>Categorías Clave</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td><strong>Identify</strong></td><td>Entender el riesgo organizacional</td><td>Asset Management, Risk Assessment, Governance</td></tr>
+                                    <tr><td><strong>Protect</strong></td><td>Implementar salvaguardas</td><td>Access Control, Awareness, Data Security</td></tr>
+                                    <tr><td><strong>Detect</strong></td><td>Identificar eventos de seguridad</td><td>Anomalies, Continuous Monitoring</td></tr>
+                                    <tr><td><strong>Respond</strong></td><td>Responder a incidentes</td><td>Response Planning, Communications, Analysis</td></tr>
+                                    <tr><td><strong>Recover</strong></td><td>Restaurar capacidades</td><td>Recovery Planning, Improvements</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h2 id="mitre-attack">MITRE ATT&CK - Tácticas Principales</h2>
+                        <div class="overflow-x-auto mb-6">
+                            <table>
+                                <thead>
+                                    <tr><th>Táctica</th><th>Descripción</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td><strong>Initial Access</strong></td><td>Obtener acceso inicial al sistema</td></tr>
+                                    <tr><td><strong>Execution</strong></td><td>Ejecutar código malicioso</td></tr>
+                                    <tr><td><strong>Persistence</strong></td><td>Mantener acceso</td></tr>
+                                    <tr><td><strong>Privilege Escalation</strong></td><td>Obtener permisos elevados</td></tr>
+                                    <tr><td><strong>Defense Evasion</strong></td><td>Evadir detección</td></tr>
+                                    <tr><td><strong>Credential Access</strong></td><td>Obtener credenciales</td></tr>
+                                    <tr><td><strong>Discovery</strong></td><td>Descubrir información del sistema</td></tr>
+                                    <tr><td><strong>Lateral Movement</strong></td><td>Moverse por la red</td></tr>
+                                    <tr><td><strong>Collection</strong></td><td>Recopilar datos de interés</td></tr>
+                                    <tr><td><strong>Exfiltration</strong></td><td>Extraer datos</td></tr>
+                                    <tr><td><strong>Command and Control</strong></td><td>Comunicarse con servidores C2</td></tr>
+                                    <tr><td><strong>Impact</strong></td><td>Manipular, interrumpir o destruir sistemas</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h2 id="owasp-top-10-2021">OWASP Top 10 2021 - Resumen</h2>
+                        <div class="overflow-x-auto mb-6">
+                            <table>
+                                <thead>
+                                    <tr><th>#</th><th>Vulnerabilidad</th><th>Tipo</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>A01</td><td>Broken Access Control</td><td>Autorización</td></tr>
+                                    <tr><td>A02</td><td>Cryptographic Failures</td><td>Criptografía</td></tr>
+                                    <tr><td>A03</td><td>Injection</td><td>Input Validation</td></tr>
+                                    <tr><td>A04</td><td>Insecure Design</td><td>Diseño</td></tr>
+                                    <tr><td>A05</td><td>Security Misconfiguration</td><td>Configuración</td></tr>
+                                    <tr><td>A06</td><td>Vulnerable Components</td><td>Dependencias</td></tr>
+                                    <tr><td>A07</td><td>Authentication Failures</td><td>Autenticación</td></tr>
+                                    <tr><td>A08</td><td>Software and Data Integrity</td><td>Integridad</td></tr>
+                                    <tr><td>A09</td><td>Logging Failures</td><td>Monitoreo</td></tr>
+                                    <tr><td>A10</td><td>SSRF</td><td>Server-Side</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h2 id="comandos-esenciales">Comandos Esenciales por Categoría</h2>
+                        <h3>Linux</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Procesos\nps aux | grep proceso\nkill -9 PID\n\n# Red\nnetstat -tulpn\nss -tulpn\nip addr show\n\n# Sistema\nuptime\ndf -h\ndu -sh *\nfree -h\n\n# Logs\njournalctl -u servicio -f\ntail -f /var/log/syslog")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Procesos
+ps aux | grep proceso
+kill -9 PID
+
+# Red
+netstat -tulpn
+ss -tulpn
+ip addr show
+
+# Sistema
+uptime
+df -h
+du -sh *
+free -h
+
+# Logs
+journalctl -u servicio -f
+tail -f /var/log/syslog</code></pre>
+                        </div>
+
+                        <div class="alert alert-info mt-8">
+                            <p class="font-semibold mb-2">💡 Referencia Rápida</p>
+                            <p>Estas guías están diseñadas para consulta rápida. Para información detallada, consulta las guías completas en cada sección del handbook.</p>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </main>
+    </div>
+    <footer class="bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-sm text-gray-600 dark:text-gray-400">Actualizado por mí en Enero 2026</p>
+                <a href="https://github.com/tu-usuario/cybersec-handbook" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">Editar en GitHub</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../assets/js/search.js"></script>
+    <script src="../assets/js/main.js"></script>
+    <style>[x-cloak] { display: none !important; }</style>
+</body>
+</html>
+
