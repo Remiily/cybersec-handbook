@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="es" x-data="app" x-init="init()" :class="{ 'dark': darkMode }">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debian Guide - CyberSec Handbook</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <script>tailwind.config = { darkMode: 'class' }</script>
+</head>
+<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+    <header class="sticky top-0 z-30 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-4">
+                    <button @click="toggleSidebar()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 lg:hidden sidebar-toggle">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                    <a href="../../index.html" class="flex items-center gap-2">
+                        <h1 class="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">🛡️ CyberSec Handbook</h1>
+                    </a>
+                </div>
+                <button @click="toggleDarkMode()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                    <svg x-show="!darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                    </svg>
+                    <svg x-show="darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+    <div x-show="sidebarOpen" @click="closeSidebar()" class="sidebar-overlay" x-cloak></div>
+    <div class="flex relative">
+        <aside :class="sidebarOpen ? 'open' : ''" class="sidebar">
+            <nav class="p-4 space-y-2">
+                <a href="../../index.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🏠 Inicio</a>
+                <div class="mt-4">
+                    <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-2">Sistemas Operativos</h3>
+                    <a href="linux/linux-essentials.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Linux Esencial</a>
+                    <a href="ubuntu/ubuntu-guide.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Ubuntu</a>
+                    <a href="debian/debian-guide.html" class="nav-link block px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 font-medium">Debian</a>
+                    <a href="fedora/fedora-guide.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Fedora</a>
+                    <a href="rhel/rhel-guide.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">RHEL/CentOS</a>
+                </div>
+            </nav>
+        </aside>
+        <main class="flex-1 min-h-screen lg:ml-64">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <article>
+                    <header class="mb-8">
+                        <h1 class="text-4xl font-bold mb-4">Guía Completa de Debian</h1>
+                        <p class="text-xl text-gray-600 dark:text-gray-400 mb-4">Guía práctica de Debian para seguridad</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="badge badge-beginner">Nivel: Principiante a Avanzado</span>
+                            <span class="badge">🐧 Debian</span>
+                        </div>
+                    </header>
+                    <div id="table-of-contents" class="toc"></div>
+                    <div class="prose prose-lg dark:prose-invert max-w-none">
+                        <h2 id="instalacion">Instalación</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Descargar ISO Debian\n# Desde: https://www.debian.org/download\n\n# Verificar checksum SHA256\nsha256sum debian-XX.X.X-amd64-netinst.iso\n\n# Crear USB booteable (Linux)\nsudo dd if=debian-XX.X.X-amd64-netinst.iso of=/dev/sdX bs=4M status=progress\n\n# O usar balenaEtcher (más fácil)\n# Descargar desde: https://www.balena.io/etcher/\n\n# Durante instalación:\n# - Seleccionar servidor web/mirror cercano\n# - Configurar usuario con sudo\n# - Instalar SSH server\n# - Configurar disk encryption (LVM + encryption)\n\n# Post-instalación básica\nsudo apt update\nsudo apt upgrade -y\nsudo apt install sudo curl wget git vim -y")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Descargar ISO Debian
+# Desde: https://www.debian.org/download
+
+# Verificar checksum SHA256
+sha256sum debian-XX.X.X-amd64-netinst.iso
+
+# Crear USB booteable (Linux)
+sudo dd if=debian-XX.X.X-amd64-netinst.iso of=/dev/sdX bs=4M status=progress
+
+# O usar balenaEtcher (más fácil)
+# Descargar desde: https://www.balena.io/etcher/
+
+# Durante instalación:
+# - Seleccionar servidor web/mirror cercano
+# - Configurar usuario con sudo
+# - Instalar SSH server
+# - Configurar disk encryption (LVM + encryption)
+
+# Post-instalación básica
+sudo apt update
+sudo apt upgrade -y
+sudo apt install sudo curl wget git vim -y</code></pre>
+                        </div>
+
+                        <h2 id="gestion-paquetes">Gestión de Paquetes (APT)</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Actualizar lista de paquetes\nsudo apt update\n\n# Actualizar sistema completo\nsudo apt upgrade\n\n# Actualizar distribución (upgrade)\nsudo apt full-upgrade\n\n# Buscar paquetes\napt search nombre_paquete\n\n# Información de paquete\napt show nombre_paquete\n\n# Instalar paquete\nsudo apt install nombre_paquete\n\n# Instalar múltiples paquetes\nsudo apt install paquete1 paquete2 paquete3\n\n# Desinstalar paquete (mantener config)\nsudo apt remove nombre_paquete\n\n# Desinstalar completamente (incluye config)\nsudo apt purge nombre_paquete\n\n# Limpiar cache\nsudo apt clean\nsudo apt autoclean\n\n# Eliminar paquetes no usados\nsudo apt autoremove\n\n# Listar paquetes instalados\napt list --installed\n\n# Ver dependencias\napt depends nombre_paquete")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Actualizar lista de paquetes
+sudo apt update
+
+# Actualizar sistema completo
+sudo apt upgrade
+
+# Actualizar distribución (upgrade)
+sudo apt full-upgrade
+
+# Buscar paquetes
+apt search nombre_paquete
+
+# Información de paquete
+apt show nombre_paquete
+
+# Instalar paquete
+sudo apt install nombre_paquete
+
+# Instalar múltiples paquetes
+sudo apt install paquete1 paquete2 paquete3
+
+# Desinstalar paquete (mantener config)
+sudo apt remove nombre_paquete
+
+# Desinstalar completamente (incluye config)
+sudo apt purge nombre_paquete
+
+# Limpiar cache
+sudo apt clean
+sudo apt autoclean
+
+# Eliminar paquetes no usados
+sudo apt autoremove
+
+# Listar paquetes instalados
+apt list --installed
+
+# Ver dependencias
+apt depends nombre_paquete</code></pre>
+                        </div>
+
+                        <h2 id="servicios-systemd">Gestión de Servicios (systemd)</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Ver estado de servicio\nsudo systemctl status nombre_servicio\n\n# Iniciar servicio\nsudo systemctl start nombre_servicio\n\n# Detener servicio\nsudo systemctl stop nombre_servicio\n\n# Reiniciar servicio\nsudo systemctl restart nombre_servicio\n\n# Recargar configuración (sin reiniciar)\nsudo systemctl reload nombre_servicio\n\n# Habilitar al inicio\nsudo systemctl enable nombre_servicio\n\n# Deshabilitar al inicio\nsudo systemctl disable nombre_servicio\n\n# Listar servicios activos\nsystemctl list-units --type=service --state=running\n\n# Listar todos los servicios\nsystemctl list-units --type=service --all\n\n# Ver logs de servicio\nsudo journalctl -u nombre_servicio\n\n# Ver logs en tiempo real\nsudo journalctl -u nombre_servicio -f\n\n# Ver logs desde hoy\nsudo journalctl -u nombre_servicio --since today")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Ver estado de servicio
+sudo systemctl status nombre_servicio
+
+# Iniciar servicio
+sudo systemctl start nombre_servicio
+
+# Detener servicio
+sudo systemctl stop nombre_servicio
+
+# Reiniciar servicio
+sudo systemctl restart nombre_servicio
+
+# Recargar configuración (sin reiniciar)
+sudo systemctl reload nombre_servicio
+
+# Habilitar al inicio
+sudo systemctl enable nombre_servicio
+
+# Deshabilitar al inicio
+sudo systemctl disable nombre_servicio
+
+# Listar servicios activos
+systemctl list-units --type=service --state=running
+
+# Listar todos los servicios
+systemctl list-units --type=service --all
+
+# Ver logs de servicio
+sudo journalctl -u nombre_servicio
+
+# Ver logs en tiempo real
+sudo journalctl -u nombre_servicio -f
+
+# Ver logs desde hoy
+sudo journalctl -u nombre_servicio --since today</code></pre>
+                        </div>
+
+                        <h2 id="usuarios-permisos">Usuarios y Permisos</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Crear usuario\nsudo adduser nombre_usuario\n\n# Crear usuario sin shell interactivo\nsudo adduser --system --no-create-home --shell /bin/false nombre_usuario\n\n# Eliminar usuario\nsudo deluser nombre_usuario\n\n# Eliminar usuario y su directorio\nsudo deluser --remove-home nombre_usuario\n\n# Agregar usuario a grupo\nsudo usermod -aG nombre_grupo nombre_usuario\n\n# Cambiar shell de usuario\nsudo chsh -s /bin/bash nombre_usuario\n\n# Cambiar contraseña\nsudo passwd nombre_usuario\n\n# Listar usuarios\ncat /etc/passwd\n\n# Listar grupos\ncat /etc/group\n\n# Ver grupos de usuario\ngroups\nid\n\n# Agregar usuario a sudo\nsudo usermod -aG sudo nombre_usuario\n\n# O editar visudo\nsudo visudo\n# Agregar línea: nombre_usuario ALL=(ALL:ALL) ALL")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Crear usuario
+sudo adduser nombre_usuario
+
+# Crear usuario sin shell interactivo
+sudo adduser --system --no-create-home --shell /bin/false nombre_usuario
+
+# Eliminar usuario
+sudo deluser nombre_usuario
+
+# Eliminar usuario y su directorio
+sudo deluser --remove-home nombre_usuario
+
+# Agregar usuario a grupo
+sudo usermod -aG nombre_grupo nombre_usuario
+
+# Cambiar shell de usuario
+sudo chsh -s /bin/bash nombre_usuario
+
+# Cambiar contraseña
+sudo passwd nombre_usuario
+
+# Listar usuarios
+cat /etc/passwd
+
+# Listar grupos
+cat /etc/group
+
+# Ver grupos de usuario
+groups
+id
+
+# Agregar usuario a sudo
+sudo usermod -aG sudo nombre_usuario
+
+# O editar visudo
+sudo visudo
+# Agregar línea: nombre_usuario ALL=(ALL:ALL) ALL</code></pre>
+                        </div>
+
+                        <h2 id="red-networking">Red y Networking</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Ver configuración de red\nip addr show\nifconfig\n\n# Ver ruta de red\nip route show\nroute -n\n\n# Ver DNS\ncat /etc/resolv.conf\n\n# Configurar IP estática (netplan)\n# /etc/netplan/01-netcfg.yaml:\nsudo nano /etc/netplan/01-netcfg.yaml\n\nnetwork:\n  version: 2\n  ethernets:\n    eth0:\n      dhcp4: false\n      addresses:\n        - 192.168.1.100/24\n      gateway4: 192.168.1.1\n      nameservers:\n        addresses:\n          - 8.8.8.8\n          - 8.8.4.4\n\n# Aplicar configuración\nsudo netplan apply\n\n# Verificar conexión\nping -c 4 8.8.8.8\n\n# Ver puertos abiertos\nsudo ss -tulpn\nsudo netstat -tulpn\n\n# Escanear puertos\nnmap localhost\nnmap 192.168.1.0/24")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Ver configuración de red
+ip addr show
+ifconfig
+
+# Ver ruta de red
+ip route show
+route -n
+
+# Ver DNS
+cat /etc/resolv.conf
+
+# Configurar IP estática (netplan)
+# /etc/netplan/01-netcfg.yaml:
+sudo nano /etc/netplan/01-netcfg.yaml
+
+network:
+  version: 2
+  ethernets:
+    eth0:
+      dhcp4: false
+      addresses:
+        - 192.168.1.100/24
+      gateway4: 192.168.1.1
+      nameservers:
+        addresses:
+          - 8.8.8.8
+          - 8.8.4.4
+
+# Aplicar configuración
+sudo netplan apply
+
+# Verificar conexión
+ping -c 4 8.8.8.8
+
+# Ver puertos abiertos
+sudo ss -tulpn
+sudo netstat -tulpn
+
+# Escanear puertos
+nmap localhost
+nmap 192.168.1.0/24</code></pre>
+                        </div>
+
+                        <h2 id="firewall-ufw">Firewall (UFW)</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Instalar UFW\nsudo apt install ufw\n\n# Ver estado\nsudo ufw status\n\n# Habilitar firewall\nsudo ufw enable\n\n# Deshabilitar firewall\nsudo ufw disable\n\n# Permitir puerto\nsudo ufw allow 22/tcp\nsudo ufw allow 80/tcp\nsudo ufw allow 443/tcp\n\n# Permitir desde IP específica\nsudo ufw allow from 192.168.1.100 to any port 22\n\n# Denegar puerto\nsudo ufw deny 3306/tcp\n\n# Eliminar regla\nsudo ufw delete allow 22/tcp\n\n# Ver número de reglas\nsudo ufw status numbered\n\n# Eliminar por número\nsudo ufw delete 1\n\n# Resetear todas las reglas\nsudo ufw --force reset")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Instalar UFW
+sudo apt install ufw
+
+# Ver estado
+sudo ufw status
+
+# Habilitar firewall
+sudo ufw enable
+
+# Deshabilitar firewall
+sudo ufw disable
+
+# Permitir puerto
+sudo ufw allow 22/tcp
+sudo ufw allow 80/tcp
+sudo ufw allow 443/tcp
+
+# Permitir desde IP específica
+sudo ufw allow from 192.168.1.100 to any port 22
+
+# Denegar puerto
+sudo ufw deny 3306/tcp
+
+# Eliminar regla
+sudo ufw delete allow 22/tcp
+
+# Ver número de reglas
+sudo ufw status numbered
+
+# Eliminar por número
+sudo ufw delete 1
+
+# Resetear todas las reglas
+sudo ufw --force reset</code></pre>
+                        </div>
+
+                        <div class="alert alert-success mt-8">
+                            <p class="font-semibold mb-2">✅ Debian</p>
+                            <p>Debian es estable y confiable, ideal para servidores. Usa APT para gestión de paquetes, systemd para servicios, y UFW para firewall básico. Para entornos más complejos, considera iptables. Siempre mantén el sistema actualizado con <code>apt update && apt upgrade</code>.</p>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </main>
+    </div>
+    <footer class="bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-sm text-gray-600 dark:text-gray-400">Actualizado por mí en Enero 2026</p>
+                <a href="https://github.com/tu-usuario/cybersec-handbook" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">Editar en GitHub</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../../assets/js/search.js"></script>
+    <script src="../../assets/js/main.js"></script>
+    <style>[x-cloak] { display: none !important; }</style>
+</body>
+</html>
+

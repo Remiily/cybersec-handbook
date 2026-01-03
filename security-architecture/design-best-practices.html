@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="es" x-data="app" x-init="init()" :class="{ 'dark': darkMode }">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Design Best Practices - CyberSec Handbook</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <script>tailwind.config = { darkMode: 'class' }</script>
+</head>
+<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+    <header class="sticky top-0 z-30 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-4">
+                    <button @click="toggleSidebar()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 lg:hidden sidebar-toggle">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                    <a href="../../index.html" class="flex items-center gap-2">
+                        <h1 class="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">🛡️ CyberSec Handbook</h1>
+                    </a>
+                </div>
+                <button @click="toggleDarkMode()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                    <svg x-show="!darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                    </svg>
+                    <svg x-show="darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+    <div x-show="sidebarOpen" @click="closeSidebar()" class="sidebar-overlay" x-cloak></div>
+    <div class="flex relative">
+        <aside :class="sidebarOpen ? 'open' : ''" class="sidebar">
+            <nav class="p-4 space-y-2">
+                <a href="../../index.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🏠 Inicio</a>
+                <div class="mt-4">
+                    <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-2">Security Architecture</h3>
+                    <a href="zero-trust-setup.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Zero Trust Setup</a>
+                    <a href="iam-implementation.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">IAM Implementation</a>
+                    <a href="network-segmentation-guide.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Network Segmentation</a>
+                    <a href="design-best-practices.html" class="nav-link block px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 font-medium">Design Best Practices</a>
+                </div>
+            </nav>
+        </aside>
+        <main class="flex-1 min-h-screen lg:ml-64">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <article>
+                    <header class="mb-8">
+                        <h1 class="text-4xl font-bold mb-4">Security Design Best Practices</h1>
+                        <p class="text-xl text-gray-600 dark:text-gray-400 mb-4">Principios y mejores prácticas para diseño de arquitecturas seguras</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="badge badge-intermediate">Nivel: Todos los niveles</span>
+                            <span class="badge">🏗️ Architecture</span>
+                        </div>
+                    </header>
+                    <div id="table-of-contents" class="toc"></div>
+                    <div class="prose prose-lg dark:prose-invert max-w-none">
+                        <h2 id="principios-fundamentales">Principios Fundamentales</h2>
+                        <div class="steps-container">
+                            <div class="step">
+                                <h3>1. Defense in Depth</h3>
+                                <p>Múltiples capas de seguridad. Si una falla, otras protegen.</p>
+                                <ul>
+                                    <li><strong>Nivel 1:</strong> Network security (firewalls, segmentation)</li>
+                                    <li><strong>Nivel 2:</strong> Host security (hardening, EDR)</li>
+                                    <li><strong>Nivel 3:</strong> Application security (WAF, secure coding)</li>
+                                    <li><strong>Nivel 4:</strong> Data security (encryption, DLP)</li>
+                                    <li><strong>Nivel 5:</strong> Identity security (IAM, MFA)</li>
+                                </ul>
+                            </div>
+                            <div class="step">
+                                <h3>2. Least Privilege</h3>
+                                <p>Usuarios y sistemas solo tienen los permisos mínimos necesarios.</p>
+                                <ul>
+                                    <li>Aplicar a usuarios, servicios, aplicaciones</li>
+                                    <li>Revisar y reducir permisos regularmente</li>
+                                    <li>Usar Just-In-Time access cuando sea posible</li>
+                                </ul>
+                            </div>
+                            <div class="step">
+                                <h3>3. Fail Secure</h3>
+                                <p>En caso de fallo, el sistema debe fallar de forma segura (denegar acceso).</p>
+                                <ul>
+                                    <li>Default deny en firewalls</li>
+                                    <li>Timeout de sesiones</li>
+                                    <li>Error handling que no exponga información</li>
+                                </ul>
+                            </div>
+                            <div class="step">
+                                <h3>4. Separation of Duties</h3>
+                                <p>Dividir responsabilidades críticas entre múltiples usuarios/sistemas.</p>
+                                <ul>
+                                    <li>Admin no puede ser auditor</li>
+                                    <li>Development separado de Production</li>
+                                    <li>Key management separado de aplicación</li>
+                                </ul>
+                            </div>
+                            <div class="step">
+                                <h3>5. Security by Design</h3>
+                                <p>Seguridad desde el inicio, no como añadido posterior.</p>
+                                <ul>
+                                    <li>Threat modeling en diseño</li>
+                                    <li>Security reviews en cada fase</li>
+                                    <li>Security requirements claros</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <h2 id="checklist-diseno">Checklist de Diseño de Seguridad</h2>
+                        <div class="checklist-container" x-data="checklist('security-design-checklist')">
+                            <div class="checklist-header">
+                                <h3>Revisión de Arquitectura de Seguridad</h3>
+                                <div class="checklist-progress">
+                                    <span>Progreso: <strong x-text="progress + '%'"></strong></span>
+                                    <button @click="resetChecklist()" class="btn-sm">Reset</button>
+                                    <button @click="exportChecklist()" class="btn-sm">Exportar JSON</button>
+                                </div>
+                            </div>
+                            <ul class="checklist">
+                                <li>
+                                    <label>
+                                        <input type="checkbox" x-model="items[0]" @change="updateProgress()">
+                                        <span>✅ Defense in Depth: Múltiples capas de seguridad implementadas</span>
+                                    </label>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" x-model="items[1]" @change="updateProgress()">
+                                        <span>✅ Least Privilege: Permisos mínimos necesarios aplicados</span>
+                                    </label>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" x-model="items[2]" @change="updateProgress()">
+                                        <span>✅ Network Segmentation: Redes segmentadas lógicamente</span>
+                                    </label>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" x-model="items[3]" @change="updateProgress()">
+                                        <span>✅ Identity & Access: IAM/MFA implementado</span>
+                                    </label>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" x-model="items[4]" @change="updateProgress()">
+                                        <span>✅ Encryption: Datos en tránsito y en reposo encriptados</span>
+                                    </label>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" x-model="items[5]" @change="updateProgress()">
+                                        <span>✅ Monitoring: Logging y monitoring implementado</span>
+                                    </label>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" x-model="items[6]" @change="updateProgress()">
+                                        <span>✅ Backup & Recovery: Estrategia de backup y DR definida</span>
+                                    </label>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" x-model="items[7]" @change="updateProgress()">
+                                        <span>✅ Patch Management: Proceso de patching definido</span>
+                                    </label>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" x-model="items[8]" @change="updateProgress()">
+                                        <span>✅ Incident Response: Plan de respuesta a incidentes</span>
+                                    </label>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" x-model="items[9]" @change="updateProgress()">
+                                        <span>✅ Security Testing: Penetration testing y security reviews</span>
+                                    </label>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <h2 id="threat-modeling">Threat Modeling</h2>
+                        <p>Proceso sistemático para identificar y mitigar amenazas:</p>
+                        <div class="steps-container">
+                            <div class="step">
+                                <h3>Paso 1: Identificar Assets</h3>
+                                <p>¿Qué estamos protegiendo? (datos, sistemas, servicios)</p>
+                            </div>
+                            <div class="step">
+                                <h3>Paso 2: Identificar Threats</h3>
+                                <p>Usar STRIDE: Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service, Elevation of Privilege</p>
+                            </div>
+                            <div class="step">
+                                <h3>Paso 3: Identificar Vulnerabilities</h3>
+                                <p>¿Dónde podría fallar? (diseño, implementación, configuración)</p>
+                            </div>
+                            <div class="step">
+                                <h3>Paso 4: Analizar Riesgos</h3>
+                                <p>Priorizar por impacto y probabilidad</p>
+                            </div>
+                            <div class="step">
+                                <h3>Paso 5: Mitigar</h3>
+                                <p>Implementar controles de seguridad</p>
+                            </div>
+                        </div>
+
+                        <h2 id="herramientas">Herramientas de Threat Modeling</h2>
+                        <div class="overflow-x-auto mb-6">
+                            <table>
+                                <thead>
+                                    <tr><th>Herramienta</th><th>Descripción</th><th>Nivel</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>Microsoft Threat Modeling Tool</td><td>Gratis, Windows-based, diagramas</td><td>Principiante-Intermedio</td></tr>
+                                    <tr><td>OWASP Threat Dragon</td><td>Open source, web-based</td><td>Intermedio</td></tr>
+                                    <tr><td>IriusRisk</td><td>Enterprise, integración con SDLC</td><td>Avanzado</td></tr>
+                                    <tr><td>PyTM</td><td>Python-based, código como diagramas</td><td>Avanzado</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h2 id="patrones-seguros">Patrones de Diseño Seguro</h2>
+                        <div class="overflow-x-auto mb-6">
+                            <table>
+                                <thead>
+                                    <tr><th>Patrón</th><th>Descripción</th><th>Aplicación</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>Secure Defaults</td><td>Configuración segura por defecto</td><td>Todos los sistemas</td></tr>
+                                    <tr><td>Fail Secure</td><td>Fallo seguro (denegar acceso)</td><td>Authentication, Authorization</td></tr>
+                                    <tr><td>Input Validation</td><td>Validar toda entrada de usuario</td><td>APIs, Web Apps</td></tr>
+                                    <tr><td>Output Encoding</td><td>Codificar output antes de mostrar</td><td>Web Apps (XSS prevention)</td></tr>
+                                    <tr><td>Session Management</td><td>Gestión segura de sesiones</td><td>Web Apps</td></tr>
+                                    <tr><td>Error Handling</td><td>Errores que no expongan información</td><td>Todas las aplicaciones</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="alert alert-success mt-8">
+                            <p class="font-semibold mb-2">✅ Security Design Best Practices</p>
+                            <p>La seguridad debe diseñarse desde el inicio. El threat modeling ayuda a identificar riesgos temprano cuando es más barato mitigarlos. Estos principios aplican a cualquier arquitectura, desde aplicaciones pequeñas hasta sistemas enterprise. Recuerda: seguridad por diseño, no como añadido.</p>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </main>
+    </div>
+    <footer class="bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-sm text-gray-600 dark:text-gray-400">Actualizado por mí en Enero 2026</p>
+                <a href="https://github.com/tu-usuario/cybersec-handbook" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">Editar en GitHub</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../../assets/js/search.js"></script>
+    <script src="../../assets/js/main.js"></script>
+    <style>[x-cloak] { display: none !important; }</style>
+</body>
+</html>
+

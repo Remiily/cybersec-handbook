@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es" x-data="app" x-init="init()" :class="{ 'dark': darkMode }">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Benchmarks Application - CyberSec Handbook</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <script>tailwind.config = { darkMode: 'class' }</script>
+</head>
+<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+    <header class="sticky top-0 z-30 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-4">
+                    <button @click="toggleSidebar()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 lg:hidden sidebar-toggle">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                    <a href="../index.html" class="flex items-center gap-2">
+                        <h1 class="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">🛡️ CyberSec Handbook</h1>
+                    </a>
+                </div>
+                <button @click="toggleDarkMode()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                    <svg x-show="!darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                    </svg>
+                    <svg x-show="darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+    <div x-show="sidebarOpen" @click="closeSidebar()" class="sidebar-overlay" x-cloak></div>
+    <div class="flex relative">
+        <aside :class="sidebarOpen ? 'open' : ''" class="sidebar">
+            <nav class="p-4 space-y-2">
+                <a href="../index.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🏠 Inicio</a>
+                <div class="mt-4">
+                    <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-2">Hardening</h3>
+                    <a href="os-hardening/linux-guide.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Linux Hardening</a>
+                    <a href="benchmarks-application.html" class="nav-link block px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 font-medium">CIS/STIG Benchmarks</a>
+                </div>
+            </nav>
+        </aside>
+        <main class="flex-1 min-h-screen lg:ml-64">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <article>
+                    <header class="mb-8">
+                        <h1 class="text-4xl font-bold mb-4">Aplicación de Benchmarks CIS/STIG</h1>
+                        <p class="text-xl text-gray-600 dark:text-gray-400 mb-4">Guía para aplicar benchmarks de seguridad CIS y STIG</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="badge badge-intermediate">Nivel: Intermedio</span>
+                            <span class="badge">🔒 Benchmarks</span>
+                        </div>
+                    </header>
+                    <div id="table-of-contents" class="toc"></div>
+                    <div class="prose prose-lg dark:prose-invert max-w-none">
+                        <h2 id="introduccion-benchmarks">Introducción a Benchmarks</h2>
+                        <p>Los benchmarks CIS (Center for Internet Security) y STIG (Security Technical Implementation Guide) son estándares de configuración segura:</p>
+                        <div class="overflow-x-auto mb-6">
+                            <table>
+                                <thead>
+                                    <tr><th>Benchmark</th><th>Organización</th><th>Uso</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>CIS Benchmarks</td><td>Center for Internet Security</td><td>Estándares industry-wide, multiplataforma</td></tr>
+                                    <tr><td>STIG</td><td>DISA (Department of Defense)</td><td>Estándares DoD, principalmente sistemas gubernamentales</td></tr>
+                                    <tr><td>NIST</td><td>National Institute of Standards</td><td>Guías de seguridad generales</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h2 id="lynis">Lynis - Auditoría de Seguridad</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Instalar Lynis (Ubuntu/Debian)\nsudo apt update\nsudo apt install lynis\n\n# Instalar desde fuente\ncd /tmp\nwget https://github.com/CISOfy/lynis/archive/master.zip\nunzip master.zip\ncd lynis-master\nsudo ./lynis audit system\n\n# Auditoría completa del sistema\nsudo lynis audit system\n\n# Auditoría con reporte\nsudo lynis audit system --profile\n\n# Generar reporte HTML\nsudo lynis audit system --report-file /tmp/lynis-report.html\n\n# Solo checks específicos\nsudo lynis audit system --tests \"FILE-6310 FILE-6311\"\n\n# Ver detalles de un test\nsudo lynis show details FILE-6310")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Instalar Lynis (Ubuntu/Debian)
+sudo apt update
+sudo apt install lynis
+
+# Instalar desde fuente
+cd /tmp
+wget https://github.com/CISOfy/lynis/archive/master.zip
+unzip master.zip
+cd lynis-master
+sudo ./lynis audit system
+
+# Auditoría completa del sistema
+sudo lynis audit system
+
+# Auditoría con reporte
+sudo lynis audit system --profile
+
+# Generar reporte HTML
+sudo lynis audit system --report-file /tmp/lynis-report.html
+
+# Solo checks específicos
+sudo lynis audit system --tests "FILE-6310 FILE-6311"
+
+# Ver detalles de un test
+sudo lynis show details FILE-6310</code></pre>
+                        </div>
+
+                        <h2 id="openscap">OpenSCAP - Compliance Scanning</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Instalar OpenSCAP (Ubuntu)\nsudo apt install libopenscap8 openscap-utils scap-workbench\n\n# Verificar perfiles disponibles (Ubuntu)\noscap info /usr/share/xml/scap/ssg/content/ssg-ubuntu2004-ds.xml\n\n# Ejecutar scan con perfil CIS Level 1\nsudo oscap xccdf eval --profile xccdf_org.ssgproject.content_profile_cis_level1_server \\\n  --results /tmp/scan-results.xml \\\n  --report /tmp/scan-report.html \\\n  /usr/share/xml/scap/ssg/content/ssg-ubuntu2004-ds.xml\n\n# RHEL/CentOS - Ver perfiles\noscap info /usr/share/xml/scap/ssg/content/ssg-rhel8-ds.xml\n\n# RHEL - Scan con STIG\nsudo oscap xccdf eval --profile xccdf_org.ssgproject.content_profile_stig \\\n  --results scan-results.xml \\\n  --report scan-report.html \\\n  /usr/share/xml/scap/ssg/content/ssg-rhel8-ds.xml\n\n# Generar remediación (Ansible)\nsudo oscap xccdf generate fix --fix-type ansible \\\n  --profile xccdf_org.ssgproject.content_profile_cis_level1_server \\\n  --output /tmp/remediation-playbook.yml \\\n  /usr/share/xml/scap/ssg/content/ssg-ubuntu2004-ds.xml")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Instalar OpenSCAP (Ubuntu)
+sudo apt install libopenscap8 openscap-utils scap-workbench
+
+# Verificar perfiles disponibles (Ubuntu)
+oscap info /usr/share/xml/scap/ssg/content/ssg-ubuntu2004-ds.xml
+
+# Ejecutar scan con perfil CIS Level 1
+sudo oscap xccdf eval --profile xccdf_org.ssgproject.content_profile_cis_level1_server \
+  --results /tmp/scan-results.xml \
+  --report /tmp/scan-report.html \
+  /usr/share/xml/scap/ssg/content/ssg-ubuntu2004-ds.xml
+
+# RHEL/CentOS - Ver perfiles
+oscap info /usr/share/xml/scap/ssg/content/ssg-rhel8-ds.xml
+
+# RHEL - Scan con STIG
+sudo oscap xccdf eval --profile xccdf_org.ssgproject.content_profile_stig \
+  --results scan-results.xml \
+  --report scan-report.html \
+  /usr/share/xml/scap/ssg/content/ssg-rhel8-ds.xml
+
+# Generar remediación (Ansible)
+sudo oscap xccdf generate fix --fix-type ansible \
+  --profile xccdf_org.ssgproject.content_profile_cis_level1_server \
+  --output /tmp/remediation-playbook.yml \
+  /usr/share/xml/scap/ssg/content/ssg-ubuntu2004-ds.xml</code></pre>
+                        </div>
+
+                        <h2 id="windows-hardening">Windows - GPO y Security Baselines</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Descargar Security Baselines (Microsoft)\n# Desde: https://www.microsoft.com/en-us/download/details.aspx?id=55319\n\n# Importar Security Baseline\n# 1. Abrir Group Policy Management Console\n# 2. Import Settings\n# 3. Seleccionar archivo .pol\n\n# Aplicar Security Baseline con LGPO\n# Descargar LGPO desde Microsoft\n\n# Exportar configuración actual\nLGPO.exe /t C:\\current-policy\n\n# Importar Security Baseline\nLGPO.exe /g \"C:\\Security-Baselines\\Windows 10\"\n\n# PowerShell - Aplicar Security Baseline\nImport-GPO -BackupId GUID -Path \"C:\\Security-Baselines\" -TargetName \"Security Baseline\"\n\n# Verificar configuración aplicada\ngpresult /h report.html\n\n# Audit Policy (ejemplo)\nauditpol /set /category:\"Logon/Logoff\" /success:enable /failure:enable")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Descargar Security Baselines (Microsoft)
+# Desde: https://www.microsoft.com/en-us/download/details.aspx?id=55319
+
+# Importar Security Baseline
+# 1. Abrir Group Policy Management Console
+# 2. Import Settings
+# 3. Seleccionar archivo .pol
+
+# Aplicar Security Baseline con LGPO
+# Descargar LGPO desde Microsoft
+
+# Exportar configuración actual
+LGPO.exe /t C:\current-policy
+
+# Importar Security Baseline
+LGPO.exe /g "C:\Security-Baselines\Windows 10"
+
+# PowerShell - Aplicar Security Baseline
+Import-GPO -BackupId GUID -Path "C:\Security-Baselines" -TargetName "Security Baseline"
+
+# Verificar configuración aplicada
+gpresult /h report.html
+
+# Audit Policy (ejemplo)
+auditpol /set /category:"Logon/Logoff" /success:enable /failure:enable</code></pre>
+                        </div>
+
+                        <h2 id="proceso-aplicacion">Proceso de Aplicación</h2>
+                        <div class="steps-container">
+                            <div class="step">
+                                <h3>1. Evaluación Inicial</h3>
+                                <ul>
+                                    <li>Ejecutar scan baseline (Lynis, OpenSCAP)</li>
+                                    <li>Identificar findings</li>
+                                    <li>Documentar estado actual</li>
+                                </ul>
+                            </div>
+                            <div class="step">
+                                <h3>2. Priorización</h3>
+                                <ul>
+                                    <li>Clasificar por severidad (Critical, High, Medium, Low)</li>
+                                    <li>Identificar cambios que requieren testing</li>
+                                    <li>Planificar implementación</li>
+                                </ul>
+                            </div>
+                            <div class="step">
+                                <h3>3. Testing</h3>
+                                <ul>
+                                    <li>Probar en entorno de staging</li>
+                                    <li>Verificar que no rompe funcionalidad</li>
+                                    <li>Documentar cambios esperados</li>
+                                </ul>
+                            </div>
+                            <div class="step">
+                                <h3>4. Implementación</h3>
+                                <ul>
+                                    <li>Aplicar cambios gradualmente</li>
+                                    <li>Monitorear sistemas</li>
+                                    <li>Documentar cambios aplicados</li>
+                                </ul>
+                            </div>
+                            <div class="step">
+                                <h3>5. Validación</h3>
+                                <ul>
+                                    <li>Re-ejecutar scan</li>
+                                    <li>Verificar compliance mejorado</li>
+                                    <li>Documentar estado final</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <h2 id="niveles-cis">Niveles CIS</h2>
+                        <div class="overflow-x-auto mb-6">
+                            <table>
+                                <thead>
+                                    <tr><th>Nivel</th><th>Descripción</th><th>Uso</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>Level 1</td><td>Configuraciones básicas de seguridad</td><td>Recomendado para mayoría de sistemas</td></tr>
+                                    <tr><td>Level 2</td><td>Configuraciones más restrictivas</td><td>Para sistemas que requieren mayor seguridad</td></tr>
+                                    <tr><td>Level 3 (Notional)</td><td>Máximo nivel de seguridad</td><td>Sistemas críticos, alta seguridad</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="alert alert-success mt-8">
+                            <p class="font-semibold mb-2">✅ CIS/STIG Benchmarks</p>
+                            <p>Los benchmarks CIS y STIG proporcionan configuración segura probada. Empieza con Level 1 y avanza gradualmente. Usa herramientas como Lynis y OpenSCAP para automatizar el proceso. Siempre prueba en staging antes de aplicar cambios en producción. La compliance es un proceso continuo, no un evento único.</p>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </main>
+    </div>
+    <footer class="bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-sm text-gray-600 dark:text-gray-400">Actualizado por mí en Enero 2026</p>
+                <a href="https://github.com/tu-usuario/cybersec-handbook" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">Editar en GitHub</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../assets/js/search.js"></script>
+    <script src="../assets/js/main.js"></script>
+    <style>[x-cloak] { display: none !important; }</style>
+</body>
+</html>
+

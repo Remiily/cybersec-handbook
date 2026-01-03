@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es" x-data="app" x-init="init()" :class="{ 'dark': darkMode }">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IAM Implementation - CyberSec Handbook</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <script>tailwind.config = { darkMode: 'class' }</script>
+</head>
+<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+    <header class="sticky top-0 z-30 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-4">
+                    <button @click="toggleSidebar()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 lg:hidden sidebar-toggle">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                    <a href="../../index.html" class="flex items-center gap-2">
+                        <h1 class="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">🛡️ CyberSec Handbook</h1>
+                    </a>
+                </div>
+                <button @click="toggleDarkMode()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                    <svg x-show="!darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                    </svg>
+                    <svg x-show="darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+    <div x-show="sidebarOpen" @click="closeSidebar()" class="sidebar-overlay" x-cloak></div>
+    <div class="flex relative">
+        <aside :class="sidebarOpen ? 'open' : ''" class="sidebar">
+            <nav class="p-4 space-y-2">
+                <a href="../../index.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🏠 Inicio</a>
+                <div class="mt-4">
+                    <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-2">Security Architecture</h3>
+                    <a href="zero-trust-setup.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Zero Trust Setup</a>
+                    <a href="iam-implementation.html" class="nav-link block px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 font-medium">IAM Implementation</a>
+                    <a href="network-segmentation-guide.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Network Segmentation</a>
+                </div>
+            </nav>
+        </aside>
+        <main class="flex-1 min-h-screen lg:ml-64">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <article>
+                    <header class="mb-8">
+                        <h1 class="text-4xl font-bold mb-4">IAM Implementation</h1>
+                        <p class="text-xl text-gray-600 dark:text-gray-400 mb-4">Identity and Access Management e implementación PAM</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="badge badge-advanced">Nivel: Avanzado</span>
+                            <span class="badge">🔑 IAM/PAM</span>
+                        </div>
+                    </header>
+                    <div id="table-of-contents" class="toc"></div>
+                    <div class="prose prose-lg dark:prose-invert max-w-none">
+                        <h2 id="principios-iam">Principios de IAM</h2>
+                        <div class="steps-container">
+                            <div class="step">
+                                <h3>1. Least Privilege</h3>
+                                <p>Usuarios solo tienen permisos mínimos necesarios</p>
+                            </div>
+                            <div class="step">
+                                <h3>2. Separation of Duties</h3>
+                                <p>Dividir responsabilidades críticas entre múltiples usuarios</p>
+                            </div>
+                            <div class="step">
+                                <h3>3. Regular Access Reviews</h3>
+                                <p>Revisar y recertificar accesos periódicamente</p>
+                            </div>
+                            <div class="step">
+                                <h3>4. Just-In-Time Access</h3>
+                                <p>Acceso temporal solo cuando se necesita</p>
+                            </div>
+                        </div>
+
+                        <h2 id="azure-ad">Azure AD IAM</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Crear grupo y asignar rol\naz ad group create --display-name \"Security-Admins\" --mail-nickname \"Security-Admins\"\n\n# Asignar rol a grupo\naz role assignment create --assignee \"Security-Admins\" --role \"Security Admin\" --scope /subscriptions/SUBSCRIPTION_ID\n\n# Habilitar MFA para usuario específico\naz ad user update --id usuario@dominio.com --force-change-password-next-login false\n\n# Crear conditional access policy (requiere PowerShell o Portal)\n# Desde Portal: Azure AD > Security > Conditional Access\n\n# Listar asignaciones de roles\naz role assignment list --assignee usuario@dominio.com --output table\n\n# Privileged Identity Management (PIM)\n# Habilitar PIM: Azure AD > Privileged Identity Management\n# Activar rol: az ad privileged-identity-management role-activation create")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Crear grupo y asignar rol
+az ad group create --display-name "Security-Admins" --mail-nickname "Security-Admins"
+
+# Asignar rol a grupo
+az role assignment create --assignee "Security-Admins" --role "Security Admin" --scope /subscriptions/SUBSCRIPTION_ID
+
+# Habilitar MFA para usuario específico
+az ad user update --id usuario@dominio.com --force-change-password-next-login false
+
+# Crear conditional access policy (requiere PowerShell o Portal)
+# Desde Portal: Azure AD > Security > Conditional Access
+
+# Listar asignaciones de roles
+az role assignment list --assignee usuario@dominio.com --output table
+
+# Privileged Identity Management (PIM)
+# Habilitar PIM: Azure AD > Privileged Identity Management
+# Activar rol: az ad privileged-identity-management role-activation create</code></pre>
+                        </div>
+
+                        <h2 id="pam">PAM (Privileged Access Management)</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Herramientas PAM populares:\n# - CyberArk\n# - BeyondTrust\n# - Azure PIM\n# - AWS IAM Identity Center\n\n# Conceptos clave:\n# - Vault: Almacenamiento seguro de credenciales\n# - Session Management: Control de sesiones privilegiadas\n# - Just-In-Time: Acceso temporal\n# - Approval Workflows: Flujos de aprobación\n\n# Azure PIM - Activar rol\n# Desde Azure Portal:\n# 1. Privileged Identity Management\n# 2. Azure AD roles > Active assignments\n# 3. My roles > Activate\n\n# AWS IAM Identity Center\naws identitystore list-users --identity-store-id STORE_ID\naws sso-admin create-permission-set --name \"AdminAccess\" --instance-arn INSTANCE_ARN")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Herramientas PAM populares:
+# - CyberArk
+# - BeyondTrust
+# - Azure PIM
+# - AWS IAM Identity Center
+
+# Conceptos clave:
+# - Vault: Almacenamiento seguro de credenciales
+# - Session Management: Control de sesiones privilegiadas
+# - Just-In-Time: Acceso temporal
+# - Approval Workflows: Flujos de aprobación
+
+# Azure PIM - Activar rol
+# Desde Azure Portal:
+# 1. Privileged Identity Management
+# 2. Azure AD roles > Active assignments
+# 3. My roles > Activate
+
+# AWS IAM Identity Center
+aws identitystore list-users --identity-store-id STORE_ID
+aws sso-admin create-permission-set --name "AdminAccess" --instance-arn INSTANCE_ARN</code></pre>
+                        </div>
+
+                        <h2 id="best-practices">Mejores Prácticas</h2>
+                        <div class="overflow-x-auto mb-6">
+                            <table>
+                                <thead>
+                                    <tr><th>Práctica</th><th>Descripción</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>MFA obligatorio</td><td>Todos los usuarios, especialmente admins</td></tr>
+                                    <tr><td>Passwordless</td><td>FIDO2, Windows Hello cuando sea posible</td></tr>
+                                    <tr><td>Access reviews</td><td>Revisar accesos cada 90 días</td></tr>
+                                    <tr><td>Segregación de roles</td><td>Ningún usuario tiene todos los permisos</td></tr>
+                                    <tr><td>Auditoría completa</td><td>Logs de todos los cambios de acceso</td></tr>
+                                    <tr><td>Principle of least privilege</td><td>Permisos mínimos necesarios</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="alert alert-success mt-8">
+                            <p class="font-semibold mb-2">✅ IAM Implementation</p>
+                            <p>IAM es la base de la seguridad. Un IAM mal implementado compromete todo el resto de la seguridad. Prioriza MFA, access reviews regulares y principio de menor privilegio. PAM es crítico para cuentas privilegiadas.</p>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </main>
+    </div>
+    <footer class="bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-sm text-gray-600 dark:text-gray-400">Actualizado por mí en Enero 2026</p>
+                <a href="https://github.com/tu-usuario/cybersec-handbook" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">Editar en GitHub</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../../assets/js/search.js"></script>
+    <script src="../../assets/js/main.js"></script>
+    <style>[x-cloak] { display: none !important; }</style>
+</body>
+</html>
+

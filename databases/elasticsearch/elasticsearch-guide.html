@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="es" x-data="app" x-init="init()" :class="{ 'dark': darkMode }">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elasticsearch Guide - CyberSec Handbook</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <script>tailwind.config = { darkMode: 'class' }</script>
+</head>
+<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+    <header class="sticky top-0 z-30 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-4">
+                    <button @click="toggleSidebar()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 lg:hidden sidebar-toggle">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                    <a href="../../index.html" class="flex items-center gap-2">
+                        <h1 class="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">🛡️ CyberSec Handbook</h1>
+                    </a>
+                </div>
+                <button @click="toggleDarkMode()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                    <svg x-show="!darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                    </svg>
+                    <svg x-show="darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+    <div x-show="sidebarOpen" @click="closeSidebar()" class="sidebar-overlay" x-cloak></div>
+    <div class="flex relative">
+        <aside :class="sidebarOpen ? 'open' : ''" class="sidebar">
+            <nav class="p-4 space-y-2">
+                <a href="../../index.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🏠 Inicio</a>
+                <div class="mt-4">
+                    <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-2">Bases de Datos</h3>
+                    <a href="mysql/mysql-guide.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">MySQL</a>
+                    <a href="postgresql/postgresql-guide.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">PostgreSQL</a>
+                    <a href="mongodb/mongodb-guide.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">MongoDB</a>
+                    <a href="redis/redis-guide.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Redis</a>
+                    <a href="elasticsearch/elasticsearch-guide.html" class="nav-link block px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 font-medium">Elasticsearch</a>
+                </div>
+            </nav>
+        </aside>
+        <main class="flex-1 min-h-screen lg:ml-64">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <article>
+                    <header class="mb-8">
+                        <h1 class="text-4xl font-bold mb-4">Elasticsearch Guide</h1>
+                        <p class="text-xl text-gray-600 dark:text-gray-400 mb-4">Guía completa de Elasticsearch para seguridad</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="badge badge-intermediate">Nivel: Intermedio</span>
+                            <span class="badge">🔍 Elasticsearch</span>
+                        </div>
+                    </header>
+                    <div id="table-of-contents" class="toc"></div>
+                    <div class="prose prose-lg dark:prose-invert max-w-none">
+                        <h2 id="instalacion">Instalación</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Instalar Elasticsearch (Ubuntu/Debian)\nwget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -\nsudo apt-get install apt-transport-https\necho \"deb https://artifacts.elastic.co/packages/8.x/apt stable main\" | sudo tee /etc/apt/sources.list.d/elastic-8.x.list\nsudo apt-get update && sudo apt-get install elasticsearch\n\n# Configurar para iniciar al boot\nsudo systemctl daemon-reload\nsudo systemctl enable elasticsearch\nsudo systemctl start elasticsearch\n\n# Verificar estado\nsudo systemctl status elasticsearch\n\n# Verificar que está funcionando\ncurl -X GET \"localhost:9200/?pretty\"\n\n# Obtener información del cluster\ncurl -X GET \"localhost:9200/_cluster/health?pretty\"")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Instalar Elasticsearch (Ubuntu/Debian)
+wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+sudo apt-get install apt-transport-https
+echo "deb https://artifacts.elastic.co/packages/8.x/apt stable main" | sudo tee /etc/apt/sources.list.d/elastic-8.x.list
+sudo apt-get update && sudo apt-get install elasticsearch
+
+# Configurar para iniciar al boot
+sudo systemctl daemon-reload
+sudo systemctl enable elasticsearch
+sudo systemctl start elasticsearch
+
+# Verificar estado
+sudo systemctl status elasticsearch
+
+# Verificar que está funcionando
+curl -X GET "localhost:9200/?pretty"
+
+# Obtener información del cluster
+curl -X GET "localhost:9200/_cluster/health?pretty"</code></pre>
+                        </div>
+
+                        <h2 id="configuracion-seguridad">Configuración de Seguridad</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Configurar seguridad básica\n# /etc/elasticsearch/elasticsearch.yml\n\n# Deshabilitar acceso externo (solo localhost)\nnetwork.host: 127.0.0.1\nhttp.port: 9200\n\n# Habilitar seguridad\nxpack.security.enabled: true\nxpack.security.transport.ssl.enabled: true\n\n# Configurar passwords (primera vez)\n# Ejecutar:\nsudo /usr/share/elasticsearch/bin/elasticsearch-setup-passwords interactive\n\n# O auto-generar passwords\nsudo /usr/share/elasticsearch/bin/elasticsearch-setup-passwords auto\n\n# Reiniciar después de cambios\nsudo systemctl restart elasticsearch\n\n# Autenticarse\ncurl -u elastic:PASSWORD -X GET \"localhost:9200/?pretty\"\n\n# Cambiar password de usuario\ncurl -X POST \"localhost:9200/_security/user/elastic/_password?pretty\" \\\n  -H 'Content-Type: application/json' \\\n  -u elastic:OLDPASSWORD \\\n  -d '{\"password\":\"NEWPASSWORD\"}'")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Configurar seguridad básica
+# /etc/elasticsearch/elasticsearch.yml
+
+# Deshabilitar acceso externo (solo localhost)
+network.host: 127.0.0.1
+http.port: 9200
+
+# Habilitar seguridad
+xpack.security.enabled: true
+xpack.security.transport.ssl.enabled: true
+
+# Configurar passwords (primera vez)
+# Ejecutar:
+sudo /usr/share/elasticsearch/bin/elasticsearch-setup-passwords interactive
+
+# O auto-generar passwords
+sudo /usr/share/elasticsearch/bin/elasticsearch-setup-passwords auto
+
+# Reiniciar después de cambios
+sudo systemctl restart elasticsearch
+
+# Autenticarse
+curl -u elastic:PASSWORD -X GET "localhost:9200/?pretty"
+
+# Cambiar password de usuario
+curl -X POST "localhost:9200/_security/user/elastic/_password?pretty" \
+  -H 'Content-Type: application/json' \
+  -u elastic:OLDPASSWORD \
+  -d '{"password":"NEWPASSWORD"}'</code></pre>
+                        </div>
+
+                        <h2 id="comandos-basicos">Comandos Básicos</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Listar índices\ncurl -u elastic:PASSWORD -X GET \"localhost:9200/_cat/indices?v\"\n\n# Crear índice\ncurl -u elastic:PASSWORD -X PUT \"localhost:9200/my_index?pretty\"\n\n# Ver información de índice\ncurl -u elastic:PASSWORD -X GET \"localhost:9200/my_index?pretty\"\n\n# Indexar documento\ncurl -u elastic:PASSWORD -X POST \"localhost:9200/my_index/_doc?pretty\" \\\n  -H 'Content-Type: application/json' \\\n  -d '{\"field1\":\"value1\", \"field2\":\"value2\"}'\n\n# Buscar documentos\ncurl -u elastic:PASSWORD -X GET \"localhost:9200/my_index/_search?pretty\"\n\n# Buscar con query\ncurl -u elastic:PASSWORD -X GET \"localhost:9200/my_index/_search?pretty\" \\\n  -H 'Content-Type: application/json' \\\n  -d '{\"query\":{\"match\":{\"field1\":\"value1\"}}}'\n\n# Eliminar índice\ncurl -u elastic:PASSWORD -X DELETE \"localhost:9200/my_index?pretty\"")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Listar índices
+curl -u elastic:PASSWORD -X GET "localhost:9200/_cat/indices?v"
+
+# Crear índice
+curl -u elastic:PASSWORD -X PUT "localhost:9200/my_index?pretty"
+
+# Ver información de índice
+curl -u elastic:PASSWORD -X GET "localhost:9200/my_index?pretty"
+
+# Indexar documento
+curl -u elastic:PASSWORD -X POST "localhost:9200/my_index/_doc?pretty" \
+  -H 'Content-Type: application/json' \
+  -d '{"field1":"value1", "field2":"value2"}'
+
+# Buscar documentos
+curl -u elastic:PASSWORD -X GET "localhost:9200/my_index/_search?pretty"
+
+# Buscar con query
+curl -u elastic:PASSWORD -X GET "localhost:9200/my_index/_search?pretty" \
+  -H 'Content-Type: application/json' \
+  -d '{"query":{"match":{"field1":"value1"}}}'
+
+# Eliminar índice
+curl -u elastic:PASSWORD -X DELETE "localhost:9200/my_index?pretty"</code></pre>
+                        </div>
+
+                        <h2 id="roles-usuarios">Roles y Usuarios</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Listar usuarios\ncurl -u elastic:PASSWORD -X GET \"localhost:9200/_security/user?pretty\"\n\n# Crear usuario\ncurl -u elastic:PASSWORD -X POST \"localhost:9200/_security/user/myuser?pretty\" \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n    \"password\":\"mypassword\",\n    \"roles\":[\"kibana_admin\"],\n    \"full_name\":\"My User\",\n    \"email\":\"user@example.com\"\n  }'\n\n# Listar roles\ncurl -u elastic:PASSWORD -X GET \"localhost:9200/_security/role?pretty\"\n\n# Crear rol personalizado\ncurl -u elastic:PASSWORD -X POST \"localhost:9200/_security/role/myrole?pretty\" \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n    \"cluster\":[\"monitor\"],\n    \"indices\":[{\n      \"names\":[\"my_index\"],\n      \"privileges\":[\"read\",\"write\"]\n    }]\n  }'\n\n# Asignar rol a usuario\ncurl -u elastic:PASSWORD -X POST \"localhost:9200/_security/user/myuser/_password?pretty\" \\\n  -H 'Content-Type: application/json' \\\n  -d '{\"password\":\"newpassword\"}'")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Listar usuarios
+curl -u elastic:PASSWORD -X GET "localhost:9200/_security/user?pretty"
+
+# Crear usuario
+curl -u elastic:PASSWORD -X POST "localhost:9200/_security/user/myuser?pretty" \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "password":"mypassword",
+    "roles":["kibana_admin"],
+    "full_name":"My User",
+    "email":"user@example.com"
+  }'
+
+# Listar roles
+curl -u elastic:PASSWORD -X GET "localhost:9200/_security/role?pretty"
+
+# Crear rol personalizado
+curl -u elastic:PASSWORD -X POST "localhost:9200/_security/role/myrole?pretty" \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "cluster":["monitor"],
+    "indices":[{
+      "names":["my_index"],
+      "privileges":["read","write"]
+    }]
+  }'
+
+# Asignar rol a usuario
+curl -u elastic:PASSWORD -X POST "localhost:9200/_security/user/myuser/_password?pretty" \
+  -H 'Content-Type: application/json' \
+  -d '{"password":"newpassword"}'</code></pre>
+                        </div>
+
+                        <h2 id="backup-restore">Backup y Restore</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Configurar snapshot repository (local filesystem)\ncurl -u elastic:PASSWORD -X PUT \"localhost:9200/_snapshot/my_backup?pretty\" \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n    \"type\":\"fs\",\n    \"settings\":{\n      \"location\":\"/var/backups/elasticsearch\"\n    }\n  }'\n\n# Crear snapshot\ncurl -u elastic:PASSWORD -X PUT \"localhost:9200/_snapshot/my_backup/snapshot_1?wait_for_completion=true&pretty\"\n\n# Listar snapshots\ncurl -u elastic:PASSWORD -X GET \"localhost:9200/_snapshot/my_backup/_all?pretty\"\n\n# Restaurar snapshot\ncurl -u elastic:PASSWORD -X POST \"localhost:9200/_snapshot/my_backup/snapshot_1/_restore?pretty\"\n\n# Restaurar índices específicos\ncurl -u elastic:PASSWORD -X POST \"localhost:9200/_snapshot/my_backup/snapshot_1/_restore?pretty\" \\\n  -H 'Content-Type: application/json' \\\n  -d '{\"indices\":\"my_index\"}'")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Configurar snapshot repository (local filesystem)
+curl -u elastic:PASSWORD -X PUT "localhost:9200/_snapshot/my_backup?pretty" \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "type":"fs",
+    "settings":{
+      "location":"/var/backups/elasticsearch"
+    }
+  }'
+
+# Crear snapshot
+curl -u elastic:PASSWORD -X PUT "localhost:9200/_snapshot/my_backup/snapshot_1?wait_for_completion=true&pretty"
+
+# Listar snapshots
+curl -u elastic:PASSWORD -X GET "localhost:9200/_snapshot/my_backup/_all?pretty"
+
+# Restaurar snapshot
+curl -u elastic:PASSWORD -X POST "localhost:9200/_snapshot/my_backup/snapshot_1/_restore?pretty"
+
+# Restaurar índices específicos
+curl -u elastic:PASSWORD -X POST "localhost:9200/_snapshot/my_backup/snapshot_1/_restore?pretty" \
+  -H 'Content-Type: application/json' \
+  -d '{"indices":"my_index"}'</code></pre>
+                        </div>
+
+                        <h2 id="monitoreo">Monitoreo</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Health del cluster\ncurl -u elastic:PASSWORD -X GET \"localhost:9200/_cluster/health?pretty\"\n\n# Estadísticas del cluster\ncurl -u elastic:PASSWORD -X GET \"localhost:9200/_cluster/stats?pretty\"\n\n# Nodos del cluster\ncurl -u elastic:PASSWORD -X GET \"localhost:9200/_cat/nodes?v\"\n\n# Espacio en disco\ncurl -u elastic:PASSWORD -X GET \"localhost:9200/_cat/allocation?v\"\n\n# Índices y tamaños\ncurl -u elastic:PASSWORD -X GET \"localhost:9200/_cat/indices?v&s=store.size:desc\"\n\n# Shards\ncurl -u elastic:PASSWORD -X GET \"localhost:9200/_cat/shards?v\"\n\n# Tareas en ejecución\ncurl -u elastic:PASSWORD -X GET \"localhost:9200/_tasks?pretty\"")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Health del cluster
+curl -u elastic:PASSWORD -X GET "localhost:9200/_cluster/health?pretty"
+
+# Estadísticas del cluster
+curl -u elastic:PASSWORD -X GET "localhost:9200/_cluster/stats?pretty"
+
+# Nodos del cluster
+curl -u elastic:PASSWORD -X GET "localhost:9200/_cat/nodes?v"
+
+# Espacio en disco
+curl -u elastic:PASSWORD -X GET "localhost:9200/_cat/allocation?v"
+
+# Índices y tamaños
+curl -u elastic:PASSWORD -X GET "localhost:9200/_cat/indices?v&s=store.size:desc"
+
+# Shards
+curl -u elastic:PASSWORD -X GET "localhost:9200/_cat/shards?v"
+
+# Tareas en ejecución
+curl -u elastic:PASSWORD -X GET "localhost:9200/_tasks?pretty"</code></pre>
+                        </div>
+
+                        <div class="alert alert-success mt-8">
+                            <p class="font-semibold mb-2">✅ Elasticsearch</p>
+                            <p>Elasticsearch es potente pero requiere configuración de seguridad adecuada. Siempre habilita xpack.security en producción. Usa roles y usuarios para aplicar principio de menor privilegio. Los snapshots son esenciales para backup. Monitorea el health del cluster regularmente.</p>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </main>
+    </div>
+    <footer class="bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-sm text-gray-600 dark:text-gray-400">Actualizado por mí en Enero 2026</p>
+                <a href="https://github.com/tu-usuario/cybersec-handbook" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">Editar en GitHub</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../../assets/js/search.js"></script>
+    <script src="../../assets/js/main.js"></script>
+    <style>[x-cloak] { display: none !important; }</style>
+</body>
+</html>
+
