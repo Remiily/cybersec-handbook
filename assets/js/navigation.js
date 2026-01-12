@@ -3,18 +3,33 @@
 
 function getBasePath() {
     const path = window.location.pathname;
+    
+    // Detectar si estamos en GitHub Pages con subdirectorio del repositorio
+    // Ejemplo: /cybersec-handbook/hardening/cloud-hardening/aws-guide.html
+    const repoName = 'cybersec-handbook';
+    
     // Limpiar la ruta
     let cleanPath = path.replace(/^\/+/, '').replace(/\/+$/, '');
+    
+    // Si hay ruta del repositorio, extraerla
+    if (cleanPath.startsWith(repoName + '/')) {
+        cleanPath = cleanPath.substring(repoName.length + 1);
+    } else if (cleanPath.includes('/' + repoName + '/')) {
+        const repoIndex = cleanPath.indexOf('/' + repoName + '/');
+        cleanPath = cleanPath.substring(repoIndex + repoName.length + 2);
+    }
     
     // Si estamos en la raíz o index.html
     if (!cleanPath || cleanPath === 'index.html' || cleanPath.endsWith('/index.html')) {
         return './';
     }
     
-    // Contar niveles de profundidad
+    // Contar niveles de profundidad (número de directorios antes del archivo)
     const parts = cleanPath.split('/').filter(p => p && p !== 'index.html');
     // Si el último elemento es un archivo HTML, no cuenta como directorio
-    const depth = parts.length;
+    const depth = parts.length > 0 && parts[parts.length - 1].endsWith('.html') 
+        ? parts.length - 1 
+        : parts.length;
     
     // Si depth es 0, estamos en la raíz
     if (depth === 0) {
