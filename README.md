@@ -1,151 +1,131 @@
 # 🛡️ CyberSec Handbook
 
-Guía práctica y profesional de ciberseguridad, diseñada como recurso completo que acompaña desde proyectos iniciales de hardening hasta roles de liderazgo en seguridad.
+Guía profesional y completa de ciberseguridad diseñada para profesionales de todos los niveles, desde principiantes hasta expertos.
 
 ## 📖 Descripción
 
-Este handbook es un manual estructurado con:
-- ✅ Guías paso a paso detalladas
-- ✅ Comandos con parámetros explicados
-- ✅ Checklists interactivos con persistencia
-- ✅ Herramientas esenciales y recomendaciones
-- ✅ Cheatsheets integrados para cada tema
-- ✅ Enfoque hands-on y escalable
+El CyberSec Handbook es un recurso integral que cubre todos los aspectos esenciales de la ciberseguridad moderna. Incluye guías paso a paso, comandos detallados, mejores prácticas de la industria, y contenido interactivo para facilitar el aprendizaje práctico.
 
-## 🚀 Características
+## 🎯 Contenido Principal
 
-- **100% Estático**: Compatible con GitHub Pages
-- **Diseño Moderno**: Tailwind CSS + Alpine.js
-- **Modo Oscuro/Claro**: Toggle automático con preferencia del sistema
-- **Búsqueda Global**: Búsqueda local con MiniSearch
-- **Responsive**: Diseño adaptativo para todos los dispositivos
-- **Checklists Interactivos**: Con progreso, persistencia en localStorage y exportación JSON
-- **Tabla de Contenidos**: Generada automáticamente en cada página
-- **Botones de Copiar**: Para comandos con feedback visual
+### Curso Completo de Hardening (0 a Experto)
+- **Módulo 1:** Fundamentos de Hardening
+- **Módulo 2:** Linux Hardening
+- **Módulo 3:** Windows Hardening
+- **Módulo 4:** Hardening de Servicios
+- **Módulo 5:** Hardening de Redes
+- **Módulo 6:** Hardening de Aplicaciones
+- **Módulo 7:** Automatización de Hardening
+- **Módulo 8:** Compliance y Benchmarks
+- **Cloud Hardening:** AWS, Azure, GCP
+- **Containers:** Docker y Kubernetes
 
-## 📁 Estructura
+### Sistemas Operativos
+Guías completas para Linux (Ubuntu, Fedora, RHEL, Debian) con comandos esenciales desde nivel principiante hasta avanzado.
+
+### Programación y Desarrollo Seguro
+- Lenguajes: Python, JavaScript, Go, PowerShell
+- OWASP Top 10
+- Prácticas de código seguro
+- Checklists de code review
+
+### Bases de Datos
+Guías detalladas de MySQL, PostgreSQL, MongoDB, Redis y Elasticsearch, incluyendo instalación, configuración de seguridad, administración y optimización.
+
+### Desarrollo de Carrera
+- Trayectorias profesionales en ciberseguridad
+- Guía completa de certificaciones
+- Preparación para entrevistas
+- Habilidades blandas
+
+### Gobierno, Riesgo y Cumplimiento (GRC)
+- Roadmap a CISO
+- Implementación de frameworks (ISO 27001, NIST, etc.)
+- Evaluación de riesgos
+- Verificación de cumplimiento
+
+### Security Architecture
+- Zero Trust Setup
+- IAM Implementation
+- Network Segmentation
+- Design Best Practices
+
+### Operaciones de Seguridad
+- **Red Team:** Tactics, C2 Setup
+- **Blue Team:** SOC Setup, SIEM Configuration, Threat Hunting
+- **Incident Response & Forensics:** Procesos, herramientas y metodologías
+- **Vulnerability Management:** Scanning y patching
+
+### Cloud & DevSecOps
+- Infrastructure as Code (IaC) Security
+- Pipeline Security
+- SBOM Management
+
+### Amenazas Emergentes
+- AI Security
+- Supply Chain Defense
+
+### Recursos
+- Colección completa de cheatsheets
+- Herramientas recomendadas
+- Guías rápidas
+- Preparación para exámenes de certificación
+
+## ✨ Características
+
+- **100% Estático:** Compatible con GitHub Pages, sin dependencias de servidor
+- **Diseño Moderno:** Interfaz responsive con Tailwind CSS y Alpine.js
+- **Modo Oscuro/Claro:** Toggle automático con preferencia del sistema
+- **Búsqueda Global:** Búsqueda local rápida con MiniSearch
+- **Checklists Interactivos:** Con progreso, persistencia en localStorage y exportación JSON
+- **Tabla de Contenidos:** Generada automáticamente en cada página
+- **Comandos Copiables:** Botones de copiar con feedback visual para todos los comandos
+- **Contenido Profesional:** Basado en estándares de la industria (CIS, STIG, NIST, OWASP)
+
+## 🚀 Uso
+
+El handbook está diseñado para ser usado como referencia diaria. Navega por las secciones usando el menú lateral, utiliza la búsqueda para encontrar temas específicos, y sigue las guías paso a paso para implementar controles de seguridad.
+
+## 📚 Estructura del Proyecto
 
 ```
-/
+cybersec-handbook/
 ├── index.html                          # Página principal
-├── assets/                             # CSS, JS, icons, images
+├── assets/                             # Recursos estáticos
 │   ├── css/main.css
 │   └── js/
-│       ├── main.js                     # Funcionalidad principal
-│       └── search.js                   # Búsqueda local
-├── career-development/                 # Desarrollo de carrera
-├── governance-risk-compliance/         # GRC
-├── security-architecture/              # Arquitectura de seguridad
-├── hardening/                          # Hardening (OS, Cloud, Containers)
+│       ├── main.js
+│       ├── navigation.js
+│       └── search.js
+├── hardening/                          # Curso completo de hardening
+├── operating-systems/                  # Guías de sistemas operativos
+├── programming/                         # Guías de programación
+├── secure-development/                  # Desarrollo seguro
+├── databases/                           # Guías de bases de datos
+├── career-development/                  # Desarrollo de carrera
+├── governance-risk-compliance/          # GRC
+├── security-architecture/               # Arquitectura de seguridad
 ├── vulnerability-management/           # Gestión de vulnerabilidades
-├── pentesting-offensive/               # Pentesting y ofensivo
-├── red-team/                           # Red Team
-├── blue-team-defense/                  # Blue Team y defensa
-├── incident-response-forensics/        # IR y forensics
-├── cloud-devsecops/                    # Cloud y DevSecOps
-├── emerging-threats/                   # Amenazas emergentes
-└── resources/                          # Recursos y cheatsheets
-    ├── cheatsheets-collection/
-    ├── tools-recommendations.html
-    └── templates-library/
+├── pentesting-offensive/                # Pentesting
+├── red-team/                            # Red Team
+├── blue-team-defense/                   # Blue Team
+├── incident-response-forensics/         # IR y forensics
+├── cloud-devsecops/                     # Cloud y DevSecOps
+├── emerging-threats/                    # Amenazas emergentes
+└── resources/                           # Recursos y cheatsheets
 ```
 
 ## 🛠️ Tecnologías
 
-- **HTML5**: Estructura semántica
-- **Tailwind CSS**: Framework CSS utility-first (vía CDN)
-- **Alpine.js**: Framework JavaScript ligero para interactividad
-- **MiniSearch**: Búsqueda local en el cliente
-- **GitHub Pages**: Hosting estático
-
-## 📦 Instalación y Uso Local
-
-1. Clona el repositorio:
-```bash
-git clone https://github.com/tu-usuario/cybersec-handbook.git
-cd cybersec-handbook
-```
-
-2. Sirve localmente (opciones):
-```bash
-# Con Python 3
-python3 -m http.server 8000
-
-# Con Node.js (http-server)
-npx http-server -p 8000
-
-# Con PHP
-php -S localhost:8000
-```
-
-3. Abre en el navegador:
-```
-http://localhost:8000
-```
-
-## 🌐 Despliegue en GitHub Pages
-
-1. Haz push del repositorio a GitHub
-2. Ve a Settings > Pages en tu repositorio
-3. Selecciona la rama `main` y la carpeta `/ (root)`
-4. Tu sitio estará disponible en: `https://tu-usuario.github.io/cybersec-handbook/`
-
-### Nota importante sobre rutas
-
-GitHub Pages puede requerir ajustes en las rutas si el repositorio no está en la raíz. Si tu repositorio está en `username.github.io/cybersec-handbook/`, puedes necesitar:
-
-- Actualizar rutas relativas o
-- Usar la base URL en las configuraciones
-
-## 📝 Contenido
-
-### Hardening
-- Linux (Ubuntu/RHEL)
-- Windows Server
-- AWS, Azure, GCP
-- Containers (Docker/Kubernetes)
-- Benchmarks CIS/STIG
-
-### Desarrollo de Carrera
-- Trayectorias profesionales
-- Guías de certificaciones (OSCP, CISSP)
-- Habilidades blandas
-- Preparación para entrevistas
-
-### Gobierno, Riesgo y Cumplimiento
-- Roadmap a CISO
-- Frameworks (NIST, ISO)
-- Evaluación de riesgos
-- Compliance (GDPR, PCI-DSS)
-
-### Y mucho más...
-
-## 🤝 Contribuciones
-
-Este es un proyecto personal, pero si encuentras errores o tienes sugerencias:
-
-1. Fork el proyecto
-2. Crea una rama para tu cambio (`git checkout -b feature/nueva-guia`)
-3. Commit tus cambios (`git commit -am 'Añade nueva guía'`)
-4. Push a la rama (`git push origin feature/nueva-guia`)
-5. Abre un Pull Request
+- **HTML5:** Estructura semántica
+- **Tailwind CSS:** Framework CSS utility-first (vía CDN)
+- **Alpine.js:** Framework JavaScript ligero para interactividad
+- **MiniSearch:** Motor de búsqueda local
 
 ## 📄 Licencia
 
-Este proyecto es de uso personal. Siéntete libre de usar el código como referencia para tus propios proyectos.
-
-## 🔗 Enlaces Útiles
-
-- [GitHub Pages Documentation](https://docs.github.com/en/pages)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [Alpine.js](https://alpinejs.dev/)
-- [MiniSearch](https://lucaong.github.io/minisearch/)
-
-## 📧 Contacto
-
-Para sugerencias o preguntas sobre el contenido, puedes abrir un issue en GitHub.
+Este proyecto está disponible como recurso educativo de código abierto.
 
 ---
 
-**Última actualización**: Enero 2026
-
+**CyberSec Handbook** - Tu guía completa para dominar la ciberseguridad profesional.
