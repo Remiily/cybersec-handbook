@@ -1,6 +1,6 @@
 # 🛡️ CyberSec Handbook
 
-Mi guía práctica y profesional de ciberseguridad, diseñada como un recurso personal que me acompaña en toda mi carrera, desde proyectos iniciales como hardening hasta roles de liderazgo.
+Guía práctica y profesional de ciberseguridad, diseñada como recurso completo que acompaña desde proyectos iniciales de hardening hasta roles de liderazgo en seguridad.
 
 ## 📖 Descripción
 

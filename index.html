@@ -3,19 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CyberSec Handbook - Mi Guía Personal de Ciberseguridad</title>
+    <title>CyberSec Handbook - Guía Completa de Ciberseguridad</title>
     <meta name="description" content="Guía práctica y profesional de ciberseguridad con checklists, comandos detallados, herramientas esenciales y cheatsheets integrados">
     
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Alpine.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    
-    <!-- MiniSearch for search functionality -->
     <script src="https://cdn.jsdelivr.net/npm/minisearch@7.0.0/dist/umd/index.min.js"></script>
-    
-    <!-- Custom CSS -->
     <link rel="stylesheet" href="assets/css/main.css">
     
     <script>
@@ -34,11 +27,9 @@
 </head>
 <body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors">
     
-    <!-- Header -->
     <header class="sticky top-0 z-30 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
-                <!-- Menu button and title -->
                 <div class="flex items-center gap-4">
                     <button 
                         @click="toggleSidebar()"
@@ -55,8 +46,6 @@
                         </h1>
                     </a>
                 </div>
-                
-                <!-- Search bar -->
                 <div class="flex-1 max-w-lg mx-4 relative" x-data="{ focused: false }">
                     <input
                         type="text"
@@ -70,8 +59,6 @@
                     <svg class="absolute left-3 top-2.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                     </svg>
-                    
-                    <!-- Search results dropdown -->
                     <div x-show="showSearchResults && searchResults.length > 0" class="search-results" x-cloak>
                         <template x-for="result in searchResults" :key="result.url">
                             <a :href="result.url" class="search-result-item block">
@@ -81,8 +68,6 @@
                         </template>
                     </div>
                 </div>
-                
-                <!-- Dark mode toggle -->
                 <button
                     @click="toggleDarkMode()"
                     class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
@@ -98,17 +83,8 @@
             </div>
         </div>
     </header>
-
-    <!-- Sidebar Overlay for Mobile -->
-    <div 
-        x-show="sidebarOpen"
-        @click="closeSidebar()"
-        class="sidebar-overlay"
-        x-cloak
-    ></div>
-
+    <div x-show="sidebarOpen" @click="closeSidebar()" class="sidebar-overlay" x-cloak></div>
     <div class="flex relative">
-        <!-- Sidebar -->
         <aside 
             :class="sidebarOpen ? 'open' : ''"
             class="sidebar"
@@ -334,18 +310,19 @@
                     <a href="resources/quick-guides.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">
                         Guías Rápidas
                     </a>
+                    <a href="resources/exam-preparation.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">
+                        Preparación Exámenes
+                    </a>
                 </div>
             </nav>
         </aside>
-
-        <!-- Main Content -->
         <main class="flex-1 min-h-screen lg:ml-64">
             <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <article>
                     <header class="mb-8">
                         <h1 class="text-4xl font-bold mb-4">CyberSec Handbook</h1>
                         <p class="text-xl text-gray-600 dark:text-gray-400 mb-4">
-                            Mi guía práctica y profesional de ciberseguridad
+                            Guía práctica y profesional de ciberseguridad
                         </p>
                         <div class="flex flex-wrap gap-2">
                             <span class="badge badge-beginner">Guía Personal</span>
@@ -358,7 +335,7 @@
                         <div class="alert alert-info mb-6">
                             <h3 class="font-semibold mb-2">👋 Bienvenido a mi Handbook</h3>
                             <p>
-                                Esta es mi guía personal de ciberseguridad, diseñada como un recurso que me acompaña 
+                                Guía completa de ciberseguridad, diseñada como recurso profesional que acompaña 
                                 a lo largo de toda mi carrera. Desde proyectos iniciales de hardening hasta roles de 
                                 liderazgo, encontrarás guías paso a paso, comandos detallados, herramientas esenciales 
                                 y cheatsheets integrados para cada tema.
@@ -393,7 +370,7 @@
                                 <h3>Sigue las Guías Paso a Paso</h3>
                                 <p>
                                     Cada guía está diseñada para ser seguida secuencialmente. Los comandos incluyen 
-                                    parámetros recomendados basados en mi experiencia práctica.
+                                    parámetros recomendados basados en mejores prácticas de la industria.
                                 </p>
                             </div>
                             <div class="step">
@@ -509,13 +486,11 @@
             </div>
         </main>
     </div>
-
-    <!-- Footer -->
     <footer class="bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div class="flex flex-col md:flex-row justify-between items-center gap-4">
                 <p class="text-sm text-gray-600 dark:text-gray-400">
-                    Actualizado por mí en Enero 2026
+                    © 2026 CyberSec Handbook. Todos los derechos reservados.
                 </p>
                 <div class="flex gap-4">
                     <a href="https://github.com/tu-usuario/cybersec-handbook" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">
@@ -525,8 +500,6 @@
             </div>
         </div>
     </footer>
-
-    <!-- Scripts -->
     <script src="assets/js/search.js"></script>
     <script src="assets/js/main.js"></script>
     
