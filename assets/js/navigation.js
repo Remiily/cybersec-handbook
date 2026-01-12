@@ -44,7 +44,7 @@ function generateNavigation(currentPage = '') {
             </div>
             
             <div class="mt-4">
-                <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Curso Hardening (0 a Experto)</h3>
+                <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Hardening (Curso Completo 0 a Experto)</h3>
                 <a href="${base}hardening/fundamentos-hardening.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">📚 Módulo 1: Fundamentos</a>
                 <a href="${base}hardening/os-hardening/linux-guide.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">🐧 Módulo 2: Linux Hardening</a>
                 <a href="${base}hardening/os-hardening/windows-guide.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">🪟 Módulo 3: Windows Hardening</a>
@@ -53,13 +53,10 @@ function generateNavigation(currentPage = '') {
                 <a href="${base}hardening/aplicaciones-hardening.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">📱 Módulo 6: Aplicaciones</a>
                 <a href="${base}hardening/automatizacion-hardening.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">🤖 Módulo 7: Automatización</a>
                 <a href="${base}hardening/benchmarks-application.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">✅ Módulo 8: Compliance</a>
-                <div class="mt-2 pt-2 border-t border-gray-200 dark:border-gray-700">
-                    <h4 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-1">Hardening Cloud</h4>
-                    <a href="${base}hardening/cloud-hardening/aws-guide.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">AWS Hardening</a>
-                    <a href="${base}hardening/cloud-hardening/azure-guide.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Azure Hardening</a>
-                    <a href="${base}hardening/cloud-hardening/gcp-guide.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">GCP Hardening</a>
-                    <a href="${base}hardening/containers-guide.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Containers (Docker/K8s)</a>
-                </div>
+                <a href="${base}hardening/cloud-hardening/aws-guide.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">☁️ AWS Hardening</a>
+                <a href="${base}hardening/cloud-hardening/azure-guide.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">☁️ Azure Hardening</a>
+                <a href="${base}hardening/cloud-hardening/gcp-guide.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">☁️ GCP Hardening</a>
+                <a href="${base}hardening/containers-guide.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">🐳 Containers (Docker/K8s)</a>
             </div>
             
             <div class="mt-4">
