@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="es" x-data="app" x-init="init()" :class="{ 'dark': darkMode }">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo 4: Hardening de Servicios - CyberSec Handbook</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <script>tailwind.config = { darkMode: 'class' }</script>
+</head>
+<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+    <header class="sticky top-0 z-30 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-4">
+                    <button @click="toggleSidebar()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 lg:hidden sidebar-toggle">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                    <a href="../index.html" class="flex items-center gap-2">
+                        <h1 class="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">🛡️ CyberSec Handbook</h1>
+                    </a>
+                </div>
+                <button @click="toggleDarkMode()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                    <svg x-show="!darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                    </svg>
+                    <svg x-show="darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+    <div x-show="sidebarOpen" @click="closeSidebar()" class="sidebar-overlay" x-cloak></div>
+    <div class="flex relative">
+        <aside :class="sidebarOpen ? 'open' : ''" class="sidebar">
+            <nav class="p-4 space-y-2">
+                <a href="../index.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🏠 Inicio</a>
+                <div class="mt-4">
+                    <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-2">Curso Hardening</h3>
+                    <a href="fundamentos-hardening.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Módulo 1: Fundamentos</a>
+                    <a href="os-hardening/linux-guide.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Módulo 2: Linux</a>
+                    <a href="os-hardening/windows-guide.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Módulo 3: Windows</a>
+                    <a href="servicios-hardening.html" class="nav-link block px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 font-medium">Módulo 4: Servicios</a>
+                    <a href="network-hardening.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Módulo 5: Redes</a>
+                    <a href="aplicaciones-hardening.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Módulo 6: Aplicaciones</a>
+                    <a href="automatizacion-hardening.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Módulo 7: Automatización</a>
+                    <a href="benchmarks-application.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Módulo 8: Compliance</a>
+                </div>
+            </nav>
+        </aside>
+        <main class="flex-1 min-h-screen lg:ml-64">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <article>
+                    <header class="mb-8">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="badge badge-intermediate">Módulo 4</span>
+                            <span class="badge">🔧 Servicios</span>
+                        </div>
+                        <h1 class="text-4xl font-bold mb-4">Hardening de Servicios</h1>
+                        <p class="text-xl text-gray-600 dark:text-gray-400 mb-4">Asegurar servicios críticos: SSH, Apache, Nginx, MySQL, PostgreSQL y más</p>
+                        <div class="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-4 rounded mb-4">
+                            <p class="text-sm"><strong>Objetivos:</strong> Aprender a configurar de forma segura los servicios más comunes en servidores Linux, aplicando mejores prácticas y mitigando vulnerabilidades conocidas.</p>
+                        </div>
+                    </header>
+                    <div id="table-of-contents" class="toc"></div>
+                    <div class="prose prose-lg dark:prose-invert max-w-none">
+                        <h2 id="ssh-hardening">SSH (Secure Shell)</h2>
+                        <p>SSH es uno de los servicios más atacados. Su hardening es crítico.</p>
+                        
+                        <h3>Configuración Básica Segura</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Backup de configuración original\nsudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config.backup\n\n# Editar configuración\nsudo nano /etc/ssh/sshd_config\n\n# Configuraciones recomendadas:\n\n# Cambiar puerto (opcional, security through obscurity)\nPort 2222\n\n# Deshabilitar root login\nPermitRootLogin no\n\n# Deshabilitar autenticación por contraseña (usar solo keys)\nPasswordAuthentication no\nPubkeyAuthentication yes\n\n# Limitar intentos de autenticación\nMaxAuthTries 3\nMaxStartups 3:50:10\n\n# Timeout de conexión\nClientAliveInterval 300\nClientAliveCountMax 2\n\n# Deshabilitar X11 forwarding si no se usa\nX11Forwarding no\n\n# Deshabilitar protocolos antiguos\nProtocol 2\n\n# Deshabilitar opciones inseguras\nPermitEmptyPasswords no\nChallengeResponseAuthentication no\nUsePAM yes\n\n# Limitar usuarios que pueden conectarse\nAllowUsers usuario1 usuario2\n# O por grupo\nAllowGroups sshusers\n\n# Deshabilitar tunneling si no se necesita\nPermitTunnel no\n\n# Después de cambios, verificar sintaxis\nsudo sshd -t\n\n# Reiniciar servicio\nsudo systemctl restart sshd\n\n# Verificar que funciona\nsudo systemctl status sshd")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Backup de configuración original
+sudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config.backup
+
+# Editar configuración
+sudo nano /etc/ssh/sshd_config
+
+# Configuraciones recomendadas:
+
+# Cambiar puerto (opcional, security through obscurity)
+Port 2222
+
+# Deshabilitar root login
+PermitRootLogin no
+
+# Deshabilitar autenticación por contraseña (usar solo keys)
+PasswordAuthentication no
+PubkeyAuthentication yes
+
+# Limitar intentos de autenticación
+MaxAuthTries 3
+MaxStartups 3:50:10
+
+# Timeout de conexión
+ClientAliveInterval 300
+ClientAliveCountMax 2
+
+# Deshabilitar X11 forwarding si no se usa
+X11Forwarding no
+
+# Deshabilitar protocolos antiguos
+Protocol 2
+
+# Deshabilitar opciones inseguras
+PermitEmptyPasswords no
+ChallengeResponseAuthentication no
+UsePAM yes
+
+# Limitar usuarios que pueden conectarse
+AllowUsers usuario1 usuario2
+# O por grupo
+AllowGroups sshusers
+
+# Deshabilitar tunneling si no se necesita
+PermitTunnel no
+
+# Después de cambios, verificar sintaxis
+sudo sshd -t
+
+# Reiniciar servicio
+sudo systemctl restart sshd
+
+# Verificar que funciona
+sudo systemctl status sshd</code></pre>
+                        </div>
+
+                        <h3>Configurar Autenticación por Claves SSH</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# En el CLIENTE (máquina desde donde te conectas)\n# Generar par de claves\nssh-keygen -t ed25519 -C \"tu_email@ejemplo.com\"\n\n# O si ed25519 no está disponible:\nssh-keygen -t rsa -b 4096 -C \"tu_email@ejemplo.com\"\n\n# Copiar clave pública al servidor\nssh-copy-id usuario@servidor\n\n# O manualmente:\ncat ~/.ssh/id_ed25519.pub | ssh usuario@servidor \"mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys\"\n\n# En el SERVIDOR, asegurar permisos correctos\nchmod 700 ~/.ssh\nchmod 600 ~/.ssh/authorized_keys\nchmod 644 ~/.ssh/authorized_keys  # Si hay múltiples claves\n\n# Verificar que funciona (desde cliente)\nssh usuario@servidor\n\n# Si funciona, deshabilitar password authentication en servidor\n# (ya configurado arriba)")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># En el CLIENTE (máquina desde donde te conectas)
+# Generar par de claves
+ssh-keygen -t ed25519 -C "tu_email@ejemplo.com"
+
+# O si ed25519 no está disponible:
+ssh-keygen -t rsa -b 4096 -C "tu_email@ejemplo.com"
+
+# Copiar clave pública al servidor
+ssh-copy-id usuario@servidor
+
+# O manualmente:
+cat ~/.ssh/id_ed25519.pub | ssh usuario@servidor "mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys"
+
+# En el SERVIDOR, asegurar permisos correctos
+chmod 700 ~/.ssh
+chmod 600 ~/.ssh/authorized_keys
+chmod 644 ~/.ssh/authorized_keys  # Si hay múltiples claves
+
+# Verificar que funciona (desde cliente)
+ssh usuario@servidor
+
+# Si funciona, deshabilitar password authentication en servidor
+# (ya configurado arriba)</code></pre>
+                        </div>
+
+                        <h3>Fail2ban para SSH</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Instalar Fail2ban\nsudo apt install fail2ban -y\n\n# Crear configuración local (no editar jail.conf directamente)\nsudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local\n\n# Editar configuración\nsudo nano /etc/fail2ban/jail.local\n\n# Configuración recomendada para SSH:\n[sshd]\nenabled = true\nport = ssh\nfilter = sshd\nlogpath = /var/log/auth.log\nmaxretry = 3\nbantime = 3600\nfindtime = 600\n\n# Iniciar y habilitar\nsudo systemctl enable fail2ban\nsudo systemctl start fail2ban\n\n# Verificar estado\nsudo fail2ban-client status\nsudo fail2ban-client status sshd\n\n# Ver IPs bloqueadas\nsudo fail2ban-client get sshd banned\n\n# Desbloquear IP manualmente\nsudo fail2ban-client set sshd unbanip 192.168.1.100")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Instalar Fail2ban
+sudo apt install fail2ban -y
+
+# Crear configuración local (no editar jail.conf directamente)
+sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
+
+# Editar configuración
+sudo nano /etc/fail2ban/jail.local
+
+# Configuración recomendada para SSH:
+[sshd]
+enabled = true
+port = ssh
+filter = sshd
+logpath = /var/log/auth.log
+maxretry = 3
+bantime = 3600
+findtime = 600
+
+# Iniciar y habilitar
+sudo systemctl enable fail2ban
+sudo systemctl start fail2ban
+
+# Verificar estado
+sudo fail2ban-client status
+sudo fail2ban-client status sshd
+
+# Ver IPs bloqueadas
+sudo fail2ban-client get sshd banned
+
+# Desbloquear IP manualmente
+sudo fail2ban-client set sshd unbanip 192.168.1.100</code></pre>
+                        </div>
+
+                        <h2 id="apache-hardening">Apache HTTP Server</h2>
+                        <h3>Configuración Básica Segura</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Backup de configuración\nsudo cp /etc/apache2/apache2.conf /etc/apache2/apache2.conf.backup\n\n# Editar configuración principal\nsudo nano /etc/apache2/apache2.conf\n\n# Configuraciones de seguridad:\n\n# Ocultar versión de Apache\nServerTokens Prod\nServerSignature Off\n\n# Deshabilitar listado de directorios\nOptions -Indexes +FollowSymLinks\n\n# Limitar métodos HTTP permitidos\n<LimitExcept GET POST HEAD>\n    deny from all\n</LimitExcept>\n\n# Timeout de conexión\nTimeout 60\n\n# Limitar tamaño de request\nLimitRequestBody 10485760  # 10MB\n\n# Headers de seguridad (requiere mod_headers)\nsudo a2enmod headers\n\n# En virtual host o .htaccess:\nHeader always set X-Content-Type-Options \"nosniff\"\nHeader always set X-Frame-Options \"SAMEORIGIN\"\nHeader always set X-XSS-Protection \"1; mode=block\"\nHeader always set Strict-Transport-Security \"max-age=31536000; includeSubDomains\"\n\n# Deshabilitar información del servidor\n# En /etc/apache2/conf-available/security.conf:\nsudo nano /etc/apache2/conf-available/security.conf\n\n# Asegurar que esté habilitado\nsudo a2enconf security\n\n# Verificar configuración\nsudo apache2ctl configtest\n\n# Reiniciar\nsudo systemctl restart apache2")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Backup de configuración
+sudo cp /etc/apache2/apache2.conf /etc/apache2/apache2.conf.backup
+
+# Editar configuración principal
+sudo nano /etc/apache2/apache2.conf
+
+# Configuraciones de seguridad:
+
+# Ocultar versión de Apache
+ServerTokens Prod
+ServerSignature Off
+
+# Deshabilitar listado de directorios
+Options -Indexes +FollowSymLinks
+
+# Limitar métodos HTTP permitidos
+<LimitExcept GET POST HEAD>
+    deny from all
+</LimitExcept>
+
+# Timeout de conexión
+Timeout 60
+
+# Limitar tamaño de request
+LimitRequestBody 10485760  # 10MB
+
+# Headers de seguridad (requiere mod_headers)
+sudo a2enmod headers
+
+# En virtual host o .htaccess:
+Header always set X-Content-Type-Options "nosniff"
+Header always set X-Frame-Options "SAMEORIGIN"
+Header always set X-XSS-Protection "1; mode=block"
+Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+
+# Deshabilitar información del servidor
+# En /etc/apache2/conf-available/security.conf:
+sudo nano /etc/apache2/conf-available/security.conf
+
+# Asegurar que esté habilitado
+sudo a2enconf security
+
+# Verificar configuración
+sudo apache2ctl configtest
+
+# Reiniciar
+sudo systemctl restart apache2</code></pre>
+                        </div>
+
+                        <h2 id="nginx-hardening">Nginx</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Backup\nsudo cp /etc/nginx/nginx.conf /etc/nginx/nginx.conf.backup\n\n# Editar configuración\nsudo nano /etc/nginx/nginx.conf\n\n# Ocultar versión\nserver_tokens off;\n\n# Headers de seguridad\nadd_header X-Frame-Options \"SAMEORIGIN\" always;\nadd_header X-Content-Type-Options \"nosniff\" always;\nadd_header X-XSS-Protection \"1; mode=block\" always;\nadd_header Strict-Transport-Security \"max-age=31536000; includeSubDomains\" always;\n\n# Timeout\nclient_body_timeout 10;\nclient_header_timeout 10;\nkeepalive_timeout 5 5;\nsend_timeout 10;\n\n# Limitar tamaño de request\nclient_max_body_size 10M;\nclient_body_buffer_size 128k;\n\n# Deshabilitar métodos HTTP no necesarios\nif ($request_method !~ ^(GET|HEAD|POST)$ ) {\n    return 405;\n}\n\n# Limitar rate limiting\nlimit_req_zone $binary_remote_addr zone=one:10m rate=10r/s;\n\n# En location:\nlimit_req zone=one burst=5 nodelay;\n\n# Verificar configuración\nsudo nginx -t\n\n# Recargar\nsudo systemctl reload nginx")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Backup
+sudo cp /etc/nginx/nginx.conf /etc/nginx/nginx.conf.backup
+
+# Editar configuración
+sudo nano /etc/nginx/nginx.conf
+
+# Ocultar versión
+server_tokens off;
+
+# Headers de seguridad
+add_header X-Frame-Options "SAMEORIGIN" always;
+add_header X-Content-Type-Options "nosniff" always;
+add_header X-XSS-Protection "1; mode=block" always;
+add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+
+# Timeout
+client_body_timeout 10;
+client_header_timeout 10;
+keepalive_timeout 5 5;
+send_timeout 10;
+
+# Limitar tamaño de request
+client_max_body_size 10M;
+client_body_buffer_size 128k;
+
+# Deshabilitar métodos HTTP no necesarios
+if ($request_method !~ ^(GET|HEAD|POST)$ ) {
+    return 405;
+}
+
+# Limitar rate limiting
+limit_req_zone $binary_remote_addr zone=one:10m rate=10r/s;
+
+# En location:
+limit_req zone=one burst=5 nodelay;
+
+# Verificar configuración
+sudo nginx -t
+
+# Recargar
+sudo systemctl reload nginx</code></pre>
+                        </div>
+
+                        <h2 id="mysql-hardening">MySQL/MariaDB</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Ejecutar script de seguridad\nsudo mysql_secure_installation\n\n# Editar configuración\nsudo nano /etc/mysql/mysql.conf.d/mysqld.cnf\n\n# Configuraciones de seguridad:\n\n# Bind solo a localhost si no necesita acceso remoto\nbind-address = 127.0.0.1\n\n# Deshabilitar carga local de archivos\nlocal-infile = 0\n\n# Habilitar logging\nlog_error = /var/log/mysql/error.log\nlog_queries_not_using_indexes = 1\nslow_query_log = 1\nslow_query_log_file = /var/log/mysql/slow-query.log\nlong_query_time = 2\n\n# Limitar conexiones\nmax_connections = 100\nmax_connect_errors = 10\n\n# Timeout\nwait_timeout = 600\ninteractive_timeout = 600\n\n# Reiniciar\nsudo systemctl restart mysql\n\n# Crear usuarios con permisos limitados\nmysql -u root -p\n\nCREATE USER 'appuser'@'localhost' IDENTIFIED BY 'strong_password';\nGRANT SELECT, INSERT, UPDATE, DELETE ON appdb.* TO 'appuser'@'localhost';\nFLUSH PRIVILEGES;\n\n# Verificar usuarios\nSELECT user, host FROM mysql.user;\n\n# Eliminar usuarios anónimos\nDELETE FROM mysql.user WHERE user='';\n\n# Eliminar base de datos de prueba\nDROP DATABASE IF EXISTS test;\nDELETE FROM mysql.db WHERE Db='test' OR Db='test\\_%';\n\nFLUSH PRIVILEGES;")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Ejecutar script de seguridad
+sudo mysql_secure_installation
+
+# Editar configuración
+sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf
+
+# Configuraciones de seguridad:
+
+# Bind solo a localhost si no necesita acceso remoto
+bind-address = 127.0.0.1
+
+# Deshabilitar carga local de archivos
+local-infile = 0
+
+# Habilitar logging
+log_error = /var/log/mysql/error.log
+log_queries_not_using_indexes = 1
+slow_query_log = 1
+slow_query_log_file = /var/log/mysql/slow-query.log
+long_query_time = 2
+
+# Limitar conexiones
+max_connections = 100
+max_connect_errors = 10
+
+# Timeout
+wait_timeout = 600
+interactive_timeout = 600
+
+# Reiniciar
+sudo systemctl restart mysql
+
+# Crear usuarios con permisos limitados
+mysql -u root -p
+
+CREATE USER 'appuser'@'localhost' IDENTIFIED BY 'strong_password';
+GRANT SELECT, INSERT, UPDATE, DELETE ON appdb.* TO 'appuser'@'localhost';
+FLUSH PRIVILEGES;
+
+# Verificar usuarios
+SELECT user, host FROM mysql.user;
+
+# Eliminar usuarios anónimos
+DELETE FROM mysql.user WHERE user='';
+
+# Eliminar base de datos de prueba
+DROP DATABASE IF EXISTS test;
+DELETE FROM mysql.db WHERE Db='test' OR Db='test\_%';
+
+FLUSH PRIVILEGES;</code></pre>
+                        </div>
+
+                        <h2 id="checklist-servicios">Checklist de Hardening de Servicios</h2>
+                        <div class="checklist-container" x-data="checklist('servicios-hardening-checklist')">
+                            <div class="checklist-header">
+                                <h3>Verificación de Servicios Hardened</h3>
+                                <div class="checklist-progress">
+                                    <span>Progreso: <strong x-text="progress + '%'"></strong></span>
+                                    <button @click="resetChecklist()" class="btn-sm">Reset</button>
+                                    <button @click="exportChecklist()" class="btn-sm">Exportar JSON</button>
+                                </div>
+                            </div>
+                            <ul class="checklist">
+                                <li>
+                                    <label>
+                                        <input type="checkbox" x-model="items[0]" @change="updateProgress()">
+                                        <span>✅ SSH: Root login deshabilitado</span>
+                                    </label>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" x-model="items[1]" @change="updateProgress()">
+                                        <span>✅ SSH: Autenticación por clave configurada</span>
+                                    </label>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" x-model="items[2]" @change="updateProgress()">
+                                        <span>✅ SSH: Fail2ban configurado</span>
+                                    </label>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" x-model="items[3]" @change="updateProgress()">
+                                        <span>✅ Apache/Nginx: Versión oculta</span>
+                                    </label>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" x-model="items[4]" @change="updateProgress()">
+                                        <span>✅ Apache/Nginx: Headers de seguridad configurados</span>
+                                    </label>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" x-model="items[5]" @change="updateProgress()">
+                                        <span>✅ MySQL: mysql_secure_installation ejecutado</span>
+                                    </label>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" x-model="items[6]" @change="updateProgress()">
+                                        <span>✅ MySQL: Usuarios con permisos limitados</span>
+                                    </label>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" x-model="items[7]" @change="updateProgress()">
+                                        <span>✅ Todos los servicios: Logging habilitado</span>
+                                    </label>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="alert alert-success mt-8">
+                            <p class="font-semibold mb-2">✅ Módulo 4 Completado</p>
+                            <p>Has aprendido a hardenear los servicios más comunes. En el siguiente módulo veremos hardening a nivel de red. Recuerda: cada servicio tiene sus propias vulnerabilidades, mantén siempre actualizado y monitoreado.</p>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </main>
+    </div>
+    <footer class="bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-sm text-gray-600 dark:text-gray-400">Actualizado por mí en Enero 2026</p>
+                <a href="https://github.com/tu-usuario/cybersec-handbook" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">Editar en GitHub</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../assets/js/search.js"></script>
+    <script src="../assets/js/main.js"></script>
+    <style>[x-cloak] { display: none !important; }</style>
+</body>
+</html>

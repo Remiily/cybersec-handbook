@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="es" x-data="app" x-init="init()" :class="{ 'dark': darkMode }">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo 6: Hardening de Aplicaciones - CyberSec Handbook</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <script>tailwind.config = { darkMode: 'class' }</script>
+</head>
+<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+    <header class="sticky top-0 z-30 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-4">
+                    <button @click="toggleSidebar()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 lg:hidden sidebar-toggle">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                    <a href="../index.html" class="flex items-center gap-2">
+                        <h1 class="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">🛡️ CyberSec Handbook</h1>
+                    </a>
+                </div>
+                <button @click="toggleDarkMode()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                    <svg x-show="!darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                    </svg>
+                    <svg x-show="darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+    <div x-show="sidebarOpen" @click="closeSidebar()" class="sidebar-overlay" x-cloak></div>
+    <div class="flex relative">
+        <aside :class="sidebarOpen ? 'open' : ''" class="sidebar">
+            <nav class="p-4 space-y-2">
+                <a href="../index.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🏠 Inicio</a>
+                <div class="mt-4">
+                    <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-2">Curso Hardening</h3>
+                    <a href="fundamentos-hardening.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Módulo 1: Fundamentos</a>
+                    <a href="os-hardening/linux-guide.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Módulo 2: Linux</a>
+                    <a href="os-hardening/windows-guide.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Módulo 3: Windows</a>
+                    <a href="servicios-hardening.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Módulo 4: Servicios</a>
+                    <a href="network-hardening.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Módulo 5: Redes</a>
+                    <a href="aplicaciones-hardening.html" class="nav-link block px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 font-medium">Módulo 6: Aplicaciones</a>
+                    <a href="automatizacion-hardening.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Módulo 7: Automatización</a>
+                    <a href="benchmarks-application.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Módulo 8: Compliance</a>
+                </div>
+            </nav>
+        </aside>
+        <main class="flex-1 min-h-screen lg:ml-64">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <article>
+                    <header class="mb-8">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="badge badge-advanced">Módulo 6</span>
+                            <span class="badge">📱 Aplicaciones</span>
+                        </div>
+                        <h1 class="text-4xl font-bold mb-4">Hardening de Aplicaciones Web</h1>
+                        <p class="text-xl text-gray-600 dark:text-gray-400 mb-4">WAF, Content Security Policy, HTTPS, y protección de aplicaciones web</p>
+                        <div class="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-4 rounded mb-4">
+                            <p class="text-sm"><strong>Objetivos:</strong> Aprender a proteger aplicaciones web contra vulnerabilidades comunes (OWASP Top 10), implementar WAF, y configurar headers de seguridad.</p>
+                        </div>
+                    </header>
+                    <div id="table-of-contents" class="toc"></div>
+                    <div class="prose prose-lg dark:prose-invert max-w-none">
+                        <h2 id="waf-modsecurity">WAF con ModSecurity</h2>
+                        <p>ModSecurity es un WAF (Web Application Firewall) open source para Apache y Nginx.</p>
+                        
+                        <h3>Instalación y Configuración (Apache)</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Instalar ModSecurity para Apache\nsudo apt install libapache2-mod-security2 -y\n\n# Habilitar módulo\nsudo a2enmod security2\n\n# Backup de configuración\nsudo cp /etc/modsecurity/modsecurity.conf-recommended /etc/modsecurity/modsecurity.conf\n\n# Editar configuración\nsudo nano /etc/modsecurity/modsecurity.conf\n\n# Cambiar:\nSecRuleEngine On\nSecRequestBodyAccess On\nSecResponseBodyAccess On\nSecResponseBodyMimeType text/plain text/html text/xml\n\n# Instalar reglas OWASP Core Rule Set\ncd /tmp\nwget https://github.com/coreruleset/coreruleset/archive/v3.3.4.tar.gz\ntar -xzf v3.3.4.tar.gz\nsudo cp -r coreruleset-3.3.4 /etc/modsecurity/\nsudo mv /etc/modsecurity/coreruleset-3.3.4 /etc/modsecurity/crs\n\n# Configurar CRS\ncd /etc/modsecurity/crs\nsudo cp crs-setup.conf.example crs-setup.conf\nsudo nano crs-setup.conf\n\n# Habilitar en Apache\nsudo nano /etc/apache2/mods-available/security2.conf\n\n# Agregar:\n<IfModule security2_module>\n    SecDataDir /var/cache/modsecurity\n    IncludeOptional /etc/modsecurity/crs/*.conf\n    IncludeOptional /etc/modsecurity/crs/rules/*.conf\n</IfModule>\n\n# Reiniciar Apache\nsudo systemctl restart apache2\n\n# Ver logs\nsudo tail -f /var/log/apache2/modsec_audit.log")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Instalar ModSecurity para Apache
+sudo apt install libapache2-mod-security2 -y
+
+# Habilitar módulo
+sudo a2enmod security2
+
+# Backup de configuración
+sudo cp /etc/modsecurity/modsecurity.conf-recommended /etc/modsecurity/modsecurity.conf
+
+# Editar configuración
+sudo nano /etc/modsecurity/modsecurity.conf
+
+# Cambiar:
+SecRuleEngine On
+SecRequestBodyAccess On
+SecResponseBodyAccess On
+SecResponseBodyMimeType text/plain text/html text/xml
+
+# Instalar reglas OWASP Core Rule Set
+cd /tmp
+wget https://github.com/coreruleset/coreruleset/archive/v3.3.4.tar.gz
+tar -xzf v3.3.4.tar.gz
+sudo cp -r coreruleset-3.3.4 /etc/modsecurity/
+sudo mv /etc/modsecurity/coreruleset-3.3.4 /etc/modsecurity/crs
+
+# Configurar CRS
+cd /etc/modsecurity/crs
+sudo cp crs-setup.conf.example crs-setup.conf
+sudo nano crs-setup.conf
+
+# Habilitar en Apache
+sudo nano /etc/apache2/mods-available/security2.conf
+
+# Agregar:
+<IfModule security2_module>
+    SecDataDir /var/cache/modsecurity
+    IncludeOptional /etc/modsecurity/crs/*.conf
+    IncludeOptional /etc/modsecurity/crs/rules/*.conf
+</IfModule>
+
+# Reiniciar Apache
+sudo systemctl restart apache2
+
+# Ver logs
+sudo tail -f /var/log/apache2/modsec_audit.log</code></pre>
+                        </div>
+
+                        <h2 id="content-security-policy">Content Security Policy (CSP)</h2>
+                        <p>CSP previene XSS mediante la especificación de qué recursos puede cargar la página.</p>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# CSP estricto (Apache)\n# En virtual host o .htaccess:\nHeader always set Content-Security-Policy \"default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self'; frame-ancestors 'none';\"\n\n# CSP estricto (Nginx)\nadd_header Content-Security-Policy \"default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self'; frame-ancestors 'none';\";\n\n# CSP más permisivo (si necesitas CDN)\nHeader always set Content-Security-Policy \"default-src 'self'; script-src 'self' https://cdn.example.com; style-src 'self' https://cdn.example.com; img-src 'self' data: https:;\"\n\n# Reportar violaciones de CSP\nHeader always set Content-Security-Policy-Report-Only \"default-src 'self'; report-uri /csp-report-endpoint;\"\n\n# Verificar headers\ncurl -I https://tudominio.com | grep -i content-security")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># CSP estricto (Apache)
+# En virtual host o .htaccess:
+Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self'; frame-ancestors 'none';"
+
+# CSP estricto (Nginx)
+add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self'; frame-ancestors 'none';";
+
+# CSP más permisivo (si necesitas CDN)
+Header always set Content-Security-Policy "default-src 'self'; script-src 'self' https://cdn.example.com; style-src 'self' https://cdn.example.com; img-src 'self' data: https:;"
+
+# Reportar violaciones de CSP
+Header always set Content-Security-Policy-Report-Only "default-src 'self'; report-uri /csp-report-endpoint;"
+
+# Verificar headers
+curl -I https://tudominio.com | grep -i content-security</code></pre>
+                        </div>
+
+                        <h2 id="https-ssl">HTTPS y SSL/TLS</h2>
+                        <h3>Let's Encrypt (Certbot)</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Instalar Certbot\nsudo apt install certbot python3-certbot-apache -y\n\n# O para Nginx:\nsudo apt install certbot python3-certbot-nginx -y\n\n# Obtener certificado (Apache)\nsudo certbot --apache -d tudominio.com -d www.tudominio.com\n\n# Obtener certificado (Nginx)\nsudo certbot --nginx -d tudominio.com -d www.tudominio.com\n\n# Obtener solo certificado (sin configurar servidor web)\nsudo certbot certonly --standalone -d tudominio.com\n\n# Renovar certificado manualmente\nsudo certbot renew\n\n# Renovar certificado con dry-run (prueba)\nsudo certbot renew --dry-run\n\n# Configurar renovación automática\n# Certbot crea un timer systemd automáticamente\n# Verificar:\nsystemctl list-timers | grep certbot\n\n# Ver certificados obtenidos\nsudo certbot certificates\n\n# Revocar certificado\nsudo certbot revoke --cert-path /etc/letsencrypt/live/tudominio.com/cert.pem")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Instalar Certbot
+sudo apt install certbot python3-certbot-apache -y
+
+# O para Nginx:
+sudo apt install certbot python3-certbot-nginx -y
+
+# Obtener certificado (Apache)
+sudo certbot --apache -d tudominio.com -d www.tudominio.com
+
+# Obtener certificado (Nginx)
+sudo certbot --nginx -d tudominio.com -d www.tudominio.com
+
+# Obtener solo certificado (sin configurar servidor web)
+sudo certbot certonly --standalone -d tudominio.com
+
+# Renovar certificado manualmente
+sudo certbot renew
+
+# Renovar certificado con dry-run (prueba)
+sudo certbot renew --dry-run
+
+# Configurar renovación automática
+# Certbot crea un timer systemd automáticamente
+# Verificar:
+systemctl list-timers | grep certbot
+
+# Ver certificados obtenidos
+sudo certbot certificates
+
+# Revocar certificado
+sudo certbot revoke --cert-path /etc/letsencrypt/live/tudominio.com/cert.pem</code></pre>
+                        </div>
+
+                        <h3>Configuración SSL/TLS Segura</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Apache - Configuración SSL segura\n# En virtual host SSL:\n\n<VirtualHost *:443>\n    ServerName tudominio.com\n    DocumentRoot /var/www/html\n    \n    SSLEngine on\n    SSLCertificateFile /etc/letsencrypt/live/tudominio.com/fullchain.pem\n    SSLCertificateKeyFile /etc/letsencrypt/live/tudominio.com/privkey.pem\n    \n    # Solo TLS 1.2 y 1.3\n    SSLProtocol all -SSLv3 -TLSv1 -TLSv1.1\n    \n    # Cipher suites seguros\n    SSLCipherSuite ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384\n    SSLHonorCipherOrder on\n    \n    # HSTS\n    Header always set Strict-Transport-Security \"max-age=31536000; includeSubDomains; preload\"\n    \n    # OCSP Stapling\n    SSLUseStapling on\n    SSLStaplingCache \"shmcb:logs/ssl_stapling(32768)\"\n</VirtualHost>\n\n# Nginx - Configuración SSL segura\nserver {\n    listen 443 ssl http2;\n    server_name tudominio.com;\n    \n    ssl_certificate /etc/letsencrypt/live/tudominio.com/fullchain.pem;\n    ssl_certificate_key /etc/letsencrypt/live/tudominio.com/privkey.pem;\n    \n    # Solo TLS 1.2 y 1.3\n    ssl_protocols TLSv1.2 TLSv1.3;\n    \n    # Cipher suites seguros\n    ssl_ciphers 'ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384';\n    ssl_prefer_server_ciphers on;\n    \n    # HSTS\n    add_header Strict-Transport-Security \"max-age=31536000; includeSubDomains; preload\" always;\n    \n    # OCSP Stapling\n    ssl_stapling on;\n    ssl_stapling_verify on;\n    ssl_trusted_certificate /etc/letsencrypt/live/tudominio.com/chain.pem;\n    resolver 8.8.8.8 8.8.4.4 valid=300s;\n    resolver_timeout 5s;\n}\n\n# Verificar configuración SSL\nopenssl s_client -connect tudominio.com:443 -tls1_2\n\n# Test online: https://www.ssllabs.com/ssltest/")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Apache - Configuración SSL segura
+# En virtual host SSL:
+
+<VirtualHost *:443>
+    ServerName tudominio.com
+    DocumentRoot /var/www/html
+    
+    SSLEngine on
+    SSLCertificateFile /etc/letsencrypt/live/tudominio.com/fullchain.pem
+    SSLCertificateKeyFile /etc/letsencrypt/live/tudominio.com/privkey.pem
+    
+    # Solo TLS 1.2 y 1.3
+    SSLProtocol all -SSLv3 -TLSv1 -TLSv1.1
+    
+    # Cipher suites seguros
+    SSLCipherSuite ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384
+    SSLHonorCipherOrder on
+    
+    # HSTS
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+    
+    # OCSP Stapling
+    SSLUseStapling on
+    SSLStaplingCache "shmcb:logs/ssl_stapling(32768)"
+</VirtualHost>
+
+# Nginx - Configuración SSL segura
+server {
+    listen 443 ssl http2;
+    server_name tudominio.com;
+    
+    ssl_certificate /etc/letsencrypt/live/tudominio.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/tudominio.com/privkey.pem;
+    
+    # Solo TLS 1.2 y 1.3
+    ssl_protocols TLSv1.2 TLSv1.3;
+    
+    # Cipher suites seguros
+    ssl_ciphers 'ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384';
+    ssl_prefer_server_ciphers on;
+    
+    # HSTS
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
+    
+    # OCSP Stapling
+    ssl_stapling on;
+    ssl_stapling_verify on;
+    ssl_trusted_certificate /etc/letsencrypt/live/tudominio.com/chain.pem;
+    resolver 8.8.8.8 8.8.4.4 valid=300s;
+    resolver_timeout 5s;
+}
+
+# Verificar configuración SSL
+openssl s_client -connect tudominio.com:443 -tls1_2
+
+# Test online: https://www.ssllabs.com/ssltest/</code></pre>
+                        </div>
+
+                        <h2 id="headers-seguridad">Headers de Seguridad</h2>
+                        <div class="overflow-x-auto mb-6">
+                            <table>
+                                <thead>
+                                    <tr><th>Header</th><th>Propósito</th><th>Ejemplo</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>X-Frame-Options</td><td>Previene clickjacking</td><td>SAMEORIGIN o DENY</td></tr>
+                                    <tr><td>X-Content-Type-Options</td><td>Previene MIME sniffing</td><td>nosniff</td></tr>
+                                    <tr><td>X-XSS-Protection</td><td>Protección XSS (legacy)</td><td>1; mode=block</td></tr>
+                                    <tr><td>Strict-Transport-Security</td><td>Fuerza HTTPS</td><td>max-age=31536000</td></tr>
+                                    <tr><td>Content-Security-Policy</td><td>Controla recursos cargados</td><td>default-src 'self'</td></tr>
+                                    <tr><td>Referrer-Policy</td><td>Controla información de referrer</td><td>strict-origin-when-cross-origin</td></tr>
+                                    <tr><td>Permissions-Policy</td><td>Controla features del navegador</td><td>geolocation=(), microphone=()</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h2 id="checklist-aplicaciones">Checklist de Hardening de Aplicaciones</h2>
+                        <div class="checklist-container" x-data="checklist('aplicaciones-hardening-checklist')">
+                            <div class="checklist-header">
+                                <h3>Verificación de Seguridad de Aplicaciones Web</h3>
+                                <div class="checklist-progress">
+                                    <span>Progreso: <strong x-text="progress + '%'"></strong></span>
+                                    <button @click="resetChecklist()" class="btn-sm">Reset</button>
+                                    <button @click="exportChecklist()" class="btn-sm">Exportar JSON</button>
+                                </div>
+                            </div>
+                            <ul class="checklist">
+                                <li>
+                                    <label>
+                                        <input type="checkbox" x-model="items[0]" @change="updateProgress()">
+                                        <span>✅ HTTPS configurado con certificado válido</span>
+                                    </label>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" x-model="items[1]" @change="updateProgress()">
+                                        <span>✅ Solo TLS 1.2 y 1.3 habilitados</span>
+                                    </label>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" x-model="items[2]" @change="updateProgress()">
+                                        <span>✅ HSTS configurado</span>
+                                    </label>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" x-model="items[3]" @change="updateProgress()">
+                                        <span>✅ WAF (ModSecurity) configurado</span>
+                                    </label>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" x-model="items[4]" @change="updateProgress()">
+                                        <span>✅ Content Security Policy configurado</span>
+                                    </label>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" x-model="items[5]" @change="updateProgress()">
+                                        <span>✅ Headers de seguridad configurados</span>
+                                    </label>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" x-model="items[6]" @change="updateProgress()">
+                                        <span>✅ Input validation implementado</span>
+                                    </label>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" x-model="items[7]" @change="updateProgress()">
+                                        <span>✅ Output encoding implementado</span>
+                                    </label>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="alert alert-success mt-8">
+                            <p class="font-semibold mb-2">✅ Módulo 6 Completado</p>
+                            <p>Has aprendido a proteger aplicaciones web. En el siguiente módulo veremos cómo automatizar todo el proceso de hardening. Recuerda: la seguridad de aplicaciones web requiere múltiples capas de protección.</p>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </main>
+    </div>
+    <footer class="bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-sm text-gray-600 dark:text-gray-400">Actualizado por mí en Enero 2026</p>
+                <a href="https://github.com/tu-usuario/cybersec-handbook" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">Editar en GitHub</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../assets/js/search.js"></script>
+    <script src="../assets/js/main.js"></script>
+    <style>[x-cloak] { display: none !important; }</style>
+</body>
+</html>

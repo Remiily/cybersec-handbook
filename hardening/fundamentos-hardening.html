@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="es" x-data="app" x-init="init()" :class="{ 'dark': darkMode }">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo 1: Fundamentos de Hardening - CyberSec Handbook</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <script>tailwind.config = { darkMode: 'class' }</script>
+</head>
+<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+    <header class="sticky top-0 z-30 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-4">
+                    <button @click="toggleSidebar()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 lg:hidden sidebar-toggle">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                    <a href="../index.html" class="flex items-center gap-2">
+                        <h1 class="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">🛡️ CyberSec Handbook</h1>
+                    </a>
+                </div>
+                <button @click="toggleDarkMode()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                    <svg x-show="!darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                    </svg>
+                    <svg x-show="darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+    <div x-show="sidebarOpen" @click="closeSidebar()" class="sidebar-overlay" x-cloak></div>
+    <div class="flex relative">
+        <aside :class="sidebarOpen ? 'open' : ''" class="sidebar">
+            <nav class="p-4 space-y-2">
+                <a href="../index.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🏠 Inicio</a>
+                <div class="mt-4">
+                    <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-2">Curso Hardening</h3>
+                    <a href="fundamentos-hardening.html" class="nav-link block px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 font-medium">Módulo 1: Fundamentos</a>
+                    <a href="os-hardening/linux-guide.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Módulo 2: Linux</a>
+                    <a href="os-hardening/windows-guide.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Módulo 3: Windows</a>
+                    <a href="servicios-hardening.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Módulo 4: Servicios</a>
+                    <a href="network-hardening.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Módulo 5: Redes</a>
+                    <a href="aplicaciones-hardening.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Módulo 6: Aplicaciones</a>
+                    <a href="automatizacion-hardening.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Módulo 7: Automatización</a>
+                    <a href="benchmarks-application.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Módulo 8: Compliance</a>
+                </div>
+            </nav>
+        </aside>
+        <main class="flex-1 min-h-screen lg:ml-64">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <article>
+                    <header class="mb-8">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="badge badge-beginner">Módulo 1</span>
+                            <span class="badge">📚 Fundamentos</span>
+                        </div>
+                        <h1 class="text-4xl font-bold mb-4">Fundamentos de Hardening</h1>
+                        <p class="text-xl text-gray-600 dark:text-gray-400 mb-4">Introducción completa al hardening de sistemas: conceptos, metodología y principios fundamentales</p>
+                        <div class="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-4 rounded mb-4">
+                            <p class="text-sm"><strong>Objetivos de aprendizaje:</strong> Al finalizar este módulo, comprenderás los conceptos fundamentales de hardening, metodologías de seguridad, y estarás preparado para aplicar técnicas de hardening en sistemas reales.</p>
+                        </div>
+                    </header>
+                    <div id="table-of-contents" class="toc"></div>
+                    <div class="prose prose-lg dark:prose-invert max-w-none">
+                        <h2 id="que-es-hardening">¿Qué es Hardening?</h2>
+                        <p><strong>Hardening</strong> es el proceso de reducir la superficie de ataque de un sistema mediante la eliminación o desactivación de servicios, funciones, aplicaciones y puertos innecesarios, así como la aplicación de configuraciones de seguridad más estrictas.</p>
+                        
+                        <div class="alert alert-info mt-4">
+                            <p class="font-semibold mb-2">💡 Concepto Clave</p>
+                            <p>El hardening no es un evento único, sino un <strong>proceso continuo</strong> que debe mantenerse a lo largo del ciclo de vida del sistema. Cada actualización, cambio de configuración o nuevo servicio requiere revisión de seguridad.</p>
+                        </div>
+
+                        <h3>Objetivos del Hardening</h3>
+                        <ul>
+                            <li><strong>Reducir superficie de ataque:</strong> Menos servicios = menos vectores de ataque</li>
+                            <li><strong>Minimizar privilegios:</strong> Principio de menor privilegio (least privilege)</li>
+                            <li><strong>Eliminar configuraciones por defecto inseguras:</strong> Cambiar passwords, deshabilitar servicios innecesarios</li>
+                            <li><strong>Implementar controles de seguridad:</strong> Firewalls, logging, monitoreo</li>
+                            <li><strong>Cumplir estándares:</strong> CIS, STIG, NIST, ISO 27001</li>
+                        </ul>
+
+                        <h2 id="metodologia-hardening">Metodología de Hardening</h2>
+                        <p>Una metodología estructurada garantiza que no se pasen por alto aspectos críticos:</p>
+                        
+                        <div class="steps-container">
+                            <div class="step">
+                                <h3>1. Inventario y Análisis</h3>
+                                <p>Identificar todos los componentes del sistema:</p>
+                                <div class="command-block mb-4" x-data="copyCommand">
+                                    <button @click="copy("# Inventario de servicios activos\nsystemctl list-units --type=service --state=running\n\n# Puertos abiertos\nsudo ss -tulpn\nsudo netstat -tulpn\n\n# Paquetes instalados\napt list --installed | wc -l  # Debian/Ubuntu\nrpm -qa | wc -l  # RHEL/CentOS\n\n# Usuarios del sistema\ncat /etc/passwd\n\n# Procesos en ejecución\nps aux\n\n# Conexiones de red activas\nsudo netstat -antp\n\n# Archivos con permisos SUID\nfind / -perm -4000 2>/dev/null\n\n# Archivos con permisos SGID\nfind / -perm -2000 2>/dev/null")" class="copy-btn" :class="{ 'copied': copied }">
+                                        <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                        </svg>
+                                        <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </button>
+                                    <pre><code># Inventario de servicios activos
+systemctl list-units --type=service --state=running
+
+# Puertos abiertos
+sudo ss -tulpn
+sudo netstat -tulpn
+
+# Paquetes instalados
+apt list --installed | wc -l  # Debian/Ubuntu
+rpm -qa | wc -l  # RHEL/CentOS
+
+# Usuarios del sistema
+cat /etc/passwd
+
+# Procesos en ejecución
+ps aux
+
+# Conexiones de red activas
+sudo netstat -antp
+
+# Archivos con permisos SUID
+find / -perm -4000 2>/dev/null
+
+# Archivos con permisos SGID
+find / -perm -2000 2>/dev/null</code></pre>
+                                </div>
+                            </div>
+                            
+                            <div class="step">
+                                <h3>2. Evaluación de Riesgos</h3>
+                                <p>Identificar vulnerabilidades y riesgos:</p>
+                                <ul>
+                                    <li>Servicios expuestos innecesariamente</li>
+                                    <li>Usuarios con privilegios excesivos</li>
+                                    <li>Configuraciones por defecto inseguras</li>
+                                    <li>Software desactualizado</li>
+                                    <li>Falta de logging y monitoreo</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="step">
+                                <h3>3. Planificación</h3>
+                                <p>Crear un plan de hardening basado en:</p>
+                                <ul>
+                                    <li>Benchmarks (CIS, STIG)</li>
+                                    <li>Requisitos de compliance</li>
+                                    <li>Necesidades del negocio</li>
+                                    <li>Impacto en funcionalidad</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="step">
+                                <h3>4. Implementación</h3>
+                                <p>Aplicar cambios de forma controlada:</p>
+                                <ul>
+                                    <li>Empezar con cambios de bajo riesgo</li>
+                                    <li>Probar en entorno de staging primero</li>
+                                    <li>Documentar todos los cambios</li>
+                                    <li>Mantener backups antes de cambios críticos</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="step">
+                                <h3>5. Validación</h3>
+                                <p>Verificar que los cambios funcionan correctamente:</p>
+                                <div class="command-block mb-4" x-data="copyCommand">
+                                    <button @click="copy("# Verificar servicios críticos\nsystemctl is-active apache2\nsystemctl is-active mysql\n\n# Verificar conectividad\nping -c 3 8.8.8.8\n\n# Verificar puertos específicos\nnc -zv localhost 80\nnc -zv localhost 443\n\n# Verificar logs de errores\nsudo journalctl -p err -n 50\n\n# Verificar permisos de archivos críticos\nls -la /etc/passwd\nls -la /etc/shadow\nls -la /etc/sudoers")" class="copy-btn" :class="{ 'copied': copied }">
+                                        <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                        </svg>
+                                        <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </button>
+                                    <pre><code># Verificar servicios críticos
+systemctl is-active apache2
+systemctl is-active mysql
+
+# Verificar conectividad
+ping -c 3 8.8.8.8
+
+# Verificar puertos específicos
+nc -zv localhost 80
+nc -zv localhost 443
+
+# Verificar logs de errores
+sudo journalctl -p err -n 50
+
+# Verificar permisos de archivos críticos
+ls -la /etc/passwd
+ls -la /etc/shadow
+ls -la /etc/sudoers</code></pre>
+                                </div>
+                            </div>
+                            
+                            <div class="step">
+                                <h3>6. Documentación</h3>
+                                <p>Documentar todos los cambios:</p>
+                                <ul>
+                                    <li>Configuraciones aplicadas</li>
+                                    <li>Razón de cada cambio</li>
+                                    <li>Impacto en funcionalidad</li>
+                                    <li>Procedimientos de rollback</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="step">
+                                <h3>7. Monitoreo Continuo</h3>
+                                <p>Mantener el sistema seguro a lo largo del tiempo:</p>
+                                <ul>
+                                    <li>Auditorías regulares</li>
+                                    <li>Scans de vulnerabilidades</li>
+                                    <li>Revisión de logs</li>
+                                    <li>Actualizaciones de seguridad</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <h2 id="principios-fundamentales">Principios Fundamentales</h2>
+                        
+                        <h3>1. Principio de Menor Privilegio (Least Privilege)</h3>
+                        <p>Usuarios y procesos deben tener solo los permisos mínimos necesarios para realizar sus funciones.</p>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Ejemplo: Crear usuario sin privilegios de sudo\nsudo adduser --system --no-create-home --shell /bin/false appuser\n\n# Asignar solo permisos específicos a directorio\nsudo chown appuser:appuser /var/www/app\nsudo chmod 750 /var/www/app\n\n# Verificar permisos\nls -la /var/www/app\n\n# Crear usuario con acceso limitado a base de datos\n# (En MySQL)\nCREATE USER 'appuser'@'localhost' IDENTIFIED BY 'strong_password';\nGRANT SELECT, INSERT, UPDATE ON appdb.* TO 'appuser'@'localhost';\nFLUSH PRIVILEGES;")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Ejemplo: Crear usuario sin privilegios de sudo
+sudo adduser --system --no-create-home --shell /bin/false appuser
+
+# Asignar solo permisos específicos a directorio
+sudo chown appuser:appuser /var/www/app
+sudo chmod 750 /var/www/app
+
+# Verificar permisos
+ls -la /var/www/app
+
+# Crear usuario con acceso limitado a base de datos
+# (En MySQL)
+CREATE USER 'appuser'@'localhost' IDENTIFIED BY 'strong_password';
+GRANT SELECT, INSERT, UPDATE ON appdb.* TO 'appuser'@'localhost';
+FLUSH PRIVILEGES;</code></pre>
+                        </div>
+
+                        <h3>2. Defense in Depth (Defensa en Profundidad)</h3>
+                        <p>Múltiples capas de seguridad que protegen el sistema incluso si una falla.</p>
+                        <div class="overflow-x-auto mb-6">
+                            <table>
+                                <thead>
+                                    <tr><th>Capa</th><th>Ejemplo</th><th>Propósito</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>Red</td><td>Firewall, IDS/IPS</td><td>Filtrar tráfico malicioso</td></tr>
+                                    <tr><td>Sistema Operativo</td><td>Hardening, SELinux/AppArmor</td><td>Proteger recursos del sistema</td></tr>
+                                    <tr><td>Aplicación</td><td>WAF, Input validation</td><td>Proteger aplicación</td></tr>
+                                    <tr><td>Datos</td><td>Encryption, DLP</td><td>Proteger información</td></tr>
+                                    <tr><td>Identidad</td><td>MFA, IAM</td><td>Autenticación fuerte</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h3>3. Fail Secure</h3>
+                        <p>En caso de fallo, el sistema debe fallar de forma segura (denegar acceso por defecto).</p>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Firewall: Default deny\nsudo ufw default deny incoming\nsudo ufw default allow outgoing\n\n# SSH: Denegar acceso si falla autenticación\n# /etc/ssh/sshd_config\nMaxAuthTries 3\nPermitRootLogin no\n\n# Fail2ban: Bloquear después de intentos fallidos\nsudo apt install fail2ban\nsudo systemctl enable fail2ban\nsudo systemctl start fail2ban")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Firewall: Default deny
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+
+# SSH: Denegar acceso si falla autenticación
+# /etc/ssh/sshd_config
+MaxAuthTries 3
+PermitRootLogin no
+
+# Fail2ban: Bloquear después de intentos fallidos
+sudo apt install fail2ban
+sudo systemctl enable fail2ban
+sudo systemctl start fail2ban</code></pre>
+                        </div>
+
+                        <h3>4. Seguridad por Diseño</h3>
+                        <p>La seguridad debe considerarse desde el inicio, no como añadido posterior.</p>
+
+                        <h2 id="checklist-fundamentos">Checklist de Fundamentos</h2>
+                        <div class="checklist-container" x-data="checklist('hardening-fundamentos-checklist')">
+                            <div class="checklist-header">
+                                <h3>Verificación de Conceptos Fundamentales</h3>
+                                <div class="checklist-progress">
+                                    <span>Progreso: <strong x-text="progress + '%'"></strong></span>
+                                    <button @click="resetChecklist()" class="btn-sm">Reset</button>
+                                    <button @click="exportChecklist()" class="btn-sm">Exportar JSON</button>
+                                </div>
+                            </div>
+                            <ul class="checklist">
+                                <li>
+                                    <label>
+                                        <input type="checkbox" x-model="items[0]" @change="updateProgress()">
+                                        <span>✅ Comprendo qué es hardening y su importancia</span>
+                                    </label>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" x-model="items[1]" @change="updateProgress()">
+                                        <span>✅ Puedo realizar un inventario básico del sistema</span>
+                                    </label>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" x-model="items[2]" @change="updateProgress()">
+                                        <span>✅ Entiendo la metodología de hardening (7 pasos)</span>
+                                    </label>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" x-model="items[3]" @change="updateProgress()">
+                                        <span>✅ Comprendo el principio de menor privilegio</span>
+                                    </label>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" x-model="items[4]" @change="updateProgress()">
+                                        <span>✅ Entiendo Defense in Depth</span>
+                                    </label>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" x-model="items[5]" @change="updateProgress()">
+                                        <span>✅ Comprendo el concepto de Fail Secure</span>
+                                    </label>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" x-model="items[6]" @change="updateProgress()">
+                                        <span>✅ Puedo identificar servicios innecesarios</span>
+                                    </label>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" x-model="items[7]" @change="updateProgress()">
+                                        <span>✅ Sé cómo documentar cambios de hardening</span>
+                                    </label>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <h2 id="ejercicio-practico">Ejercicio Práctico</h2>
+                        <div class="bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-500 p-4 rounded mb-6">
+                            <p class="font-semibold mb-2">📝 Ejercicio: Análisis Inicial de Sistema</p>
+                            <p>En una máquina virtual o servidor de prueba:</p>
+                            <ol class="list-decimal ml-6 mt-2">
+                                <li>Ejecuta un inventario completo del sistema (servicios, puertos, usuarios)</li>
+                                <li>Identifica al menos 3 servicios que podrían deshabilitarse</li>
+                                <li>Identifica usuarios con privilegios excesivos</li>
+                                <li>Documenta tus hallazgos en un archivo</li>
+                                <li>Crea un plan de hardening básico (sin aplicar cambios aún)</li>
+                            </ol>
+                        </div>
+
+                        <h2 id="conceptos-clave">Conceptos Clave del Módulo</h2>
+                        <div class="overflow-x-auto mb-6">
+                            <table>
+                                <thead>
+                                    <tr><th>Concepto</th><th>Definición</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>Hardening</td><td>Proceso de reducir superficie de ataque mediante eliminación de servicios innecesarios y aplicación de configuraciones seguras</td></tr>
+                                    <tr><td>Superficie de Ataque</td><td>Total de puntos donde un atacante puede intentar acceder o extraer datos</td></tr>
+                                    <tr><td>Least Privilege</td><td>Principio que otorga solo los permisos mínimos necesarios</td></tr>
+                                    <tr><td>Defense in Depth</td><td>Estrategia de múltiples capas de seguridad</td></tr>
+                                    <tr><td>Fail Secure</td><td>En caso de fallo, el sistema deniega acceso por defecto</td></tr>
+                                    <tr><td>Benchmark</td><td>Estándar de configuración segura (CIS, STIG, NIST)</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="alert alert-success mt-8">
+                            <p class="font-semibold mb-2">✅ Módulo 1 Completado</p>
+                            <p>Has aprendido los fundamentos de hardening. En el siguiente módulo aplicaremos estos conceptos al hardening de sistemas Linux. Recuerda: el hardening es un proceso continuo, no un evento único.</p>
+                        </div>
+
+                        <div class="mt-8 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                            <h3 class="font-semibold mb-2">📚 Recursos Adicionales</h3>
+                            <ul class="list-disc ml-6 space-y-1">
+                                <li><a href="https://www.cisecurity.org/benchmark" class="text-blue-600 dark:text-blue-400 hover:underline">CIS Benchmarks</a></li>
+                                <li><a href="https://www.stigviewer.com/" class="text-blue-600 dark:text-blue-400 hover:underline">STIG Viewer</a></li>
+                                <li><a href="https://csrc.nist.gov/publications/detail/sp/800-123/final" class="text-blue-600 dark:text-blue-400 hover:underline">NIST Guide to General Server Security</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </main>
+    </div>
+    <footer class="bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-sm text-gray-600 dark:text-gray-400">Actualizado por mí en Enero 2026</p>
+                <a href="https://github.com/tu-usuario/cybersec-handbook" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">Editar en GitHub</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../assets/js/search.js"></script>
+    <script src="../assets/js/main.js"></script>
+    <style>[x-cloak] { display: none !important; }</style>
+</body>
+</html>

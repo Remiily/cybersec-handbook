@@ -23,3 +23,16 @@ npm-debug.log*
 dist/
 build/
 .cache/
+
+# Snyk Security Extension - AI Rules (auto-generated)
+.cursor/rules/snyk_rules.mdc
+
+# Temporary and template files (should not be committed)
+PROJECT_STATUS.md
+*TEMPLATE*.html
+*TEMPLATE*.md
+*.tmp
+*.bak
+*.backup
+*_status.md
+*_template.*

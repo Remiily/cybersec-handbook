@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="es" x-data="app" x-init="init()" :class="{ 'dark': darkMode }">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo 5: Hardening de Redes - CyberSec Handbook</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <script>tailwind.config = { darkMode: 'class' }</script>
+</head>
+<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+    <header class="sticky top-0 z-30 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-4">
+                    <button @click="toggleSidebar()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 lg:hidden sidebar-toggle">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                    <a href="../index.html" class="flex items-center gap-2">
+                        <h1 class="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">🛡️ CyberSec Handbook</h1>
+                    </a>
+                </div>
+                <button @click="toggleDarkMode()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                    <svg x-show="!darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                    </svg>
+                    <svg x-show="darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+    <div x-show="sidebarOpen" @click="closeSidebar()" class="sidebar-overlay" x-cloak></div>
+    <div class="flex relative">
+        <aside :class="sidebarOpen ? 'open' : ''" class="sidebar">
+            <nav class="p-4 space-y-2">
+                <a href="../index.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">🏠 Inicio</a>
+                <div class="mt-4">
+                    <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-2">Curso Hardening</h3>
+                    <a href="fundamentos-hardening.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Módulo 1: Fundamentos</a>
+                    <a href="os-hardening/linux-guide.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Módulo 2: Linux</a>
+                    <a href="os-hardening/windows-guide.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Módulo 3: Windows</a>
+                    <a href="servicios-hardening.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Módulo 4: Servicios</a>
+                    <a href="network-hardening.html" class="nav-link block px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 font-medium">Módulo 5: Redes</a>
+                    <a href="aplicaciones-hardening.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Módulo 6: Aplicaciones</a>
+                    <a href="automatizacion-hardening.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Módulo 7: Automatización</a>
+                    <a href="benchmarks-application.html" class="nav-link block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">Módulo 8: Compliance</a>
+                </div>
+            </nav>
+        </aside>
+        <main class="flex-1 min-h-screen lg:ml-64">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <article>
+                    <header class="mb-8">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="badge badge-intermediate">Módulo 5</span>
+                            <span class="badge">🌐 Redes</span>
+                        </div>
+                        <h1 class="text-4xl font-bold mb-4">Hardening de Redes</h1>
+                        <p class="text-xl text-gray-600 dark:text-gray-400 mb-4">Firewalls, segmentación de red, IDS/IPS y protección de red</p>
+                        <div class="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-4 rounded mb-4">
+                            <p class="text-sm"><strong>Objetivos:</strong> Aprender a configurar firewalls avanzados, implementar segmentación de red, y proteger la infraestructura de red contra ataques.</p>
+                        </div>
+                    </header>
+                    <div id="table-of-contents" class="toc"></div>
+                    <div class="prose prose-lg dark:prose-invert max-w-none">
+                        <h2 id="firewall-iptables">Firewall con iptables</h2>
+                        <p>iptables es el firewall estándar en Linux. Aprender a usarlo es fundamental.</p>
+                        
+                        <h3>Conceptos Básicos</h3>
+                        <div class="overflow-x-auto mb-6">
+                            <table>
+                                <thead>
+                                    <tr><th>Tabla</th><th>Propósito</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>filter</td><td>Filtrado de paquetes (default)</td></tr>
+                                    <tr><td>nat</td><td>Network Address Translation</td></tr>
+                                    <tr><td>mangle</td><td>Modificación de paquetes</td></tr>
+                                    <tr><td>raw</td><td>Procesamiento antes de connection tracking</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="overflow-x-auto mb-6">
+                            <table>
+                                <thead>
+                                    <tr><th>Chain</th><th>Cuándo se ejecuta</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>INPUT</td><td>Paquetes destinados al sistema local</td></tr>
+                                    <tr><td>OUTPUT</td><td>Paquetes generados por el sistema local</td></tr>
+                                    <tr><td>FORWARD</td><td>Paquetes enrutados a través del sistema</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h3>Configuración Básica Segura</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Ver reglas actuales\nsudo iptables -L -n -v\n\n# Ver reglas con números de línea\nsudo iptables -L -n -v --line-numbers\n\n# Política por defecto: DENY ALL\nsudo iptables -P INPUT DROP\nsudo iptables -P FORWARD DROP\nsudo iptables -P OUTPUT ACCEPT\n\n# Permitir loopback\nsudo iptables -A INPUT -i lo -j ACCEPT\nsudo iptables -A OUTPUT -o lo -j ACCEPT\n\n# Permitir conexiones establecidas y relacionadas\nsudo iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT\n\n# Permitir SSH (cambiar puerto si es necesario)\nsudo iptables -A INPUT -p tcp --dport 22 -m state --state NEW -j ACCEPT\n\n# Permitir HTTP/HTTPS\nsudo iptables -A INPUT -p tcp --dport 80 -m state --state NEW -j ACCEPT\nsudo iptables -A INPUT -p tcp --dport 443 -m state --state NEW -j ACCEPT\n\n# Permitir ping (ICMP)\nsudo iptables -A INPUT -p icmp --icmp-type echo-request -j ACCEPT\n\n# Limitar conexiones SSH (protección contra brute force)\nsudo iptables -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --set --name SSH\nsudo iptables -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --update --seconds 60 --hitcount 4 --name SSH -j DROP\n\n# Guardar reglas (Ubuntu/Debian)\nsudo apt install iptables-persistent\nsudo netfilter-persistent save\n\n# O manualmente:\nsudo iptables-save > /etc/iptables/rules.v4\n\n# Cargar al inicio (systemd)\n# Crear servicio: /etc/systemd/system/iptables.service")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Ver reglas actuales
+sudo iptables -L -n -v
+
+# Ver reglas con números de línea
+sudo iptables -L -n -v --line-numbers
+
+# Política por defecto: DENY ALL
+sudo iptables -P INPUT DROP
+sudo iptables -P FORWARD DROP
+sudo iptables -P OUTPUT ACCEPT
+
+# Permitir loopback
+sudo iptables -A INPUT -i lo -j ACCEPT
+sudo iptables -A OUTPUT -o lo -j ACCEPT
+
+# Permitir conexiones establecidas y relacionadas
+sudo iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+# Permitir SSH (cambiar puerto si es necesario)
+sudo iptables -A INPUT -p tcp --dport 22 -m state --state NEW -j ACCEPT
+
+# Permitir HTTP/HTTPS
+sudo iptables -A INPUT -p tcp --dport 80 -m state --state NEW -j ACCEPT
+sudo iptables -A INPUT -p tcp --dport 443 -m state --state NEW -j ACCEPT
+
+# Permitir ping (ICMP)
+sudo iptables -A INPUT -p icmp --icmp-type echo-request -j ACCEPT
+
+# Limitar conexiones SSH (protección contra brute force)
+sudo iptables -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --set --name SSH
+sudo iptables -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --update --seconds 60 --hitcount 4 --name SSH -j DROP
+
+# Guardar reglas (Ubuntu/Debian)
+sudo apt install iptables-persistent
+sudo netfilter-persistent save
+
+# O manualmente:
+sudo iptables-save > /etc/iptables/rules.v4
+
+# Cargar al inicio (systemd)
+# Crear servicio: /etc/systemd/system/iptables.service</code></pre>
+                        </div>
+
+                        <h3>Script de Firewall Avanzado</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("#!/bin/bash\n# Script de firewall avanzado\n# Guardar como: /usr/local/bin/firewall-setup.sh\n\n# Limpiar reglas existentes\niptables -F\niptables -X\niptables -t nat -F\niptables -t nat -X\n\n# Políticas por defecto\niptables -P INPUT DROP\niptables -P FORWARD DROP\niptables -P OUTPUT ACCEPT\n\n# Permitir loopback\niptables -A INPUT -i lo -j ACCEPT\niptables -A OUTPUT -o lo -j ACCEPT\n\n# Permitir conexiones establecidas\niptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT\n\n# Protección contra SYN flood\niptables -A INPUT -p tcp --syn -m limit --limit 1/s --limit-burst 3 -j ACCEPT\niptables -A INPUT -p tcp --syn -j DROP\n\n# Permitir SSH desde IP específica (ejemplo)\n# iptables -A INPUT -p tcp -s 192.168.1.0/24 --dport 22 -m state --state NEW -j ACCEPT\n\n# Permitir SSH con rate limiting\niptables -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --set --name SSH\niptables -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --update --seconds 60 --hitcount 4 --name SSH -j DROP\niptables -A INPUT -p tcp --dport 22 -m state --state NEW -j ACCEPT\n\n# Permitir HTTP/HTTPS\niptables -A INPUT -p tcp --dport 80 -m state --state NEW -j ACCEPT\niptables -A INPUT -p tcp --dport 443 -m state --state NEW -j ACCEPT\n\n# Permitir DNS (si es servidor DNS)\n# iptables -A INPUT -p udp --dport 53 -j ACCEPT\n# iptables -A INPUT -p tcp --dport 53 -j ACCEPT\n\n# Logging de paquetes rechazados (última regla)\niptables -A INPUT -j LOG --log-prefix \"IPTABLES-DROP: \" --log-level 4\niptables -A INPUT -j DROP\n\n# Guardar\niptables-save > /etc/iptables/rules.v4")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code>#!/bin/bash
+# Script de firewall avanzado
+# Guardar como: /usr/local/bin/firewall-setup.sh
+
+# Limpiar reglas existentes
+iptables -F
+iptables -X
+iptables -t nat -F
+iptables -t nat -X
+
+# Políticas por defecto
+iptables -P INPUT DROP
+iptables -P FORWARD DROP
+iptables -P OUTPUT ACCEPT
+
+# Permitir loopback
+iptables -A INPUT -i lo -j ACCEPT
+iptables -A OUTPUT -o lo -j ACCEPT
+
+# Permitir conexiones establecidas
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+# Protección contra SYN flood
+iptables -A INPUT -p tcp --syn -m limit --limit 1/s --limit-burst 3 -j ACCEPT
+iptables -A INPUT -p tcp --syn -j DROP
+
+# Permitir SSH desde IP específica (ejemplo)
+# iptables -A INPUT -p tcp -s 192.168.1.0/24 --dport 22 -m state --state NEW -j ACCEPT
+
+# Permitir SSH con rate limiting
+iptables -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --set --name SSH
+iptables -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --update --seconds 60 --hitcount 4 --name SSH -j DROP
+iptables -A INPUT -p tcp --dport 22 -m state --state NEW -j ACCEPT
+
+# Permitir HTTP/HTTPS
+iptables -A INPUT -p tcp --dport 80 -m state --state NEW -j ACCEPT
+iptables -A INPUT -p tcp --dport 443 -m state --state NEW -j ACCEPT
+
+# Permitir DNS (si es servidor DNS)
+# iptables -A INPUT -p udp --dport 53 -j ACCEPT
+# iptables -A INPUT -p tcp --dport 53 -j ACCEPT
+
+# Logging de paquetes rechazados (última regla)
+iptables -A INPUT -j LOG --log-prefix "IPTABLES-DROP: " --log-level 4
+iptables -A INPUT -j DROP
+
+# Guardar
+iptables-save > /etc/iptables/rules.v4</code></pre>
+                        </div>
+
+                        <h2 id="firewall-ufw">UFW (Uncomplicated Firewall)</h2>
+                        <p>UFW es una interfaz más simple para iptables, ideal para usuarios que no necesitan reglas complejas.</p>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Instalar UFW\nsudo apt install ufw\n\n# Ver estado\nsudo ufw status verbose\n\n# Habilitar firewall\nsudo ufw enable\n\n# Política por defecto\nsudo ufw default deny incoming\nsudo ufw default allow outgoing\n\n# Permitir SSH (¡IMPORTANTE! Hacerlo antes de habilitar)\nsudo ufw allow 22/tcp\n\n# Permitir HTTP/HTTPS\nsudo ufw allow 80/tcp\nsudo ufw allow 443/tcp\n\n# Permitir desde IP específica\nsudo ufw allow from 192.168.1.100 to any port 22\n\n# Permitir desde subred\nsudo ufw allow from 192.168.1.0/24 to any port 22\n\n# Denegar puerto específico\nsudo ufw deny 3306/tcp\n\n# Rate limiting\nsudo ufw limit 22/tcp\n\n# Ver reglas numeradas\nsudo ufw status numbered\n\n# Eliminar regla por número\nsudo ufw delete 1\n\n# Logging\nsudo ufw logging on\nsudo ufw logging off\n\n# Ver logs\nsudo tail -f /var/log/ufw.log")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Instalar UFW
+sudo apt install ufw
+
+# Ver estado
+sudo ufw status verbose
+
+# Habilitar firewall
+sudo ufw enable
+
+# Política por defecto
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+
+# Permitir SSH (¡IMPORTANTE! Hacerlo antes de habilitar)
+sudo ufw allow 22/tcp
+
+# Permitir HTTP/HTTPS
+sudo ufw allow 80/tcp
+sudo ufw allow 443/tcp
+
+# Permitir desde IP específica
+sudo ufw allow from 192.168.1.100 to any port 22
+
+# Permitir desde subred
+sudo ufw allow from 192.168.1.0/24 to any port 22
+
+# Denegar puerto específico
+sudo ufw deny 3306/tcp
+
+# Rate limiting
+sudo ufw limit 22/tcp
+
+# Ver reglas numeradas
+sudo ufw status numbered
+
+# Eliminar regla por número
+sudo ufw delete 1
+
+# Logging
+sudo ufw logging on
+sudo ufw logging off
+
+# Ver logs
+sudo tail -f /var/log/ufw.log</code></pre>
+                        </div>
+
+                        <h2 id="segmentacion-red">Segmentación de Red</h2>
+                        <p>Dividir la red en segmentos lógicos mejora la seguridad mediante el aislamiento de sistemas.</p>
+                        
+                        <h3>VLANs</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Instalar herramientas VLAN\nsudo apt install vlan\n\n# Cargar módulo kernel\nsudo modprobe 8021q\n\n# Crear VLAN 10 en interfaz eth0\nsudo ip link add link eth0 name eth0.10 type vlan id 10\n\n# Asignar IP\nsudo ip addr add 192.168.10.1/24 dev eth0.10\n\n# Activar\nsudo ip link set dev eth0.10 up\n\n# Configuración permanente (netplan)\n# /etc/netplan/01-netcfg.yaml:\nnetwork:\n  version: 2\n  ethernets:\n    eth0:\n      dhcp4: true\n  vlans:\n    eth0.10:\n      id: 10\n      link: eth0\n      addresses:\n        - 192.168.10.1/24\n\n# Aplicar\nsudo netplan apply")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Instalar herramientas VLAN
+sudo apt install vlan
+
+# Cargar módulo kernel
+sudo modprobe 8021q
+
+# Crear VLAN 10 en interfaz eth0
+sudo ip link add link eth0 name eth0.10 type vlan id 10
+
+# Asignar IP
+sudo ip addr add 192.168.10.1/24 dev eth0.10
+
+# Activar
+sudo ip link set dev eth0.10 up
+
+# Configuración permanente (netplan)
+# /etc/netplan/01-netcfg.yaml:
+network:
+  version: 2
+  ethernets:
+    eth0:
+      dhcp4: true
+  vlans:
+    eth0.10:
+      id: 10
+      link: eth0
+      addresses:
+        - 192.168.10.1/24
+
+# Aplicar
+sudo netplan apply</code></pre>
+                        </div>
+
+                        <h2 id="ids-ips">IDS/IPS</h2>
+                        <h3>Suricata</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Instalar Suricata\nsudo apt install suricata -y\n\n# Configurar interfaz de red\nsudo nano /etc/suricata/suricata.yaml\n# Cambiar: interface: eth0\n\n# Actualizar reglas\nsudo suricata-update\n\n# Iniciar en modo IDS\nsudo suricata -c /etc/suricata/suricata.yaml -i eth0\n\n# O como servicio\nsudo systemctl enable suricata\nsudo systemctl start suricata\n\n# Ver logs\ntail -f /var/log/suricata/fast.log\ntail -f /var/log/suricata/eve.json\n\n# Ver estadísticas\nsudo suricatasc -c \"uptime\"\nsudo suricatasc -c \"stats\"")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Instalar Suricata
+sudo apt install suricata -y
+
+# Configurar interfaz de red
+sudo nano /etc/suricata/suricata.yaml
+# Cambiar: interface: eth0
+
+# Actualizar reglas
+sudo suricata-update
+
+# Iniciar en modo IDS
+sudo suricata -c /etc/suricata/suricata.yaml -i eth0
+
+# O como servicio
+sudo systemctl enable suricata
+sudo systemctl start suricata
+
+# Ver logs
+tail -f /var/log/suricata/fast.log
+tail -f /var/log/suricata/eve.json
+
+# Ver estadísticas
+sudo suricatasc -c "uptime"
+sudo suricatasc -c "stats"</code></pre>
+                        </div>
+
+                        <h2 id="checklist-redes">Checklist de Hardening de Redes</h2>
+                        <div class="checklist-container" x-data="checklist('network-hardening-checklist')">
+                            <div class="checklist-header">
+                                <h3>Verificación de Seguridad de Red</h3>
+                                <div class="checklist-progress">
+                                    <span>Progreso: <strong x-text="progress + '%'"></strong></span>
+                                    <button @click="resetChecklist()" class="btn-sm">Reset</button>
+                                    <button @click="exportChecklist()" class="btn-sm">Exportar JSON</button>
+                                </div>
+                            </div>
+                            <ul class="checklist">
+                                <li>
+                                    <label>
+                                        <input type="checkbox" x-model="items[0]" @change="updateProgress()">
+                                        <span>✅ Firewall configurado con política default deny</span>
+                                    </label>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" x-model="items[1]" @change="updateProgress()">
+                                        <span>✅ Solo puertos necesarios están abiertos</span>
+                                    </label>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" x-model="items[2]" @change="updateProgress()">
+                                        <span>✅ Rate limiting configurado para SSH</span>
+                                    </label>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" x-model="items[3]" @change="updateProgress()">
+                                        <span>✅ Red segmentada con VLANs (si aplica)</span>
+                                    </label>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" x-model="items[4]" @change="updateProgress()">
+                                        <span>✅ IDS/IPS configurado y monitoreando</span>
+                                    </label>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" x-model="items[5]" @change="updateProgress()">
+                                        <span>✅ Logging de firewall habilitado</span>
+                                    </label>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" x-model="items[6]" @change="updateProgress()">
+                                        <span>✅ Reglas de firewall documentadas</span>
+                                    </label>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="alert alert-success mt-8">
+                            <p class="font-semibold mb-2">✅ Módulo 5 Completado</p>
+                            <p>Has aprendido a configurar firewalls avanzados y proteger la red. En el siguiente módulo veremos hardening de aplicaciones web. Recuerda: una red bien segmentada y protegida es la base de una infraestructura segura.</p>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </main>
+    </div>
+    <footer class="bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-sm text-gray-600 dark:text-gray-400">Actualizado por mí en Enero 2026</p>
+                <a href="https://github.com/tu-usuario/cybersec-handbook" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">Editar en GitHub</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../assets/js/search.js"></script>
+    <script src="../assets/js/main.js"></script>
+    <style>[x-cloak] { display: none !important; }</style>
+</body>
+</html>
