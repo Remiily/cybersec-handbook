@@ -36,3 +36,4 @@ PROJECT_STATUS.md
 *.backup
 *_status.md
 *_template.*
+.menu-sync-reminder.md
