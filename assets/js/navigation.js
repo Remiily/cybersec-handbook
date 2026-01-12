@@ -187,11 +187,56 @@ function highlightCurrentPage() {
     const currentPath = window.location.pathname;
     const navLinks = document.querySelectorAll('.nav-link');
     
+    // Normalizar el path actual
+    let normalizedCurrent = currentPath;
+    // Remover el nombre del repositorio si está presente
+    if (normalizedCurrent.includes('/cybersec-handbook/')) {
+        normalizedCurrent = normalizedCurrent.split('/cybersec-handbook/')[1] || normalizedCurrent;
+    }
+    normalizedCurrent = normalizedCurrent.replace(/^\//, '').replace(/\/$/, '');
+    
     navLinks.forEach(link => {
         const href = link.getAttribute('href');
-        if (href && (currentPath.endsWith(href) || currentPath.includes(href.replace('../', '').replace('./', '')))) {
-            link.classList.add('bg-blue-50', 'dark:bg-blue-900/20', 'text-blue-700', 'dark:text-blue-300', 'font-medium');
-            link.classList.remove('hover:bg-gray-100', 'dark:hover:bg-gray-800');
+        if (href) {
+            // Normalizar href
+            let normalizedHref = href.replace('../', '').replace('./', '');
+            
+            // Comparar paths normalizados
+            if (normalizedCurrent === normalizedHref || 
+                normalizedCurrent.endsWith(normalizedHref) ||
+                normalizedHref === normalizedCurrent) {
+                link.classList.add('bg-blue-50', 'dark:bg-blue-900/20', 'text-blue-700', 'dark:text-blue-300', 'font-medium');
+                link.classList.remove('hover:bg-gray-100', 'dark:hover:bg-gray-800');
+            }
         }
     });
 }
+
+// Función para inicializar el menú (puede ser llamada desde cualquier página)
+function initNavigation() {
+    const sidebar = document.querySelector('.sidebar nav');
+    if (sidebar && typeof generateNavigation === 'function') {
+        try {
+            sidebar.innerHTML = generateNavigation();
+            highlightCurrentPage();
+        } catch (error) {
+            console.error('Error generando navegación:', error);
+        }
+    }
+}
+
+// Auto-inicializar cuando el DOM esté listo (si no se ha inicializado ya)
+// Usar setTimeout para asegurar que el DOM esté completamente listo
+(function() {
+    function autoInit() {
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                setTimeout(initNavigation, 100);
+            });
+        } else {
+            // DOM ya está listo, pero esperar un poco para asegurar que Alpine.js esté listo
+            setTimeout(initNavigation, 100);
+        }
+    }
+    autoInit();
+})();
