@@ -1,131 +1,90 @@
 # 🛡️ CyberSec Handbook
 
-Guía profesional y completa de ciberseguridad diseñada para profesionales de todos los niveles, desde principiantes hasta expertos.
+**Guía profesional y completa de ciberseguridad para profesionales de todos los niveles**
+
+El CyberSec Handbook es un recurso integral de código abierto diseñado para profesionales de ciberseguridad que buscan una referencia práctica, completa y actualizada. Desde fundamentos de hardening hasta arquitecturas avanzadas de seguridad, este handbook proporciona guías paso a paso, comandos detallados, mejores prácticas de la industria y contenido interactivo para facilitar el aprendizaje práctico.
 
 ## 📖 Descripción
 
-El CyberSec Handbook es un recurso integral que cubre todos los aspectos esenciales de la ciberseguridad moderna. Incluye guías paso a paso, comandos detallados, mejores prácticas de la industria, y contenido interactivo para facilitar el aprendizaje práctico.
+Este handbook ha sido desarrollado siguiendo los estándares y mejores prácticas de la industria, incluyendo referencias a frameworks reconocidos como CIS Benchmarks, STIG, NIST Cybersecurity Framework, ISO 27001, OWASP Top 10, y metodologías como PTES (Penetration Testing Execution Standard) y MITRE ATT&CK.
+
+Cada sección está diseñada para ser práctica y accionable desde el primer momento, con ejemplos reales, comandos listos para usar, checklists interactivos y referencias a herramientas profesionales del sector.
 
 ## 🎯 Contenido Principal
 
-### Curso Completo de Hardening (0 a Experto)
-- **Módulo 1:** Fundamentos de Hardening
-- **Módulo 2:** Linux Hardening
-- **Módulo 3:** Windows Hardening
-- **Módulo 4:** Hardening de Servicios
-- **Módulo 5:** Hardening de Redes
-- **Módulo 6:** Hardening de Aplicaciones
-- **Módulo 7:** Automatización de Hardening
-- **Módulo 8:** Compliance y Benchmarks
-- **Cloud Hardening:** AWS, Azure, GCP
-- **Containers:** Docker y Kubernetes
+El handbook cubre todas las áreas esenciales de la ciberseguridad moderna:
 
-### Sistemas Operativos
-Guías completas para Linux (Ubuntu, Fedora, RHEL, Debian) con comandos esenciales desde nivel principiante hasta avanzado.
-
-### Programación y Desarrollo Seguro
-- Lenguajes: Python, JavaScript, Go, PowerShell
-- OWASP Top 10
-- Prácticas de código seguro
-- Checklists de code review
-
-### Bases de Datos
-Guías detalladas de MySQL, PostgreSQL, MongoDB, Redis y Elasticsearch, incluyendo instalación, configuración de seguridad, administración y optimización.
-
-### Desarrollo de Carrera
-- Trayectorias profesionales en ciberseguridad
-- Guía completa de certificaciones
-- Preparación para entrevistas
-- Habilidades blandas
-
-### Gobierno, Riesgo y Cumplimiento (GRC)
-- Roadmap a CISO
-- Implementación de frameworks (ISO 27001, NIST, etc.)
-- Evaluación de riesgos
-- Verificación de cumplimiento
-
-### Security Architecture
-- Zero Trust Setup
-- IAM Implementation
-- Network Segmentation
-- Design Best Practices
-
-### Operaciones de Seguridad
-- **Red Team:** Tactics, C2 Setup
-- **Blue Team:** SOC Setup, SIEM Configuration, Threat Hunting
-- **Incident Response & Forensics:** Procesos, herramientas y metodologías
-- **Vulnerability Management:** Scanning y patching
-
-### Cloud & DevSecOps
-- Infrastructure as Code (IaC) Security
-- Pipeline Security
-- SBOM Management
-
-### Amenazas Emergentes
-- AI Security
-- Supply Chain Defense
-
-### Recursos
-- Colección completa de cheatsheets
-- Herramientas recomendadas
-- Guías rápidas
-- Preparación para exámenes de certificación
+- **Hardening Completo:** Curso estructurado desde fundamentos hasta compliance, incluyendo sistemas operativos (Linux, Windows), servicios, redes, aplicaciones, cloud (AWS, Azure, GCP) y contenedores
+- **Desarrollo Seguro:** OWASP Top 10, prácticas de código seguro, code review, y guías específicas por lenguaje (Python, JavaScript, Go, PowerShell)
+- **Operaciones de Seguridad:** Red Team, Blue Team, SOC setup, SIEM configuration, threat hunting, incident response y forensics
+- **Gobierno, Riesgo y Cumplimiento:** Roadmap a CISO, implementación de frameworks, evaluación de riesgos y verificación de cumplimiento
+- **Arquitectura de Seguridad:** Zero Trust, IAM, network segmentation y mejores prácticas de diseño
+- **Gestión de Vulnerabilidades:** Scanning, patching y procesos de remediación
+- **Amenazas Emergentes:** AI Security y Supply Chain Defense
+- **Desarrollo de Carrera:** Trayectorias profesionales, certificaciones, preparación para entrevistas y habilidades blandas
 
 ## ✨ Características
 
-- **100% Estático:** Compatible con GitHub Pages, sin dependencias de servidor
-- **Diseño Moderno:** Interfaz responsive con Tailwind CSS y Alpine.js
-- **Modo Oscuro/Claro:** Toggle automático con preferencia del sistema
-- **Búsqueda Global:** Búsqueda local rápida con MiniSearch
-- **Checklists Interactivos:** Con progreso, persistencia en localStorage y exportación JSON
-- **Tabla de Contenidos:** Generada automáticamente en cada página
-- **Comandos Copiables:** Botones de copiar con feedback visual para todos los comandos
-- **Contenido Profesional:** Basado en estándares de la industria (CIS, STIG, NIST, OWASP)
-
-## 🚀 Uso
-
-El handbook está diseñado para ser usado como referencia diaria. Navega por las secciones usando el menú lateral, utiliza la búsqueda para encontrar temas específicos, y sigue las guías paso a paso para implementar controles de seguridad.
-
-## 📚 Estructura del Proyecto
-
-```
-cybersec-handbook/
-├── index.html                          # Página principal
-├── assets/                             # Recursos estáticos
-│   ├── css/main.css
-│   └── js/
-│       ├── main.js
-│       ├── navigation.js
-│       └── search.js
-├── hardening/                          # Curso completo de hardening
-├── operating-systems/                  # Guías de sistemas operativos
-├── programming/                         # Guías de programación
-├── secure-development/                  # Desarrollo seguro
-├── databases/                           # Guías de bases de datos
-├── career-development/                  # Desarrollo de carrera
-├── governance-risk-compliance/          # GRC
-├── security-architecture/               # Arquitectura de seguridad
-├── vulnerability-management/           # Gestión de vulnerabilidades
-├── pentesting-offensive/                # Pentesting
-├── red-team/                            # Red Team
-├── blue-team-defense/                   # Blue Team
-├── incident-response-forensics/         # IR y forensics
-├── cloud-devsecops/                     # Cloud y DevSecOps
-├── emerging-threats/                    # Amenazas emergentes
-└── resources/                           # Recursos y cheatsheets
-```
+- **100% Estático:** Compatible con GitHub Pages, sin dependencias de servidor ni configuración compleja
+- **Diseño Moderno y Responsive:** Interfaz profesional construida con Tailwind CSS, completamente responsive y optimizada para todos los dispositivos
+- **Modo Oscuro/Claro:** Toggle automático que respeta las preferencias del sistema del usuario
+- **Búsqueda Global Inteligente:** Motor de búsqueda local rápido con MiniSearch que indexa todo el contenido
+- **Checklists Interactivos:** Sistema de checklists con progreso visual, persistencia en localStorage y capacidad de exportación JSON
+- **Tabla de Contenidos Automática:** Generada dinámicamente en cada página para facilitar la navegación
+- **Comandos Copiables:** Todos los comandos incluyen botones de copiar con feedback visual inmediato
+- **Contenido Basado en Estándares:** Todo el contenido está alineado con estándares reconocidos de la industria
 
 ## 🛠️ Tecnologías
 
-- **HTML5:** Estructura semántica
-- **Tailwind CSS:** Framework CSS utility-first (vía CDN)
-- **Alpine.js:** Framework JavaScript ligero para interactividad
-- **MiniSearch:** Motor de búsqueda local
+El handbook está construido con tecnologías modernas y ligeras:
+
+- **HTML5:** Estructura semántica y accesible
+- **Tailwind CSS 3.x:** Framework CSS utility-first para diseño rápido y consistente (vía CDN)
+- **Alpine.js 3.x:** Framework JavaScript ligero y reactivo para interactividad sin dependencias pesadas
+- **MiniSearch:** Motor de búsqueda local de alto rendimiento para búsqueda instantánea
+- **GitHub Pages:** Hosting estático gratuito y confiable
+
+Todas las tecnologías se cargan desde CDN, eliminando la necesidad de herramientas de build o procesos de compilación.
+
+## 🚀 Uso
+
+El handbook está diseñado para ser usado como referencia diaria en el trabajo de ciberseguridad:
+
+1. **Navegación:** Usa el menú lateral para explorar las diferentes categorías y temas
+2. **Búsqueda:** Utiliza la barra de búsqueda en el header para encontrar rápidamente comandos, herramientas o conceptos específicos
+3. **Guías Paso a Paso:** Sigue las guías numeradas para implementar controles de seguridad de forma estructurada
+4. **Checklists:** Marca tu progreso en los checklists interactivos, que se guardan automáticamente en tu navegador
+5. **Comandos:** Copia comandos directamente desde los bloques de código con un solo clic
 
 ## 📄 Licencia
 
-Este proyecto está disponible como recurso educativo de código abierto.
+Este proyecto está disponible bajo la licencia MIT, lo que significa que puedes:
+
+- ✅ Usar el handbook libremente para fines comerciales y no comerciales
+- ✅ Modificar y adaptar el contenido según tus necesidades
+- ✅ Distribuir el handbook o versiones modificadas
+- ✅ Usar el código en proyectos privados
+
+La única condición es mantener el aviso de copyright y la licencia en las copias del proyecto.
+
+**Nota:** Este handbook es un recurso educativo. Las técnicas y herramientas descritas deben usarse únicamente en entornos autorizados y de acuerdo con las leyes aplicables.
+
+## 🤝 Contribuciones
+
+Las contribuciones son bienvenidas. Si encuentras errores, tienes sugerencias de mejora, o quieres agregar nuevo contenido, por favor:
+
+1. Abre un issue describiendo el problema o la mejora propuesta
+2. Fork el repositorio y crea una rama para tu contribución
+3. Realiza tus cambios siguiendo el estilo y estructura existente
+4. Envía un pull request con una descripción clara de los cambios
+
+## 📞 Contacto y Enlaces
+
+- **GitHub:** [remiily/cybersec-handbook](https://github.com/remiily/cybersec-handbook)
+- **Sitio Web:** [https://remiily.github.io/cybersec-handbook](https://remiily.github.io/cybersec-handbook)
 
 ---
 
-**CyberSec Handbook** - Tu guía completa para dominar la ciberseguridad profesional.
+**CyberSec Handbook** - Desarrollado con ❤️ para la comunidad de ciberseguridad
+
+*Tu guía completa para dominar la ciberseguridad profesional.*

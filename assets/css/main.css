@@ -174,8 +174,9 @@ pre code {
   top: 0;
   height: 100vh;
   width: 16rem;
-  background-color: white;
+  background: linear-gradient(180deg, #ffffff 0%, #f9fafb 100%);
   border-right: 1px solid #e5e7eb;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.04);
   transform: translateX(-100%);
   transition: transform 0.3s ease-in-out;
   z-index: 40;
@@ -183,8 +184,9 @@ pre code {
 }
 
 .dark .sidebar {
-  background-color: #111827;
+  background: linear-gradient(180deg, #111827 0%, #0f172a 100%);
   border-color: #374151;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.3);
 }
 
 @media (min-width: 1024px) {
@@ -480,12 +482,14 @@ table tr:hover {
   padding: 0.5rem 0.75rem;
   border-radius: 0.5rem;
   text-decoration: none;
-  transition: background-color 0.2s;
+  transition: all 0.2s ease-in-out;
   font-size: 0.875rem;
+  position: relative;
 }
 
 .nav-link:hover {
   background-color: #f3f4f6;
+  transform: translateX(2px);
 }
 
 .dark .nav-link:hover {
@@ -493,14 +497,28 @@ table tr:hover {
 }
 
 .nav-link.active {
-  background-color: #dbeafe;
+  background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 100%);
   color: #1e40af;
-  font-weight: 500;
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(30, 64, 175, 0.1);
 }
 
 .dark .nav-link.active {
-  background-color: rgba(30, 58, 138, 0.2);
+  background: linear-gradient(135deg, rgba(30, 58, 138, 0.3) 0%, rgba(67, 56, 202, 0.2) 100%);
   color: #93c5fd;
+  box-shadow: 0 2px 4px rgba(30, 64, 175, 0.2);
+}
+
+.nav-link.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 60%;
+  background: linear-gradient(180deg, #3b82f6 0%, #6366f1 100%);
+  border-radius: 0 2px 2px 0;
 }
 
 /* Prose styles for content */

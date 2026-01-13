@@ -46,3 +46,8 @@ PROJECT_STATUS.md
 *_status.md
 *_template.*
 .menu-sync-reminder.md
+
+# Scripts de desarrollo (no necesarios en producción)
+scripts/*.py
+scripts/*.sh
+!scripts/.gitkeep
