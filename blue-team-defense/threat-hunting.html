@@ -126,10 +126,61 @@ index=windows EventCode=4624 LogonType=10 | stats count by AccountName, SourceIP
 index=windows EventCode=4688 CommandLine="*wmic*" CommandLine="*/node:*"</code></pre>
                         </div>
 
-                        <h2 id="sigma-rules">Sigma Rules</h2>
-                        <p>Sigma es un formato estandarizado para reglas de detección:</p>
+                        <h3>Detección de Persistencia</h3>
                         <div class="command-block mb-4" x-data="copyCommand">
-                            <button @click="copy("# Ejemplo de regla Sigma\n---\ntitle: Suspicious PowerShell Execution\nid: 12345678-1234-1234-1234-123456789012\nstatus: experimental\ndescription: Detects suspicious PowerShell execution patterns\nreferences:\n    - https://attack.mitre.org/techniques/T1059/001/\nauthor: Tu Nombre\ndate: 2024/01/01\nlogsource:\n    product: windows\n    service: security\ndetection:\n    selection:\n        EventID: 4688\n        CommandLine|contains:\n            - '-enc'\n            - 'FromBase64String'\n            - 'IEX'\n    condition: selection\nfalsepositives:\n    - Legitimate administrative scripts\nlevel: high\n---")" class="copy-btn" :class="{ 'copied': copied }">
+                            <button @click="copy("# Nuevos servicios creados\nindex=windows EventCode=7045 | stats count by ServiceName, ImagePath | where count > 0\n\n# Cambios en registro (Run keys)\nindex=windows EventCode=4657 OR EventCode=4663 | search \"*Run*\" OR \"*RunOnce*\"\n\n# Tareas programadas creadas\nindex=windows EventCode=4698 | stats count by TaskName, TaskPath\n\n# WMI Event Subscriptions\nindex=windows EventCode=5861\n\n# Elasticsearch\nEventCode:7045 OR EventCode:4698 OR EventCode:5861\n| stats count by host.name, process.name")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Nuevos servicios creados
+index=windows EventCode=7045 | stats count by ServiceName, ImagePath | where count > 0
+
+# Cambios en registro (Run keys)
+index=windows EventCode=4657 OR EventCode=4663 | search "*Run*" OR "*RunOnce*"
+
+# Tareas programadas creadas
+index=windows EventCode=4698 | stats count by TaskName, TaskPath
+
+# WMI Event Subscriptions
+index=windows EventCode=5861
+
+# Elasticsearch
+EventCode:7045 OR EventCode:4698 OR EventCode:5861
+| stats count by host.name, process.name</code></pre>
+                        </div>
+
+                        <h3>Detección de Credential Dumping</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Procesos accediendo a lsass.exe\nindex=windows EventCode=10 TargetImage=\"*lsass.exe\"\n\n# Mimikatz u otras herramientas\nindex=windows EventCode=4688 CommandLine=\"*mimikatz*\" OR CommandLine=\"*sekurlsa*\" OR CommandLine=\"*wce*\"\n\n# Acceso a archivos SAM\nindex=windows EventCode=4656 ObjectName=\"*SAM*\" OR ObjectName=\"*SECURITY*\"\n\n# Elasticsearch\nprocess.name:lsass.exe AND event.action:\"process_access\"\n| stats count by host.name, process.parent.name")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Procesos accediendo a lsass.exe
+index=windows EventCode=10 TargetImage="*lsass.exe"
+
+# Mimikatz u otras herramientas
+index=windows EventCode=4688 CommandLine="*mimikatz*" OR CommandLine="*sekurlsa*" OR CommandLine="*wce*"
+
+# Acceso a archivos SAM
+index=windows EventCode=4656 ObjectName="*SAM*" OR ObjectName="*SECURITY*"
+
+# Elasticsearch
+process.name:lsass.exe AND event.action:"process_access"
+| stats count by host.name, process.parent.name</code></pre>
+                        </div>
+
+                        <h2 id="sigma-rules">Sigma Rules</h2>
+                        <p>Sigma es un formato estandarizado para reglas de detección que puede convertirse a múltiples formatos (Splunk, ELK, QRadar, etc.):</p>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Ejemplo de regla Sigma\n---\ntitle: Suspicious PowerShell Execution\nid: 12345678-1234-1234-1234-123456789012\nstatus: experimental\ndescription: Detects suspicious PowerShell execution patterns\nreferences:\n    - https://attack.mitre.org/techniques/T1059/001/\nauthor: Tu Nombre\ndate: 2024/01/01\nlogsource:\n    product: windows\n    service: security\ndetection:\n    selection:\n        EventID: 4688\n        CommandLine|contains:\n            - '-enc'\n            - 'FromBase64String'\n            - 'IEX'\n    condition: selection\nfalsepositives:\n    - Legitimate administrative scripts\nlevel: high\n---\n\n# Convertir Sigma a Splunk\n# Instalar sigmac: pip install sigmac\nsigmac -t splunk -c config/splunk-windows.yml rule.yml\n\n# Convertir a ELK\nsigmac -t elastalert -c config/ecs-windows.yml rule.yml\n\n# Convertir a QRadar\nsigmac -t qradar -c config/qradar-windows.yml rule.yml")" class="copy-btn" :class="{ 'copied': copied }">
                                 <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
                                 </svg>
@@ -161,12 +212,124 @@ detection:
 falsepositives:
     - Legitimate administrative scripts
 level: high
----</code></pre>
+---
+
+# Convertir Sigma a Splunk
+# Instalar sigmac: pip install sigmac
+sigmac -t splunk -c config/splunk-windows.yml rule.yml
+
+# Convertir a ELK
+sigmac -t elastalert -c config/ecs-windows.yml rule.yml
+
+# Convertir a QRadar
+sigmac -t qradar -c config/qradar-windows.yml rule.yml</code></pre>
+                        </div>
+
+                        <h2 id="mitre-attck">Hunting Basado en MITRE ATT&CK</h2>
+                        <p>Usar MITRE ATT&CK como framework de referencia para estructurar las hipótesis de hunting:</p>
+
+                        <h3 id="tacticas-comunes">Tácticas Comunes a Cazar</h3>
+                        <div class="overflow-x-auto mb-6">
+                            <table>
+                                <thead>
+                                    <tr><th>Táctica MITRE</th><th>Hipótesis</th><th>Queries</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Initial Access (TA0001)</td>
+                                        <td>Phishing emails con adjuntos maliciosos</td>
+                                        <td>Email attachments con macros, archivos ejecutables</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Execution (TA0002)</td>
+                                        <td>PowerShell ejecutado desde ubicaciones inusuales</td>
+                                        <td>EventCode:4688, CommandLine contiene PowerShell</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Persistence (TA0003)</td>
+                                        <td>Nuevos servicios o tareas programadas</td>
+                                        <td>EventCode:7045, 4698</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Privilege Escalation (TA0004)</td>
+                                        <td>UAC bypass o explotación de vulnerabilidades</td>
+                                        <td>EventCode:4672, procesos con privilegios elevados</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Defense Evasion (TA0005)</td>
+                                        <td>Deshabilitación de logs o herramientas de seguridad</td>
+                                        <td>EventCode:1102, cambios en políticas de auditoría</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Credential Access (TA0006)</td>
+                                        <td>Dumping de credenciales desde memoria</td>
+                                        <td>Acceso a lsass.exe, uso de herramientas como Mimikatz</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Lateral Movement (TA0008)</td>
+                                        <td>RDP, WMI o SMB desde hosts comprometidos</td>
+                                        <td>EventCode:4624 LogonType:10, conexiones WMI remotas</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Exfiltration (TA0010)</td>
+                                        <td>Transferencias grandes de datos a destinos externos</td>
+                                        <td>Tráfico de red anómalo, conexiones a IPs externas</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h2 id="checklist-hunting">Checklist de Threat Hunting</h2>
+                        <div class="checklist-container mb-6">
+                            <div class="checklist" data-checklist-id="threat-hunting">
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('threat-hunting', 0)" class="checklist-checkbox">
+                                        <span>Hipótesis basada en threat intelligence o MITRE ATT&CK</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('threat-hunting', 1)" class="checklist-checkbox">
+                                        <span>Queries desarrolladas y probadas en entorno de prueba</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('threat-hunting', 2)" class="checklist-checkbox">
+                                        <span>Análisis de resultados y correlación de eventos</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('threat-hunting', 3)" class="checklist-checkbox">
+                                        <span>IOCs identificados y documentados</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('threat-hunting', 4)" class="checklist-checkbox">
+                                        <span>Reglas de detección creadas (Sigma, YARA, etc.)</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('threat-hunting', 5)" class="checklist-checkbox">
+                                        <span>Findings documentados y reportados</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="checklist-progress mt-4">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" data-progress="threat-hunting"></div>
+                                </div>
+                                <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">Progreso: <span data-progress-text="threat-hunting">0%</span></p>
+                            </div>
                         </div>
 
                         <div class="alert alert-success mt-8">
                             <p class="font-semibold mb-2">✅ Threat Hunting</p>
-                            <p>El threat hunting es proactivo, no reactivo. Usa MITRE ATT&CK como framework de referencia y desarrolla hipótesis basadas en amenazas conocidas. Sigma rules permite compartir conocimiento de detección entre equipos.</p>
+                            <p>El threat hunting es proactivo, no reactivo. Usa MITRE ATT&CK como framework de referencia y desarrolla hipótesis basadas en amenazas conocidas. Sigma rules permite compartir conocimiento de detección entre equipos. Documenta todos los hallazgos y crea reglas de detección para automatizar la detección futura de comportamientos similares.</p>
                         </div>
                     </div>
                 </article>

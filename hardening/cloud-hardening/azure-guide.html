@@ -137,7 +137,7 @@ az keyvault set-policy --name KV_NAME --upn usuario@dominio.com --secret-permiss
 
                         <h2 id="azure-policy">Azure Policy</h2>
                         <div class="command-block mb-4" x-data="copyCommand">
-                            <button @click="copy('# Listar políticas disponibles\naz policy definition list --query \"[?contains(displayName, \\'encryption\\')].{Name:name, DisplayName:displayName}\" --output table\n\n# Asignar política a resource group\naz policy assignment create --name \"EnforceHTTPS\" --policy \"/providers/Microsoft.Authorization/policyDefinitions/1f314fd2-4c83-4f2d-9ef8-12b0c0b0f4b6\" --scope /subscriptions/SUBSCRIPTION_ID/resourceGroups/RG_NAME\n\n# Listar políticas asignadas\naz policy assignment list --scope /subscriptions/SUBSCRIPTION_ID/resourceGroups/RG_NAME --output table\n\n# Crear initiative (policy set)\naz policy set-definition create --name \"SecurityBaseline\" --definitions security-baseline.json')" class="copy-btn" :class="{ 'copied': copied }">
+                            <button @click="copy('# Listar políticas disponibles\naz policy definition list --query \"[?contains(displayName, \\'encryption\\')].{Name:name, DisplayName:displayName}\" --output table\n\n# Asignar política a resource group\naz policy assignment create --name \"EnforceHTTPS\" --policy \"/providers/Microsoft.Authorization/policyDefinitions/1f314fd2-4c83-4f2d-9ef8-12b0c0b0f4b6\" --scope /subscriptions/SUBSCRIPTION_ID/resourceGroups/RG_NAME\n\n# Listar políticas asignadas\naz policy assignment list --scope /subscriptions/SUBSCRIPTION_ID/resourceGroups/RG_NAME --output table\n\n# Crear initiative (policy set)\naz policy set-definition create --name \"SecurityBaseline\" --definitions security-baseline.json\n\n# Políticas de seguridad recomendadas:\n# - Require encryption on storage accounts\n# - Require HTTPS on function apps\n# - Require secure transfer to storage accounts\n# - Audit VMs without disk encryption\n# - Deploy default Microsoft IaaS Antimalware extension')" class="copy-btn" :class="{ 'copied': copied }">
                                 <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
                                 </svg>
@@ -155,12 +155,188 @@ az policy assignment create --name "EnforceHTTPS" --policy "/providers/Microsoft
 az policy assignment list --scope /subscriptions/SUBSCRIPTION_ID/resourceGroups/RG_NAME --output table
 
 # Crear initiative (policy set)
-az policy set-definition create --name "SecurityBaseline" --definitions security-baseline.json</code></pre>
+az policy set-definition create --name "SecurityBaseline" --definitions security-baseline.json
+
+# Políticas de seguridad recomendadas:
+# - Require encryption on storage accounts
+# - Require HTTPS on function apps
+# - Require secure transfer to storage accounts
+# - Audit VMs without disk encryption
+# - Deploy default Microsoft IaaS Antimalware extension</code></pre>
+                        </div>
+
+                        <h2 id="defender-for-cloud">Microsoft Defender for Cloud</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Habilitar Microsoft Defender for Cloud\n# Desde Portal: Microsoft Defender for Cloud > Environment settings\n# O desde CLI:\naz security pricing create --name \"default\" --tier \"Standard\"\n\n# Habilitar planes de protección\naz security pricing create --name \"VirtualMachines\" --tier \"Standard\"\naz security pricing create --name \"AppServices\" --tier \"Standard\"\naz security pricing create --name \"StorageAccounts\" --tier \"Standard\"\naz security pricing create --name \"SqlServers\" --tier \"Standard\"\n\n# Ver recomendaciones de seguridad\naz security assessment list --output table\n\n# Ver alertas de seguridad\naz security alert list --output table\n\n# Ver compliance score\naz security secure-score list --output table\n\n# Configurar auto-provisioning de agentes\naz security auto-provisioning-setting update --name \"default\" --auto-provision \"On\"\n\n# Configurar alertas de seguridad\n# Desde Portal: Microsoft Defender for Cloud > Security alerts > Alert configuration")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Habilitar Microsoft Defender for Cloud
+# Desde Portal: Microsoft Defender for Cloud > Environment settings
+# O desde CLI:
+az security pricing create --name "default" --tier "Standard"
+
+# Habilitar planes de protección
+az security pricing create --name "VirtualMachines" --tier "Standard"
+az security pricing create --name "AppServices" --tier "Standard"
+az security pricing create --name "StorageAccounts" --tier "Standard"
+az security pricing create --name "SqlServers" --tier "Standard"
+
+# Ver recomendaciones de seguridad
+az security assessment list --output table
+
+# Ver alertas de seguridad
+az security alert list --output table
+
+# Ver compliance score
+az security secure-score list --output table
+
+# Configurar auto-provisioning de agentes
+az security auto-provisioning-setting update --name "default" --auto-provision "On"
+
+# Configurar alertas de seguridad
+# Desde Portal: Microsoft Defender for Cloud > Security alerts > Alert configuration</code></pre>
+                        </div>
+
+                        <h2 id="log-analytics">Log Analytics y Monitoreo</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Crear Log Analytics Workspace\naz monitor log-analytics workspace create --resource-group RG_NAME --workspace-name LAW_NAME --location eastus\n\n# Habilitar diagnóstico en recursos\naz monitor diagnostic-settings create --name \"diag-settings\" --resource /subscriptions/SUBSCRIPTION_ID/resourceGroups/RG_NAME/providers/Microsoft.Compute/virtualMachines/VM_NAME --workspace LAW_NAME --logs \"[{\\\"category\\\":\\\"allLogs\\\",\\\"enabled\\\":true}]\"\n\n# Consultar logs con KQL\naz monitor log-analytics query --workspace LAW_NAME --analytics-query \"SecurityEvent | where EventID == 4625 | summarize count() by Account\"\n\n# Crear alerta de seguridad\naz monitor metrics alert create --name \"FailedLoginAlert\" --resource-group RG_NAME --scopes /subscriptions/SUBSCRIPTION_ID/resourceGroups/RG_NAME/providers/Microsoft.Compute/virtualMachines/VM_NAME --condition \"avg Percentage CPU > 80\" --description \"High CPU usage\"\n\n# Configurar alertas de Activity Log\naz monitor activity-log alert create --name \"SecurityChanges\" --resource-group RG_NAME --condition category=Administrative operationName=Microsoft.Authorization/policyAssignments/write\n\n# Exportar logs a SIEM\n# Desde Portal: Log Analytics Workspace > Agents > Log Analytics agent instructions")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Crear Log Analytics Workspace
+az monitor log-analytics workspace create --resource-group RG_NAME --workspace-name LAW_NAME --location eastus
+
+# Habilitar diagnóstico en recursos
+az monitor diagnostic-settings create --name "diag-settings" --resource /subscriptions/SUBSCRIPTION_ID/resourceGroups/RG_NAME/providers/Microsoft.Compute/virtualMachines/VM_NAME --workspace LAW_NAME --logs "[{\"category\":\"allLogs\",\"enabled\":true}]"
+
+# Consultar logs con KQL
+az monitor log-analytics query --workspace LAW_NAME --analytics-query "SecurityEvent | where EventID == 4625 | summarize count() by Account"
+
+# Crear alerta de seguridad
+az monitor metrics alert create --name "FailedLoginAlert" --resource-group RG_NAME --scopes /subscriptions/SUBSCRIPTION_ID/resourceGroups/RG_NAME/providers/Microsoft.Compute/virtualMachines/VM_NAME --condition "avg Percentage CPU > 80" --description "High CPU usage"
+
+# Configurar alertas de Activity Log
+az monitor activity-log alert create --name "SecurityChanges" --resource-group RG_NAME --condition category=Administrative operationName=Microsoft.Authorization/policyAssignments/write
+
+# Exportar logs a SIEM
+# Desde Portal: Log Analytics Workspace > Agents > Log Analytics agent instructions</code></pre>
+                        </div>
+
+                        <h2 id="application-gateway">Application Gateway y WAF</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Crear Application Gateway con WAF\naz network application-gateway create \\\n  --resource-group RG_NAME \\\n  --name AGW_NAME \\\n  --location eastus \\\n  --sku WAF_v2 \\\n  --subnet /subscriptions/SUBSCRIPTION_ID/resourceGroups/RG_NAME/providers/Microsoft.Network/virtualNetworks/VNET_NAME/subnets/AGW_SUBNET \\\n  --public-ip-address PIP_NAME \\\n  --waf-policy WAF_POLICY_NAME\n\n# Crear WAF Policy\naz network application-gateway waf-policy create \\\n  --resource-group RG_NAME \\\n  --name WAF_POLICY_NAME \\\n  --location eastus \\\n  --policy-mode Prevention \\\n  --rule-set-type OWASP \\\n  --rule-set-version 3.2\n\n# Configurar reglas personalizadas de WAF\naz network application-gateway waf-policy custom-rule create \\\n  --resource-group RG_NAME \\\n  --policy-name WAF_POLICY_NAME \\\n  --name \"BlockIP\" \\\n  --rule-type MatchRule \\\n  --priority 100 \\\n  --action Block \\\n  --match-conditions \"[{\\\"matchVariables\\\":[{\\\"variableName\\\":\\\"RemoteAddr\\\"}],\\\"operator\\\":\\\"IPMatch\\\",\\\"values\\\":[\\\"192.168.1.100\\\"]}]\"\n\n# Ver logs de WAF\n# Desde Portal: Application Gateway > Logs > Application Gateway Access Log")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Crear Application Gateway con WAF
+az network application-gateway create \
+  --resource-group RG_NAME \
+  --name AGW_NAME \
+  --location eastus \
+  --sku WAF_v2 \
+  --subnet /subscriptions/SUBSCRIPTION_ID/resourceGroups/RG_NAME/providers/Microsoft.Network/virtualNetworks/VNET_NAME/subnets/AGW_SUBNET \
+  --public-ip-address PIP_NAME \
+  --waf-policy WAF_POLICY_NAME
+
+# Crear WAF Policy
+az network application-gateway waf-policy create \
+  --resource-group RG_NAME \
+  --name WAF_POLICY_NAME \
+  --location eastus \
+  --policy-mode Prevention \
+  --rule-set-type OWASP \
+  --rule-set-version 3.2
+
+# Configurar reglas personalizadas de WAF
+az network application-gateway waf-policy custom-rule create \
+  --resource-group RG_NAME \
+  --policy-name WAF_POLICY_NAME \
+  --name "BlockIP" \
+  --rule-type MatchRule \
+  --priority 100 \
+  --action Block \
+  --match-conditions "[{\"matchVariables\":[{\"variableName\":\"RemoteAddr\"}],\"operator\":\"IPMatch\",\"values\":[\"192.168.1.100\"]}]"
+
+# Ver logs de WAF
+# Desde Portal: Application Gateway > Logs > Application Gateway Access Log</code></pre>
+                        </div>
+
+                        <h2 id="checklist-azure">Checklist de Hardening Azure</h2>
+                        <div class="checklist-container mb-6">
+                            <div class="checklist" data-checklist-id="azure-hardening">
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('azure-hardening', 0)" class="checklist-checkbox">
+                                        <span>MFA habilitado para todos los usuarios</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('azure-hardening', 1)" class="checklist-checkbox">
+                                        <span>RBAC configurado con principio de menor privilegio</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('azure-hardening', 2)" class="checklist-checkbox">
+                                        <span>NSG configurado con reglas restrictivas</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('azure-hardening', 3)" class="checklist-checkbox">
+                                        <span>Key Vault configurado con soft delete y purge protection</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('azure-hardening', 4)" class="checklist-checkbox">
+                                        <span>Azure Policy aplicado para compliance</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('azure-hardening', 5)" class="checklist-checkbox">
+                                        <span>Microsoft Defender for Cloud habilitado</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('azure-hardening', 6)" class="checklist-checkbox">
+                                        <span>Log Analytics configurado para monitoreo</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('azure-hardening', 7)" class="checklist-checkbox">
+                                        <span>WAF configurado para aplicaciones web</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="checklist-progress mt-4">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" data-progress="azure-hardening"></div>
+                                </div>
+                                <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">Progreso: <span data-progress-text="azure-hardening">0%</span></p>
+                            </div>
                         </div>
 
                         <div class="alert alert-success mt-8">
                             <p class="font-semibold mb-2">✅ Azure Hardening</p>
-                            <p>Azure Security Center (ahora Microsoft Defender for Cloud) proporciona recomendaciones de seguridad automatizadas. Actívalo y revisa regularmente sus recomendaciones. Usa Azure Policy para aplicar estándares de seguridad de forma consistente.</p>
+                            <p>Microsoft Defender for Cloud proporciona recomendaciones de seguridad automatizadas. Actívalo y revisa regularmente sus recomendaciones. Usa Azure Policy para aplicar estándares de seguridad de forma consistente. Implementa WAF para proteger aplicaciones web y usa Key Vault para gestionar secretos de forma segura.</p>
                         </div>
                     </div>
                 </article>

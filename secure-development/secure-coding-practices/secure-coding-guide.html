@@ -97,6 +97,171 @@ catch (Exception e) {
                             <li>Algoritmos recomendados: AES-256, RSA 2048+, ECDSA</li>
                         </ul>
 
+                        <h2 id="vulnerabilidades-comunes">Vulnerabilidades Comunes y Mitigaciones</h2>
+                        <h3 id="sql-injection">SQL Injection</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("// ❌ VULNERABLE - SQL Injection\nString query = \"SELECT * FROM users WHERE username = '\" + username + \"' AND password = '\" + password + \"'\";\nStatement stmt = connection.createStatement();\nResultSet rs = stmt.executeQuery(query);\n\n// ✅ SEGURO - Prepared Statements\nString query = \"SELECT * FROM users WHERE username = ? AND password = ?\";\nPreparedStatement pstmt = connection.prepareStatement(query);\npstmt.setString(1, username);\npstmt.setString(2, password);\nResultSet rs = pstmt.executeQuery();\n\n// Python (SQLAlchemy)\nfrom sqlalchemy import text\nquery = text(\"SELECT * FROM users WHERE username = :username\")\nresult = session.execute(query, {\"username\": username})\n\n// Node.js\nconst query = 'SELECT * FROM users WHERE username = ?';\ndb.query(query, [username], (err, results) => { ... });")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code>// ❌ VULNERABLE - SQL Injection
+String query = "SELECT * FROM users WHERE username = '" + username + "' AND password = '" + password + "'";
+Statement stmt = connection.createStatement();
+ResultSet rs = stmt.executeQuery(query);
+
+// ✅ SEGURO - Prepared Statements
+String query = "SELECT * FROM users WHERE username = ? AND password = ?";
+PreparedStatement pstmt = connection.prepareStatement(query);
+pstmt.setString(1, username);
+pstmt.setString(2, password);
+ResultSet rs = pstmt.executeQuery();
+
+// Python (SQLAlchemy)
+from sqlalchemy import text
+query = text("SELECT * FROM users WHERE username = :username")
+result = session.execute(query, {"username": username})
+
+// Node.js
+const query = 'SELECT * FROM users WHERE username = ?';
+db.query(query, [username], (err, results) => { ... });</code></pre>
+                        </div>
+
+                        <h3 id="xss">Cross-Site Scripting (XSS)</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("// ❌ VULNERABLE - XSS\n<div>${userInput}</div>\n\n// ✅ SEGURO - Output Encoding\n// JavaScript (Node.js)\nconst escapeHtml = (text) => {\n  const map = {\n    '&': '&amp;',\n    '<': '&lt;',\n    '>': '&gt;',\n    '\"': '&quot;',\n    \"'\": '&#039;'\n  };\n  return text.replace(/[&<>\"']/g, m => map[m]);\n};\n\n// O usar librerías:\n// - DOMPurify (JavaScript)\n// - htmlspecialchars (PHP)\n// - cgi.escape (Python)\n// - OWASP ESAPI (Java)\n\n// React (automático)\n<div>{userInput}</div>  // React escapa automáticamente\n\n// Content Security Policy (CSP)\n// Header: Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline';\n\n// Ejemplo CSP estricto:\n// Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline';")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code>// ❌ VULNERABLE - XSS
+<div>${userInput}</div>
+
+// ✅ SEGURO - Output Encoding
+// JavaScript (Node.js)
+const escapeHtml = (text) => {
+  const map = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;'
+  };
+  return text.replace(/[&<>"']/g, m => map[m]);
+};
+
+// O usar librerías:
+// - DOMPurify (JavaScript)
+// - htmlspecialchars (PHP)
+// - cgi.escape (Python)
+// - OWASP ESAPI (Java)
+
+// React (automático)
+<div>{userInput}</div>  // React escapa automáticamente
+
+// Content Security Policy (CSP)
+// Header: Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline';
+
+// Ejemplo CSP estricto:
+// Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline';</code></pre>
+                        </div>
+
+                        <h3 id="command-injection">Command Injection</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("// ❌ VULNERABLE - Command Injection\nimport os\nos.system(\"ping \" + user_input)\n\n// ✅ SEGURO - Validación y parámetros\nimport subprocess\nimport shlex\n\n# Validar input (whitelist)\nif not user_input.replace('.', '').isdigit():\n    raise ValueError(\"Invalid IP address\")\n\n# Usar subprocess con lista de argumentos\nsubprocess.run(['ping', '-c', '4', user_input], check=True)\n\n# O usar shlex para escapar\nsafe_input = shlex.quote(user_input)\nsubprocess.run(f\"ping -c 4 {safe_input}\", shell=True)\n\n// Node.js\nconst { execFile } = require('child_process');\n// Validar input primero\nif (!/^[0-9.]+$/.test(userInput)) {\n  throw new Error('Invalid IP');\n}\nexecFile('ping', ['-c', '4', userInput], (error, stdout) => { ... });\n\n// Java\nProcessBuilder pb = new ProcessBuilder(\"ping\", \"-c\", \"4\", validatedInput);\nProcess p = pb.start();")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code>// ❌ VULNERABLE - Command Injection
+import os
+os.system("ping " + user_input)
+
+// ✅ SEGURO - Validación y parámetros
+import subprocess
+import shlex
+
+# Validar input (whitelist)
+if not user_input.replace('.', '').isdigit():
+    raise ValueError("Invalid IP address")
+
+# Usar subprocess con lista de argumentos
+subprocess.run(['ping', '-c', '4', user_input], check=True)
+
+# O usar shlex para escapar
+safe_input = shlex.quote(user_input)
+subprocess.run(f"ping -c 4 {safe_input}", shell=True)
+
+// Node.js
+const { execFile } = require('child_process');
+// Validar input primero
+if (!/^[0-9.]+$/.test(userInput)) {
+  throw new Error('Invalid IP');
+}
+execFile('ping', ['-c', '4', userInput], (error, stdout) => { ... });
+
+// Java
+ProcessBuilder pb = new ProcessBuilder("ping", "-c", "4", validatedInput);
+Process p = pb.start();</code></pre>
+                        </div>
+
+                        <h3 id="path-traversal">Path Traversal</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("// ❌ VULNERABLE - Path Traversal\nFile file = new File(\"/uploads/\" + filename);\n\n// ✅ SEGURO - Validación de path\nimport os\nfrom pathlib import Path\n\n# Obtener directorio base seguro\nbase_dir = Path(\"/uploads\")\n\n# Resolver path relativo\nuser_path = Path(filename)\n\n# Verificar que no salga del directorio base\nresolved_path = (base_dir / user_path).resolve()\nif not str(resolved_path).startswith(str(base_dir.resolve())):\n    raise ValueError(\"Invalid path\")\n\n# Usar path resuelto\nwith open(resolved_path, 'r') as f:\n    content = f.read()\n\n// Node.js\nconst path = require('path');\nconst baseDir = path.resolve('/uploads');\nconst userPath = path.resolve(baseDir, filename);\nif (!userPath.startsWith(baseDir)) {\n  throw new Error('Invalid path');\n}\n\n// Java\nPath basePath = Paths.get(\"/uploads\").normalize().toAbsolutePath();\nPath userPath = basePath.resolve(filename).normalize();\nif (!userPath.startsWith(basePath)) {\n    throw new SecurityException(\"Invalid path\");\n}")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code>// ❌ VULNERABLE - Path Traversal
+File file = new File("/uploads/" + filename);
+
+// ✅ SEGURO - Validación de path
+import os
+from pathlib import Path
+
+# Obtener directorio base seguro
+base_dir = Path("/uploads")
+
+# Resolver path relativo
+user_path = Path(filename)
+
+# Verificar que no salga del directorio base
+resolved_path = (base_dir / user_path).resolve()
+if not str(resolved_path).startswith(str(base_dir.resolve())):
+    raise ValueError("Invalid path")
+
+# Usar path resuelto
+with open(resolved_path, 'r') as f:
+    content = f.read()
+
+// Node.js
+const path = require('path');
+const baseDir = path.resolve('/uploads');
+const userPath = path.resolve(baseDir, filename);
+if (!userPath.startsWith(baseDir)) {
+  throw new Error('Invalid path');
+}
+
+// Java
+Path basePath = Paths.get("/uploads").normalize().toAbsolutePath();
+Path userPath = basePath.resolve(filename).normalize();
+if (!userPath.startsWith(basePath)) {
+    throw new SecurityException("Invalid path");
+}</code></pre>
+                        </div>
+
                         <h2 id="checklist-codigo-seguro">Checklist: Código Seguro</h2>
                         <div class="checklist-container bg-gray-50 dark:bg-gray-800 rounded-lg p-4 mb-6" data-checklist-id="secure-coding">
                             <div class="flex justify-between items-center mb-4">

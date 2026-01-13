@@ -32,6 +32,10 @@ build/
 .gitattributes
 .cursor/
 
+# PDF files (roadmaps, documentation)
+*.pdf
+Roadmap hardening.pdf
+
 # Temporary and template files (should not be committed)
 PROJECT_STATUS.md
 *TEMPLATE*.html

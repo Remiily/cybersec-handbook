@@ -55,58 +55,146 @@
                     <div id="table-of-contents" class="toc"></div>
                     <div class="prose prose-lg dark:prose-invert max-w-none">
                         <h2 id="nist-framework">Framework NIST (7 fases)</h2>
-                        <div class="steps-container">
-                            <div class="step">
-                                <h3>1. Preparation</h3>
-                                <ul>
-                                    <li>Crear equipo IR</li>
-                                    <li>Desarrollar playbooks</li>
-                                    <li>Establecer comunicación</li>
-                                    <li>Herramientas y recursos listos</li>
-                                </ul>
-                            </div>
-                            <div class="step">
-                                <h3>2. Detection & Analysis</h3>
-                                <ul>
-                                    <li>Identificar indicadores</li>
-                                    <li>Clasificar incidente</li>
-                                    <li>Priorizar respuesta</li>
-                                    <li>Documentar hallazgos</li>
-                                </ul>
-                            </div>
-                            <div class="step">
-                                <h3>3. Containment</h3>
-                                <ul>
-                                    <li>Contención a corto plazo</li>
-                                    <li>Preservar evidencia</li>
-                                    <li>Contención a largo plazo</li>
-                                </ul>
-                            </div>
-                            <div class="step">
-                                <h3>4. Eradication</h3>
-                                <ul>
-                                    <li>Eliminar causa raíz</li>
-                                    <li>Remover malware</li>
-                                    <li>Parchear vulnerabilidades</li>
-                                </ul>
-                            </div>
-                            <div class="step">
-                                <h3>5. Recovery</h3>
-                                <ul>
-                                    <li>Restaurar sistemas</li>
-                                    <li>Monitoreo continuo</li>
-                                    <li>Validar funcionamiento</li>
-                                </ul>
-                            </div>
-                            <div class="step">
-                                <h3>6. Post-Incident Activity</h3>
-                                <ul>
-                                    <li>Lecciones aprendidas</li>
-                                    <li>Actualizar playbooks</li>
-                                    <li>Mejoras de proceso</li>
-                                </ul>
-                            </div>
+                        <h3 id="preparation">1. Preparation (Preparación)</h3>
+                        <p>La preparación es fundamental para una respuesta efectiva. Incluye:</p>
+                        <ul>
+                            <li><strong>Equipo IR:</strong> Definir roles y responsabilidades (Incident Commander, Analista, Forense, Comunicaciones)</li>
+                            <li><strong>Playbooks:</strong> Documentar procedimientos para tipos comunes de incidentes (malware, phishing, DDoS, data breach)</li>
+                            <li><strong>Herramientas:</strong> Tener listas herramientas de forensics, análisis de malware, y comunicación</li>
+                            <li><strong>Comunicación:</strong> Canales seguros para comunicación interna y externa</li>
+                            <li><strong>Entrenamiento:</strong> Ejercicios regulares de tabletop y simulacros</li>
+                        </ul>
+
+                        <h3 id="detection-analysis">2. Detection & Analysis (Detección y Análisis)</h3>
+                        <p>Identificar y analizar el incidente:</p>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Clasificación de incidentes\n# Severidad 1 (Crítico): Breach confirmado, ransomware activo\n# Severidad 2 (Alto): Intrusión detectada, datos comprometidos\n# Severidad 3 (Medio): Intento de intrusión, malware detectado\n# Severidad 4 (Bajo): Actividad sospechosa, falsos positivos\n\n# Análisis inicial\n# 1. Revisar alertas del SIEM\n# 2. Verificar IOCs (IPs, dominios, hashes)\n# 3. Analizar logs de red y endpoints\n# 4. Identificar alcance del incidente\n\n# Herramientas de análisis\n# - SIEM (Splunk, ELK, QRadar)\n# - EDR (CrowdStrike, SentinelOne, Microsoft Defender)\n# - Network monitoring (Wireshark, tcpdump)\n# - Threat intelligence (VirusTotal, AbuseIPDB)\n\n# Documentar hallazgos\n# - Timestamp del incidente\n# - Sistemas afectados\n# - IOCs identificados\n# - Alcance estimado")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Clasificación de incidentes
+# Severidad 1 (Crítico): Breach confirmado, ransomware activo
+# Severidad 2 (Alto): Intrusión detectada, datos comprometidos
+# Severidad 3 (Medio): Intento de intrusión, malware detectado
+# Severidad 4 (Bajo): Actividad sospechosa, falsos positivos
+
+# Análisis inicial
+# 1. Revisar alertas del SIEM
+# 2. Verificar IOCs (IPs, dominios, hashes)
+# 3. Analizar logs de red y endpoints
+# 4. Identificar alcance del incidente
+
+# Herramientas de análisis
+# - SIEM (Splunk, ELK, QRadar)
+# - EDR (CrowdStrike, SentinelOne, Microsoft Defender)
+# - Network monitoring (Wireshark, tcpdump)
+# - Threat intelligence (VirusTotal, AbuseIPDB)
+
+# Documentar hallazgos
+# - Timestamp del incidente
+# - Sistemas afectados
+# - IOCs identificados
+# - Alcance estimado</code></pre>
                         </div>
+
+                        <h3 id="containment">3. Containment (Contención)</h3>
+                        <p>Contener el incidente para prevenir mayor daño:</p>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Contención a corto plazo (inmediata)\n# - Aislar sistemas afectados de la red\n# - Bloquear IPs maliciosas en firewall\n# - Deshabilitar cuentas comprometidas\n# - Cambiar credenciales afectadas\n\n# Windows - Aislar sistema\n# Desconectar de red: netsh interface set interface \"Ethernet\" admin=disable\n# O bloquear en firewall: netsh advfirewall firewall add rule name=\"Block\" dir=out action=block\n\n# Linux - Aislar sistema\n# Desconectar de red: sudo ifdown eth0\n# O bloquear en firewall: sudo iptables -A OUTPUT -d <IP_MALICIOSA> -j DROP\n\n# Preservar evidencia ANTES de contener\n# - Capturar memoria (WinPmem, DumpIt)\n# - Crear imagen de disco\n# - Exportar logs relevantes\n# - Documentar estado del sistema\n\n# Contención a largo plazo\n# - Implementar reglas de firewall permanentes\n# - Actualizar políticas de seguridad\n# - Mejorar monitoreo\n# - Aplicar parches de seguridad")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Contención a corto plazo (inmediata)
+# - Aislar sistemas afectados de la red
+# - Bloquear IPs maliciosas en firewall
+# - Deshabilitar cuentas comprometidas
+# - Cambiar credenciales afectadas
+
+# Windows - Aislar sistema
+# Desconectar de red: netsh interface set interface "Ethernet" admin=disable
+# O bloquear en firewall: netsh advfirewall firewall add rule name="Block" dir=out action=block
+
+# Linux - Aislar sistema
+# Desconectar de red: sudo ifdown eth0
+# O bloquear en firewall: sudo iptables -A OUTPUT -d <IP_MALICIOSA> -j DROP
+
+# Preservar evidencia ANTES de contener
+# - Capturar memoria (WinPmem, DumpIt)
+# - Crear imagen de disco
+# - Exportar logs relevantes
+# - Documentar estado del sistema
+
+# Contención a largo plazo
+# - Implementar reglas de firewall permanentes
+# - Actualizar políticas de seguridad
+# - Mejorar monitoreo
+# - Aplicar parches de seguridad</code></pre>
+                        </div>
+
+                        <h3 id="eradication">4. Eradication (Erradicación)</h3>
+                        <p>Eliminar la causa raíz del incidente:</p>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Eliminar malware\n# Windows:\n# 1. Identificar procesos maliciosos (Task Manager, Process Explorer)\n# 2. Terminar procesos: taskkill /F /PID <PID>\n# 3. Eliminar archivos: del /F /Q <ruta_archivo>\n# 4. Limpiar registro: reg delete \"HKLM\\...\" /F\n# 5. Eliminar servicios: sc delete <nombre_servicio>\n# 6. Eliminar tareas programadas: schtasks /delete /tn <nombre_tarea>\n\n# Linux:\n# 1. Identificar procesos: ps aux | grep <proceso>\n# 2. Terminar procesos: kill -9 <PID>\n# 3. Eliminar archivos: rm -f <ruta_archivo>\n# 4. Eliminar cron jobs: crontab -e\n# 5. Eliminar servicios: systemctl stop <servicio> && systemctl disable <servicio>\n\n# Parchear vulnerabilidades\n# Windows: Windows Update, WSUS\n# Linux: apt update && apt upgrade (Debian/Ubuntu)\n#        yum update (RHEL/CentOS)\n\n# Cambiar todas las credenciales comprometidas\n# - Cuentas de usuario\n# - Cuentas de servicio\n# - API keys\n# - Certificados")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Eliminar malware
+# Windows:
+# 1. Identificar procesos maliciosos (Task Manager, Process Explorer)
+# 2. Terminar procesos: taskkill /F /PID <PID>
+# 3. Eliminar archivos: del /F /Q <ruta_archivo>
+# 4. Limpiar registro: reg delete "HKLM\..." /F
+# 5. Eliminar servicios: sc delete <nombre_servicio>
+# 6. Eliminar tareas programadas: schtasks /delete /tn <nombre_tarea>
+
+# Linux:
+# 1. Identificar procesos: ps aux | grep <proceso>
+# 2. Terminar procesos: kill -9 <PID>
+# 3. Eliminar archivos: rm -f <ruta_archivo>
+# 4. Eliminar cron jobs: crontab -e
+# 5. Eliminar servicios: systemctl stop <servicio> && systemctl disable <servicio>
+
+# Parchear vulnerabilidades
+# Windows: Windows Update, WSUS
+# Linux: apt update && apt upgrade (Debian/Ubuntu)
+#        yum update (RHEL/CentOS)
+
+# Cambiar todas las credenciales comprometidas
+# - Cuentas de usuario
+# - Cuentas de servicio
+# - API keys
+# - Certificados</code></pre>
+                        </div>
+
+                        <h3 id="recovery">5. Recovery (Recuperación)</h3>
+                        <p>Restaurar sistemas a operación normal:</p>
+                        <ul>
+                            <li><strong>Validación:</strong> Verificar que sistemas funcionan correctamente</li>
+                            <li><strong>Monitoreo:</strong> Aumentar monitoreo post-incidente</li>
+                            <li><strong>Restauración:</strong> Restaurar desde backups limpios si es necesario</li>
+                            <li><strong>Comunicación:</strong> Notificar a usuarios y stakeholders</li>
+                        </ul>
+
+                        <h3 id="post-incident">6. Post-Incident Activity (Actividades Post-Incidente)</h3>
+                        <p>Mejorar procesos basándose en lecciones aprendidas:</p>
+                        <ul>
+                            <li><strong>Post-mortem:</strong> Reunión para analizar qué salió bien y qué se puede mejorar</li>
+                            <li><strong>Actualizar playbooks:</strong> Incorporar lecciones aprendidas</li>
+                            <li><strong>Mejoras:</strong> Implementar mejoras de seguridad y procesos</li>
+                            <li><strong>Reporte:</strong> Documentar incidente completo para referencia futura</li>
+                        </ul>
 
                         <h2 id="checklist-ir">Checklist de IR</h2>
                         <div class="checklist-container bg-gray-50 dark:bg-gray-800 rounded-lg p-4 mb-6" data-checklist-id="ir-process">

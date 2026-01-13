@@ -158,9 +158,236 @@ tshark -r captura.pcap -Y "http" -T fields -e http.host -e http.request.uri
 tshark -r captura.pcap --export-objects http,/tmp/http_objects/</code></pre>
                         </div>
 
+                        <h2 id="herramientas-adicionales">Herramientas Adicionales de Forensics</h2>
+                        <h3 id="sleuthkit">The Sleuth Kit (TSK)</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Instalar TSK\nsudo apt install sleuthkit -y\n\n# Analizar imagen de disco\nmmls disk_image.dd\n\n# Ver sistema de archivos\nfsstat -f ntfs disk_image.dd\n\n# Listar archivos eliminados\nfls -r -d disk_image.dd\n\n# Recuperar archivo eliminado\nicat disk_image.dd inode_num > recovered_file\n\n# Ver metadatos de archivo\nistat disk_image.dd inode_num\n\n# Buscar archivos por nombre\nfls -r disk_image.dd | grep -i \"password\"\n\n# Ver timeline de actividad\nmactime -b body_file.txt -d -m -y > timeline.csv")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Instalar TSK
+sudo apt install sleuthkit -y
+
+# Analizar imagen de disco
+mmls disk_image.dd
+
+# Ver sistema de archivos
+fsstat -f ntfs disk_image.dd
+
+# Listar archivos eliminados
+fls -r -d disk_image.dd
+
+# Recuperar archivo eliminado
+icat disk_image.dd inode_num > recovered_file
+
+# Ver metadatos de archivo
+istat disk_image.dd inode_num
+
+# Buscar archivos por nombre
+fls -r disk_image.dd | grep -i "password"
+
+# Ver timeline de actividad
+mactime -b body_file.txt -d -m -y > timeline.csv</code></pre>
+                        </div>
+
+                        <h3 id="ftk-imager">FTK Imager</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# FTK Imager - Crear imágenes forenses\n# Descargar de accessdata.com\n\n# Crear imagen de disco completo\n# File > Create Disk Image\n# Seleccionar Physical Drive\n# Seleccionar formato (E01, AFF, RAW)\n# Configurar hash (MD5, SHA1)\n\n# Montar imagen para análisis\n# File > Add Evidence Item\n# Seleccionar imagen creada\n\n# Exportar archivos\n# Right-click en archivo > Export Files\n\n# Verificar integridad\n# Tools > Verify Drive/Image\n\n# Crear imagen de memoria\n# File > Capture Memory\n# Seleccionar destino\n# Iniciar captura")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># FTK Imager - Crear imágenes forenses
+# Descargar de accessdata.com
+
+# Crear imagen de disco completo
+# File > Create Disk Image
+# Seleccionar Physical Drive
+# Seleccionar formato (E01, AFF, RAW)
+# Configurar hash (MD5, SHA1)
+
+# Montar imagen para análisis
+# File > Add Evidence Item
+# Seleccionar imagen creada
+
+# Exportar archivos
+# Right-click en archivo > Export Files
+
+# Verificar integridad
+# Tools > Verify Drive/Image
+
+# Crear imagen de memoria
+# File > Capture Memory
+# Seleccionar destino
+# Iniciar captura</code></pre>
+                        </div>
+
+                        <h3 id="regripper">RegRipper - Análisis de Registro Windows</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# RegRipper - Análisis de Registry Windows\n# Instalar\nsudo apt install regripper -y\n\n# Analizar hive de registro\nrip.pl -r SYSTEM -f system\nrip.pl -r SOFTWARE -f software\nrip.pl -r SAM -f sam\nrip.pl -r NTUSER.DAT -f ntuser\n\n# Plugins específicos\nrip.pl -r SYSTEM -p compname\nrip.pl -r SYSTEM -p timezone\nrip.pl -r SOFTWARE -p winver\n\n# Extraer información de usuarios\nrip.pl -r SAM -p samparse\n\n# Ver programas instalados\nrip.pl -r SOFTWARE -p listsoft\n\n# Ver servicios\nrip.pl -r SYSTEM -p services\n\n# Timeline de actividad\nrip.pl -r SYSTEM -p mactime")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># RegRipper - Análisis de Registry Windows
+# Instalar
+sudo apt install regripper -y
+
+# Analizar hive de registro
+rip.pl -r SYSTEM -f system
+rip.pl -r SOFTWARE -f software
+rip.pl -r SAM -f sam
+rip.pl -r NTUSER.DAT -f ntuser
+
+# Plugins específicos
+rip.pl -r SYSTEM -p compname
+rip.pl -r SYSTEM -p timezone
+rip.pl -r SOFTWARE -p winver
+
+# Extraer información de usuarios
+rip.pl -r SAM -p samparse
+
+# Ver programas instalados
+rip.pl -r SOFTWARE -p listsoft
+
+# Ver servicios
+rip.pl -r SYSTEM -p services
+
+# Timeline de actividad
+rip.pl -r SYSTEM -p mactime</code></pre>
+                        </div>
+
+                        <h2 id="cadena-custodia">Cadena de Custodia</h2>
+                        <p>La cadena de custodia es fundamental en forensics. Documenta cada paso del proceso para mantener la integridad de la evidencia.</p>
+
+                        <h3 id="proceso-cadena-custodia">Proceso de Cadena de Custodia</h3>
+                        <div class="overflow-x-auto mb-6">
+                            <table>
+                                <thead>
+                                    <tr><th>Paso</th><th>Acción</th><th>Documentación</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1. Adquisición</td>
+                                        <td>Crear imagen forense del dispositivo</td>
+                                        <td>Hash MD5/SHA1, fecha/hora, responsable</td>
+                                    </tr>
+                                    <tr>
+                                        <td>2. Almacenamiento</td>
+                                        <td>Guardar evidencia en lugar seguro</td>
+                                        <td>Ubicación física, condiciones ambientales</td>
+                                    </tr>
+                                    <tr>
+                                        <td>3. Análisis</td>
+                                        <td>Trabajar solo con copias</td>
+                                        <td>Registro de herramientas usadas, resultados</td>
+                                    </tr>
+                                    <tr>
+                                        <td>4. Transferencia</td>
+                                        <td>Documentar cada transferencia</td>
+                                        <td>De quién, a quién, fecha/hora, razón</td>
+                                    </tr>
+                                    <tr>
+                                        <td>5. Preservación</td>
+                                        <td>Mantener evidencia original intacta</td>
+                                        <td>Verificación periódica de integridad</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h3 id="verificacion-hash">Verificación de Integridad</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Calcular hash MD5\nmd5sum disk_image.dd > disk_image.dd.md5\n\n# Calcular hash SHA1\nsha1sum disk_image.dd > disk_image.dd.sha1\n\n# Calcular hash SHA256\nsha256sum disk_image.dd > disk_image.dd.sha256\n\n# Verificar hash\nmd5sum -c disk_image.dd.md5\nsha1sum -c disk_image.dd.sha1\nsha256sum -c disk_image.dd.sha256\n\n# Verificar durante análisis\n# Siempre verificar hash antes de trabajar con evidencia\n\n# Documentar hash en reporte\n# Incluir: algoritmo, valor hash, fecha de cálculo")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Calcular hash MD5
+md5sum disk_image.dd > disk_image.dd.md5
+
+# Calcular hash SHA1
+sha1sum disk_image.dd > disk_image.dd.sha1
+
+# Calcular hash SHA256
+sha256sum disk_image.dd > disk_image.dd.sha256
+
+# Verificar hash
+md5sum -c disk_image.dd.md5
+sha1sum -c disk_image.dd.sha1
+sha256sum -c disk_image.dd.sha256
+
+# Verificar durante análisis
+# Siempre verificar hash antes de trabajar con evidencia
+
+# Documentar hash en reporte
+# Incluir: algoritmo, valor hash, fecha de cálculo</code></pre>
+                        </div>
+
+                        <h2 id="checklist-forensics">Checklist de Análisis Forense</h2>
+                        <div class="checklist-container mb-6">
+                            <div class="checklist" data-checklist-id="forensics-analysis">
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('forensics-analysis', 0)" class="checklist-checkbox">
+                                        <span>Imagen forense creada con hash verificado</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('forensics-analysis', 1)" class="checklist-checkbox">
+                                        <span>Cadena de custodia documentada</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('forensics-analysis', 2)" class="checklist-checkbox">
+                                        <span>Análisis realizado solo en copias, nunca en original</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('forensics-analysis', 3)" class="checklist-checkbox">
+                                        <span>Herramientas utilizadas documentadas</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('forensics-analysis', 4)" class="checklist-checkbox">
+                                        <span>Resultados documentados con evidencia</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('forensics-analysis', 5)" class="checklist-checkbox">
+                                        <span>Reporte forense completo generado</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="checklist-progress mt-4">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" data-progress="forensics-analysis"></div>
+                                </div>
+                                <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">Progreso: <span data-progress-text="forensics-analysis">0%</span></p>
+                            </div>
+                        </div>
+
                         <div class="alert alert-success mt-8">
                             <p class="font-semibold mb-2">✅ Herramientas Forensics</p>
-                            <p>El análisis forense requiere preservar la cadena de custodia. Siempre trabaja con copias de evidencia, nunca con el original. Documenta cada paso del proceso.</p>
+                            <p>El análisis forense requiere preservar la cadena de custodia. Siempre trabaja con copias de evidencia, nunca con el original. Documenta cada paso del proceso. Usa herramientas estándar de la industria y verifica la integridad de la evidencia regularmente.</p>
                         </div>
                     </div>
                 </article>

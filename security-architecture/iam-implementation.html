@@ -137,6 +137,216 @@ aws identitystore list-users --identity-store-id STORE_ID
 aws sso-admin create-permission-set --name "AdminAccess" --instance-arn INSTANCE_ARN</code></pre>
                         </div>
 
+                        <h2 id="aws-iam">AWS IAM</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Crear usuario IAM\naws iam create-user --user-name app-user\n\n# Crear grupo\naws iam create-group --group-name Developers\n\n# Agregar usuario a grupo\naws iam add-user-to-group --user-name app-user --group-name Developers\n\n# Crear política personalizada (desde archivo JSON)\naws iam create-policy --policy-name S3ReadOnlyPolicy --policy-document file://policy.json\n\n# Adjuntar política a grupo\naws iam attach-group-policy --group-name Developers --policy-arn arn:aws:iam::ACCOUNT:policy/S3ReadOnlyPolicy\n\n# Crear rol IAM\naws iam create-role --role-name EC2-S3-Role --assume-role-policy-document file://trust-policy.json\n\n# Adjuntar política a rol\naws iam attach-role-policy --role-name EC2-S3-Role --policy-arn arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess\n\n# Habilitar MFA para usuario\naws iam enable-mfa-device --user-name app-user --serial-number arn:aws:iam::ACCOUNT:mfa/app-user --authentication-code-1 123456 --authentication-code-2 654321\n\n# Listar políticas adjuntas\naws iam list-attached-user-policies --user-name app-user\naws iam list-attached-group-policies --group-name Developers\naws iam list-attached-role-policies --role-name EC2-S3-Role")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Crear usuario IAM
+aws iam create-user --user-name app-user
+
+# Crear grupo
+aws iam create-group --group-name Developers
+
+# Agregar usuario a grupo
+aws iam add-user-to-group --user-name app-user --group-name Developers
+
+# Crear política personalizada (desde archivo JSON)
+aws iam create-policy --policy-name S3ReadOnlyPolicy --policy-document file://policy.json
+
+# Adjuntar política a grupo
+aws iam attach-group-policy --group-name Developers --policy-arn arn:aws:iam::ACCOUNT:policy/S3ReadOnlyPolicy
+
+# Crear rol IAM
+aws iam create-role --role-name EC2-S3-Role --assume-role-policy-document file://trust-policy.json
+
+# Adjuntar política a rol
+aws iam attach-role-policy --role-name EC2-S3-Role --policy-arn arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
+
+# Habilitar MFA para usuario
+aws iam enable-mfa-device --user-name app-user --serial-number arn:aws:iam::ACCOUNT:mfa/app-user --authentication-code-1 123456 --authentication-code-2 654321
+
+# Listar políticas adjuntas
+aws iam list-attached-user-policies --user-name app-user
+aws iam list-attached-group-policies --group-name Developers
+aws iam list-attached-role-policies --role-name EC2-S3-Role</code></pre>
+                        </div>
+
+                        <h3 id="ejemplo-politica-aws">Ejemplo de Política IAM (JSON)</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"s3:GetObject\",\n        \"s3:ListBucket\"\n      ],\n      \"Resource\": [\n        \"arn:aws:s3:::mi-bucket/*\",\n        \"arn:aws:s3:::mi-bucket\"\n      ],\n      \"Condition\": {\n        \"IpAddress\": {\n          \"aws:SourceIp\": \"10.0.0.0/8\"\n        },\n        \"Bool\": {\n          \"aws:MultiFactorAuthPresent\": \"true\"\n        }\n      }\n    }\n  ]\n}")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code>{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:ListBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::mi-bucket/*",
+        "arn:aws:s3:::mi-bucket"
+      ],
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "10.0.0.0/8"
+        },
+        "Bool": {
+          "aws:MultiFactorAuthPresent": "true"
+        }
+      }
+    }
+  ]
+}</code></pre>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                                <strong>Explicación:</strong> Esta política permite lectura de S3 solo desde IPs internas (10.0.0.0/8) y requiere MFA. Usa condiciones para restricciones adicionales.
+                            </p>
+                        </div>
+
+                        <h2 id="conditional-access">Conditional Access Policies</h2>
+                        <p>Las políticas de acceso condicional permiten controlar el acceso basado en condiciones como ubicación, dispositivo, aplicación, y riesgo.</p>
+
+                        <h3 id="azure-conditional-access">Azure AD Conditional Access</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Crear Conditional Access Policy (PowerShell)\n# Instalar módulo\nInstall-Module -Name AzureAD -Force\nConnect-AzureAD\n\n# Crear política básica\n$policy = New-AzureADMSConditionalAccessPolicy -DisplayName \"Require MFA for Admins\" `\n  -State \"Enabled\" `\n  -Conditions @{\n    Users = @{\n      IncludeGroups = @(\"Admin-Group-ID\")\n    };\n    Applications = @{\n      IncludeApplications = @(\"All\")\n    };\n    Locations = @{\n      IncludeLocations = @(\"All\")\n    }\n  } `\n  -GrantControls @{\n    Operator = \"AND\";\n    BuiltInControls = @(\"Mfa\")\n  }\n\n# Política: Bloquear acceso desde países específicos\n# Desde Portal: Azure AD > Security > Conditional Access > New policy\n# Conditions > Locations > Exclude > Select countries\n\n# Política: Requerir dispositivo compliant\n# Grant controls > Require device to be marked as compliant\n\n# Política: Bloquear aplicaciones legacy\n# Conditions > Client apps > Select \"Other clients\"\n# Grant controls > Block")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Crear Conditional Access Policy (PowerShell)
+# Instalar módulo
+Install-Module -Name AzureAD -Force
+Connect-AzureAD
+
+# Crear política básica
+$policy = New-AzureADMSConditionalAccessPolicy -DisplayName "Require MFA for Admins" `
+  -State "Enabled" `
+  -Conditions @{
+    Users = @{
+      IncludeGroups = @("Admin-Group-ID")
+    };
+    Applications = @{
+      IncludeApplications = @("All")
+    };
+    Locations = @{
+      IncludeLocations = @("All")
+    }
+  } `
+  -GrantControls @{
+    Operator = "AND";
+    BuiltInControls = @("Mfa")
+  }
+
+# Política: Bloquear acceso desde países específicos
+# Desde Portal: Azure AD > Security > Conditional Access > New policy
+# Conditions > Locations > Exclude > Select countries
+
+# Política: Requerir dispositivo compliant
+# Grant controls > Require device to be marked as compliant
+
+# Política: Bloquear aplicaciones legacy
+# Conditions > Client apps > Select "Other clients"
+# Grant controls > Block</code></pre>
+                        </div>
+
+                        <h2 id="access-reviews">Access Reviews y Recertificación</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Azure AD Access Reviews\n# Crear access review (PowerShell)\nImport-Module AzureADPreview\nConnect-AzureAD\n\n# Crear review para grupo\n$review = New-AzureADMSAccessReview `\n  -DisplayName \"Quarterly Admin Review\" `\n  -Description \"Review admin access every quarter\" `\n  -ReviewerType \"Self\" `\n  -ScopeId \"Group-ID\" `\n  -ScopeType \"Group\" `\n  -StartDateTime (Get-Date).AddDays(1) `\n  -EndDateTime (Get-Date).AddDays(30) `\n  -RecurrenceType \"Quarterly\"\n\n# AWS Access Analyzer\n# Habilitar Access Analyzer\naws accessanalyzer create-analyzer --analyzer-name my-analyzer --type ACCOUNT\n\n# Listar findings\naws accessanalyzer list-findings --analyzer-arn arn:aws:access-analyzer:REGION:ACCOUNT:analyzer/my-analyzer\n\n# Revisar acceso externo\naws accessanalyzer list-analyzed-resources --analyzer-arn ANALYZER_ARN\n\n# Proceso manual de recertificación:\n# 1. Generar reporte de accesos actuales\n# 2. Enviar a managers para aprobación\n# 3. Revocar accesos no aprobados\n# 4. Documentar decisiones")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Azure AD Access Reviews
+# Crear access review (PowerShell)
+Import-Module AzureADPreview
+Connect-AzureAD
+
+# Crear review para grupo
+$review = New-AzureADMSAccessReview `
+  -DisplayName "Quarterly Admin Review" `
+  -Description "Review admin access every quarter" `
+  -ReviewerType "Self" `
+  -ScopeId "Group-ID" `
+  -ScopeType "Group" `
+  -StartDateTime (Get-Date).AddDays(1) `
+  -EndDateTime (Get-Date).AddDays(30) `
+  -RecurrenceType "Quarterly"
+
+# AWS Access Analyzer
+# Habilitar Access Analyzer
+aws accessanalyzer create-analyzer --analyzer-name my-analyzer --type ACCOUNT
+
+# Listar findings
+aws accessanalyzer list-findings --analyzer-arn arn:aws:access-analyzer:REGION:ACCOUNT:analyzer/my-analyzer
+
+# Revisar acceso externo
+aws accessanalyzer list-analyzed-resources --analyzer-arn ANALYZER_ARN
+
+# Proceso manual de recertificación:
+# 1. Generar reporte de accesos actuales
+# 2. Enviar a managers para aprobación
+# 3. Revocar accesos no aprobados
+# 4. Documentar decisiones</code></pre>
+                        </div>
+
+                        <h2 id="auditoria-iam">Auditoría y Monitoreo IAM</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# AWS CloudTrail - Auditoría IAM\n# Habilitar CloudTrail\naws cloudtrail create-trail --name my-trail --s3-bucket-name my-cloudtrail-bucket\naws cloudtrail start-logging --name my-trail\n\n# Ver eventos IAM\naws cloudtrail lookup-events --lookup-attributes AttributeKey=EventName,AttributeValue=CreateUser\n\n# Azure AD Audit Logs\n# Ver logs de auditoría\nGet-AzureADAuditDirectoryLogs -Filter \"category eq 'UserManagement'\" -Top 100\n\n# Exportar logs a SIEM\n# Azure Monitor > Log Analytics > Exportar a SIEM\n\n# Monitorear cambios críticos:\n# - Creación/eliminación de usuarios\n# - Cambios de roles/permisos\n# - Cambios de políticas\n# - Accesos fallidos\n# - Activación de roles privilegiados\n\n# Alertas recomendadas:\n# - Múltiples intentos de acceso fallidos\n# - Cambios en políticas críticas\n# - Activación de roles admin fuera de horario\n# - Acceso desde ubicaciones inusuales")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># AWS CloudTrail - Auditoría IAM
+# Habilitar CloudTrail
+aws cloudtrail create-trail --name my-trail --s3-bucket-name my-cloudtrail-bucket
+aws cloudtrail start-logging --name my-trail
+
+# Ver eventos IAM
+aws cloudtrail lookup-events --lookup-attributes AttributeKey=EventName,AttributeValue=CreateUser
+
+# Azure AD Audit Logs
+# Ver logs de auditoría
+Get-AzureADAuditDirectoryLogs -Filter "category eq 'UserManagement'" -Top 100
+
+# Exportar logs a SIEM
+# Azure Monitor > Log Analytics > Exportar a SIEM
+
+# Monitorear cambios críticos:
+# - Creación/eliminación de usuarios
+# - Cambios de roles/permisos
+# - Cambios de políticas
+# - Accesos fallidos
+# - Activación de roles privilegiados
+
+# Alertas recomendadas:
+# - Múltiples intentos de acceso fallidos
+# - Cambios en políticas críticas
+# - Activación de roles admin fuera de horario
+# - Acceso desde ubicaciones inusuales</code></pre>
+                        </div>
+
                         <h2 id="best-practices">Mejores Prácticas</h2>
                         <div class="overflow-x-auto mb-6">
                             <table>
@@ -150,13 +360,76 @@ aws sso-admin create-permission-set --name "AdminAccess" --instance-arn INSTANCE
                                     <tr><td>Segregación de roles</td><td>Ningún usuario tiene todos los permisos</td></tr>
                                     <tr><td>Auditoría completa</td><td>Logs de todos los cambios de acceso</td></tr>
                                     <tr><td>Principle of least privilege</td><td>Permisos mínimos necesarios</td></tr>
+                                    <tr><td>Just-In-Time Access</td><td>Acceso temporal con aprobación</td></tr>
+                                    <tr><td>Conditional Access</td><td>Políticas basadas en contexto</td></tr>
+                                    <tr><td>Zero Standing Privileges</td><td>Sin permisos permanentes para admins</td></tr>
                                 </tbody>
                             </table>
                         </div>
 
+                        <h2 id="checklist-iam">Checklist de Implementación IAM</h2>
+                        <div class="checklist-container mb-6">
+                            <div class="checklist" data-checklist-id="iam-implementation">
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('iam-implementation', 0)" class="checklist-checkbox">
+                                        <span>MFA habilitado para todos los usuarios</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('iam-implementation', 1)" class="checklist-checkbox">
+                                        <span>Principio de menor privilegio aplicado</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('iam-implementation', 2)" class="checklist-checkbox">
+                                        <span>Access reviews configurados y automatizados</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('iam-implementation', 3)" class="checklist-checkbox">
+                                        <span>PAM implementado para cuentas privilegiadas</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('iam-implementation', 4)" class="checklist-checkbox">
+                                        <span>Conditional Access policies configuradas</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('iam-implementation', 5)" class="checklist-checkbox">
+                                        <span>Auditoría y logging habilitados</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('iam-implementation', 6)" class="checklist-checkbox">
+                                        <span>Segregación de deberes implementada</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('iam-implementation', 7)" class="checklist-checkbox">
+                                        <span>Alertas configuradas para cambios críticos</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="checklist-progress mt-4">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" data-progress="iam-implementation"></div>
+                                </div>
+                                <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">Progreso: <span data-progress-text="iam-implementation">0%</span></p>
+                            </div>
+                        </div>
+
                         <div class="alert alert-success mt-8">
                             <p class="font-semibold mb-2">✅ IAM Implementation</p>
-                            <p>IAM es la base de la seguridad. Un IAM mal implementado compromete todo el resto de la seguridad. Prioriza MFA, access reviews regulares y principio de menor privilegio. PAM es crítico para cuentas privilegiadas.</p>
+                            <p>IAM es la base de la seguridad. Un IAM mal implementado compromete todo el resto de la seguridad. Prioriza MFA, access reviews regulares y principio de menor privilegio. PAM es crítico para cuentas privilegiadas. Usa Conditional Access para políticas basadas en contexto y monitorea todos los cambios de acceso.</p>
                         </div>
                     </div>
                 </article>
