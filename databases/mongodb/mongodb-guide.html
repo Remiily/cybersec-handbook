@@ -117,9 +117,191 @@ db.usuarios.deleteOne({nombre: "Juan"})
 db.usuarios.deleteMany({edad: {$lt: 18}})</code></pre>
                         </div>
 
+                        <h2 id="seguridad-mongodb">Seguridad de MongoDB</h2>
+                        <p>MongoDB requiere configuración de seguridad adecuada para proteger datos sensibles en producción.</p>
+
+                        <h3 id="autenticacion">Autenticación</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('# Crear usuario administrador\nuse admin\ndb.createUser({\n  user: \"admin\",\n  pwd: \"contraseña_segura\",\n  roles: [\"root\"]\n})\n\n# Crear usuario con roles específicos\nuse appdb\ndb.createUser({\n  user: \"appuser\",\n  pwd: \"contraseña_segura\",\n  roles: [\n    { role: \"readWrite\", db: \"appdb\" },\n    { role: \"read\", db: \"reporting\" }\n  ]\n})\n\n# Habilitar autenticación en mongod.conf\n# security:\n#   authorization: enabled\n\n# Reiniciar MongoDB\nsudo systemctl restart mongod\n\n# Conectar con autenticación\nmongosh -u admin -p contraseña_segura --authenticationDatabase admin')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Crear usuario administrador
+use admin
+db.createUser({
+  user: "admin",
+  pwd: "contraseña_segura",
+  roles: ["root"]
+})
+
+# Crear usuario con roles específicos
+use appdb
+db.createUser({
+  user: "appuser",
+  pwd: "contraseña_segura",
+  roles: [
+    { role: "readWrite", db: "appdb" },
+    { role: "read", db: "reporting" }
+  ]
+})
+
+# Habilitar autenticación en mongod.conf
+# security:
+#   authorization: enabled
+
+# Reiniciar MongoDB
+sudo systemctl restart mongod
+
+# Conectar con autenticación
+mongosh -u admin -p contraseña_segura --authenticationDatabase admin</code></pre>
+                        </div>
+
+                        <h3 id="roles-mongodb">Roles y Permisos</h3>
+                        <div class="overflow-x-auto mb-6">
+                            <table>
+                                <thead>
+                                    <tr><th>Rol</th><th>Permisos</th><th>Uso</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>read</td><td>Lectura en base de datos</td><td>Usuarios de solo lectura</td></tr>
+                                    <tr><td>readWrite</td><td>Lectura y escritura</td><td>Aplicaciones</td></tr>
+                                    <tr><td>dbAdmin</td><td>Administración de base de datos</td><td>Administradores de DB</td></tr>
+                                    <tr><td>userAdmin</td><td>Gestión de usuarios</td><td>Administradores de usuarios</td></tr>
+                                    <tr><td>clusterAdmin</td><td>Administración de cluster</td><td>Administradores de infraestructura</td></tr>
+                                    <tr><td>root</td><td>Todos los permisos</td><td>Superusuario</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h3 id="cifrado">Cifrado</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('# Cifrado en tránsito (TLS/SSL)\n# Generar certificado\nopenssl req -newkey rsa:2048 -days 365 -nodes -x509 -keyout mongodb-key.pem -out mongodb-cert.pem\n\n# Configurar en mongod.conf\n# net:\n#   ssl:\n#     mode: requireSSL\n#     PEMKeyFile: /etc/ssl/mongodb-cert.pem\n#     CAFile: /etc/ssl/ca.pem\n\n# Cifrado en reposo (WiredTiger Encryption)\n# Requiere MongoDB Enterprise\n# storage:\n#   wiredTiger:\n#     encryptionKeyFile: /etc/mongodb/keyfile\n\n# Conectar con TLS\nmongosh --tls --host mongodb.example.com --tlsCAFile /path/to/ca.pem')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Cifrado en tránsito (TLS/SSL)
+# Generar certificado
+openssl req -newkey rsa:2048 -days 365 -nodes -x509 -keyout mongodb-key.pem -out mongodb-cert.pem
+
+# Configurar en mongod.conf
+# net:
+#   ssl:
+#     mode: requireSSL
+#     PEMKeyFile: /etc/ssl/mongodb-cert.pem
+#     CAFile: /etc/ssl/ca.pem
+
+# Cifrado en reposo (WiredTiger Encryption)
+# Requiere MongoDB Enterprise
+# storage:
+#   wiredTiger:
+#     encryptionKeyFile: /etc/mongodb/keyfile
+
+# Conectar con TLS
+mongosh --tls --host mongodb.example.com --tlsCAFile /path/to/ca.pem</code></pre>
+                        </div>
+
+                        <h3 id="network-security">Seguridad de Red</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('# Configurar bindIp en mongod.conf\n# net:\n#   bindIp: 127.0.0.1,10.0.0.100  # Solo IPs específicas\n#   port: 27017\n\n# Firewall: Permitir solo IPs específicas\nsudo ufw allow from 10.0.0.0/24 to any port 27017\n\n# Deshabilitar acceso público\n# net:\n#   bindIp: 127.0.0.1  # Solo localhost\n\n# Verificar conexiones\nnetstat -tulpn | grep mongod\nss -tulpn | grep mongod')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Configurar bindIp en mongod.conf
+# net:
+#   bindIp: 127.0.0.1,10.0.0.100  # Solo IPs específicas
+#   port: 27017
+
+# Firewall: Permitir solo IPs específicas
+sudo ufw allow from 10.0.0.0/24 to any port 27017
+
+# Deshabilitar acceso público
+# net:
+#   bindIp: 127.0.0.1  # Solo localhost
+
+# Verificar conexiones
+netstat -tulpn | grep mongod
+ss -tulpn | grep mongod</code></pre>
+                        </div>
+
+                        <h2 id="queries-avanzadas">Queries Avanzadas</h2>
+
+                        <h3 id="aggregation">Aggregation Pipeline</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('# Ejemplo de aggregation pipeline\ndb.ventas.aggregate([\n  { $match: { fecha: { $gte: ISODate(\"2026-01-01\") } } },\n  { $group: { _id: \"$categoria\", total: { $sum: \"$monto\" } } },\n  { $sort: { total: -1 } },\n  { $limit: 10 }\n])\n\n# Lookup (join)\ndb.ordenes.aggregate([\n  { $lookup: {\n      from: \"productos\",\n      localField: \"producto_id\",\n      foreignField: \"_id\",\n      as: \"producto\"\n    }\n  }\n])')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Ejemplo de aggregation pipeline
+db.ventas.aggregate([
+  { $match: { fecha: { $gte: ISODate("2026-01-01") } } },
+  { $group: { _id: "$categoria", total: { $sum: "$monto" } } },
+  { $sort: { total: -1 } },
+  { $limit: 10 }
+])
+
+# Lookup (join)
+db.ordenes.aggregate([
+  { $lookup: {
+      from: "productos",
+      localField: "producto_id",
+      foreignField: "_id",
+      as: "producto"
+    }
+  }
+])</code></pre>
+                        </div>
+
+                        <h3 id="indexes">Índices</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('# Crear índice simple\ndb.usuarios.createIndex({ email: 1 })\n\n# Crear índice compuesto\ndb.usuarios.createIndex({ nombre: 1, apellido: 1 })\n\n# Crear índice único\ndb.usuarios.createIndex({ email: 1 }, { unique: true })\n\n# Crear índice TTL (expira documentos)\ndb.sesiones.createIndex({ fecha_creacion: 1 }, { expireAfterSeconds: 3600 })\n\n# Listar índices\ndb.usuarios.getIndexes()\n\n# Eliminar índice\ndb.usuarios.dropIndex({ email: 1 })\n\n# Analizar query (explain)\ndb.usuarios.find({ email: \"test@example.com\" }).explain(\"executionStats\")')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Crear índice simple
+db.usuarios.createIndex({ email: 1 })
+
+# Crear índice compuesto
+db.usuarios.createIndex({ nombre: 1, apellido: 1 })
+
+# Crear índice único
+db.usuarios.createIndex({ email: 1 }, { unique: true })
+
+# Crear índice TTL (expira documentos)
+db.sesiones.createIndex({ fecha_creacion: 1 }, { expireAfterSeconds: 3600 })
+
+# Listar índices
+db.usuarios.getIndexes()
+
+# Eliminar índice
+db.usuarios.dropIndex({ email: 1 })
+
+# Analizar query (explain)
+db.usuarios.find({ email: "test@example.com" }).explain("executionStats")</code></pre>
+                        </div>
+
                         <h2 id="backup-restore">Backup y Restore</h2>
                         <div class="command-block mb-4" x-data="copyCommand">
-                            <button @click="copy('# Backup completo\nmongodump --out /backup/mongodb\n\n# Backup de base específica\nmongodump --db nombre_base --out /backup/mongodb\n\n# Backup con autenticación\nmongodump --host localhost:27017 --username usuario --password contraseña --out /backup\n\n# Restore\nmongorestore /backup/mongodb\n\n# Restore base específica\nmongorestore --db nombre_base /backup/mongodb/nombre_base')" class="copy-btn" :class="{ 'copied': copied }">
+                            <button @click="copy('# Backup completo\nmongodump --out /backup/mongodb\n\n# Backup de base específica\nmongodump --db nombre_base --out /backup/mongodb\n\n# Backup con autenticación\nmongodump --host localhost:27017 --username usuario --password contraseña --out /backup\n\n# Backup con compresión\nmongodump --out /backup/mongodb --gzip\n\n# Backup remoto\nmongodump --host mongodb.example.com:27017 --username admin --password contraseña --out /backup\n\n# Restore\nmongorestore /backup/mongodb\n\n# Restore base específica\nmongorestore --db nombre_base /backup/mongodb/nombre_base\n\n# Restore con autenticación\nmongorestore --host localhost:27017 --username admin --password contraseña /backup/mongodb\n\n# Backup incremental (oplog)\nmongodump --oplog --out /backup/mongodb')" class="copy-btn" :class="{ 'copied': copied }">
                                 <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
                                 </svg>
@@ -136,16 +318,191 @@ mongodump --db nombre_base --out /backup/mongodb
 # Backup con autenticación
 mongodump --host localhost:27017 --username usuario --password contraseña --out /backup
 
+# Backup con compresión
+mongodump --out /backup/mongodb --gzip
+
+# Backup remoto
+mongodump --host mongodb.example.com:27017 --username admin --password contraseña --out /backup
+
 # Restore
 mongorestore /backup/mongodb
 
 # Restore base específica
-mongorestore --db nombre_base /backup/mongodb/nombre_base</code></pre>
+mongorestore --db nombre_base /backup/mongodb/nombre_base
+
+# Restore con autenticación
+mongorestore --host localhost:27017 --username admin --password contraseña /backup/mongodb
+
+# Backup incremental (oplog)
+mongodump --oplog --out /backup/mongodb</code></pre>
                         </div>
+
+                        <h2 id="monitoreo">Monitoreo y Mantenimiento</h2>
+
+                        <h3 id="estadisticas">Estadísticas del Sistema</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('# Estadísticas del servidor\ndb.serverStatus()\n\n# Estadísticas de base de datos\ndb.stats()\n\n# Estadísticas de colección\ndb.usuarios.stats()\n\n# Información de conexiones activas\ndb.currentOp()\n\n# Listar procesos lentos\ndb.currentOp({\"active\": true, \"secs_running\": {\"$gt\": 5}})\n\n# Matar operación\n# db.killOp(opid)\n\n# Información de réplicas (si aplica)\nrs.status()\nrs.printReplicationInfo()')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Estadísticas del servidor
+db.serverStatus()
+
+# Estadísticas de base de datos
+db.stats()
+
+# Estadísticas de colección
+db.usuarios.stats()
+
+# Información de conexiones activas
+db.currentOp()
+
+# Listar procesos lentos
+db.currentOp({"active": true, "secs_running": {"$gt": 5}})
+
+# Matar operación
+# db.killOp(opid)
+
+# Información de réplicas (si aplica)
+rs.status()
+rs.printReplicationInfo()</code></pre>
+                        </div>
+
+                        <h3 id="validacion">Validación y Reparación</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('# Validar colección\ndb.usuarios.validate()\n\n# Validar con opciones\ndb.usuarios.validate({ full: true })\n\n# Reparar base de datos (solo si es necesario)\n# mongod --repair\n\n# Compactar colección (reduce espacio)\ndb.runCommand({ compact: \"usuarios\" })\n\n# Reconstruir índices\ndb.usuarios.reIndex()')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Validar colección
+db.usuarios.validate()
+
+# Validar con opciones
+db.usuarios.validate({ full: true })
+
+# Reparar base de datos (solo si es necesario)
+# mongod --repair
+
+# Compactar colección (reduce espacio)
+db.runCommand({ compact: "usuarios" })
+
+# Reconstruir índices
+db.usuarios.reIndex()</code></pre>
+                        </div>
+
+                        <h2 id="replicacion">Réplicas y Sharding</h2>
+
+                        <h3 id="replica-set">Replica Set</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy('# Inicializar replica set\nrs.initiate({\n  _id: \"rs0\",\n  members: [\n    { _id: 0, host: \"mongodb1:27017\" },\n    { _id: 1, host: \"mongodb2:27017\" },\n    { _id: 2, host: \"mongodb3:27017\", arbiterOnly: true }\n  ]\n})\n\n# Agregar miembro\nrs.add(\"mongodb4:27017\")\n\n# Remover miembro\nrs.remove(\"mongodb4:27017\")\n\n# Estado del replica set\nrs.status()\n\n# Configuración\nrs.conf()')" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Inicializar replica set
+rs.initiate({
+  _id: "rs0",
+  members: [
+    { _id: 0, host: "mongodb1:27017" },
+    { _id: 1, host: "mongodb2:27017" },
+    { _id: 2, host: "mongodb3:27017", arbiterOnly: true }
+  ]
+})
+
+# Agregar miembro
+rs.add("mongodb4:27017")
+
+# Remover miembro
+rs.remove("mongodb4:27017")
+
+# Estado del replica set
+rs.status()
+
+# Configuración
+rs.conf()</code></pre>
+                        </div>
+
+                        <h2 id="checklist-mongodb">Checklist de Seguridad MongoDB</h2>
+                        <div class="checklist-container mb-6">
+                            <div class="checklist" data-checklist-id="mongodb-security">
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('mongodb-security', 0)" class="checklist-checkbox">
+                                        <span>Autenticación habilitada en producción</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('mongodb-security', 1)" class="checklist-checkbox">
+                                        <span>Usuarios creados con principio de menor privilegio</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('mongodb-security', 2)" class="checklist-checkbox">
+                                        <span>TLS/SSL configurado para cifrado en tránsito</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('mongodb-security', 3)" class="checklist-checkbox">
+                                        <span>bindIp configurado para limitar acceso de red</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('mongodb-security', 4)" class="checklist-checkbox">
+                                        <span>Firewall configurado para restringir acceso</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('mongodb-security', 5)" class="checklist-checkbox">
+                                        <span>Backups regulares configurados y probados</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('mongodb-security', 6)" class="checklist-checkbox">
+                                        <span>Índices creados para optimizar queries</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('mongodb-security', 7)" class="checklist-checkbox">
+                                        <span>Monitoreo y alertas configuradas</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="checklist-progress mt-4">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" data-progress="mongodb-security"></div>
+                                </div>
+                                <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">Progreso: <span data-progress-text="mongodb-security">0%</span></p>
+                            </div>
+                        </div>
+
+                        <h2 id="recursos-adicionales">Recursos Adicionales</h2>
+                        <ul>
+                            <li><strong>MongoDB Documentation:</strong> <a href="https://docs.mongodb.com" class="text-blue-600 dark:text-blue-400">docs.mongodb.com</a></li>
+                            <li><strong>MongoDB Security Checklist:</strong> <a href="https://docs.mongodb.com/manual/administration/security-checklist/" class="text-blue-600 dark:text-blue-400">docs.mongodb.com</a></li>
+                            <li><strong>MongoDB University:</strong> <a href="https://university.mongodb.com" class="text-blue-600 dark:text-blue-400">university.mongodb.com</a></li>
+                        </ul>
 
                         <div class="alert alert-success mt-8">
                             <p class="font-semibold mb-2">✅ MongoDB</p>
-                            <p>MongoDB es una base de datos NoSQL orientada a documentos. Ideal para aplicaciones que requieren flexibilidad en el esquema y escalabilidad horizontal. Usa JSON-like documents (BSON) para almacenar datos.</p>
+                            <p>MongoDB es una base de datos NoSQL orientada a documentos. Ideal para aplicaciones que requieren flexibilidad en el esquema y escalabilidad horizontal. Usa JSON-like documents (BSON) para almacenar datos. En producción, siempre habilita autenticación, cifrado en tránsito, y limita el acceso de red.</p>
                         </div>
                     </div>
                 </article>

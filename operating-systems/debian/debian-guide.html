@@ -334,9 +334,135 @@ sudo ufw delete 1
 sudo ufw --force reset</code></pre>
                         </div>
 
+                        <h2 id="hardening-debian">Hardening de Debian</h2>
+                        <p>Debian es conocido por su estabilidad y seguridad. Sigue estos pasos para asegurar tu instalación.</p>
+
+                        <h3 id="apparmor-debian">AppArmor (Sistema de Control de Acceso)</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Verificar estado de AppArmor\nsudo systemctl status apparmor\nsudo aa-status\n\n# AppArmor está habilitado por defecto en Debian\n# Ver perfiles activos\nsudo aa-status | grep profiles\n\n# Ver perfiles en modo enforce\nsudo aa-status | grep enforce\n\n# Ver perfiles en modo complain\nsudo aa-status | grep complain\n\n# Cambiar perfil a modo enforce\nsudo aa-enforce /usr/sbin/apache2\n\n# Cambiar perfil a modo complain\nsudo aa-complain /usr/sbin/apache2\n\n# Recargar perfiles\nsudo systemctl reload apparmor\n\n# Ver logs de AppArmor\nsudo dmesg | grep apparmor\nsudo journalctl -u apparmor")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Verificar estado de AppArmor
+sudo systemctl status apparmor
+sudo aa-status
+
+# AppArmor está habilitado por defecto en Debian
+# Ver perfiles activos
+sudo aa-status | grep profiles
+
+# Ver perfiles en modo enforce
+sudo aa-status | grep enforce
+
+# Ver perfiles en modo complain
+sudo aa-status | grep complain
+
+# Cambiar perfil a modo enforce
+sudo aa-enforce /usr/sbin/apache2
+
+# Cambiar perfil a modo complain
+sudo aa-complain /usr/sbin/apache2
+
+# Recargar perfiles
+sudo systemctl reload apparmor
+
+# Ver logs de AppArmor
+sudo dmesg | grep apparmor
+sudo journalctl -u apparmor</code></pre>
+                        </div>
+
+                        <h3 id="unattended-upgrades">Actualizaciones Automáticas de Seguridad</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Instalar unattended-upgrades\nsudo apt install unattended-upgrades apt-listchanges -y\n\n# Configurar\nsudo dpkg-reconfigure -plow unattended-upgrades\n\n# O editar manualmente\nsudo nano /etc/apt/apt.conf.d/50unattended-upgrades\n\n# Configuración recomendada:\n# Unattended-Upgrade::AutoFixInterruptedDpkg \"true\";\n# Unattended-Upgrade::MinimalSteps \"true\";\n# Unattended-Upgrade::Remove-Unused-Kernel-Packages \"true\";\n# Unattended-Upgrade::Remove-New-Unused-Dependencies \"true\";\n# Unattended-Upgrade::Remove-Unused-Dependencies \"true\";\n# Unattended-Upgrade::Automatic-Reboot \"false\";  # O true si se permite reboot automático\n\n# Habilitar actualizaciones automáticas\nsudo systemctl enable unattended-upgrades\nsudo systemctl start unattended-upgrades\n\n# Verificar estado\nsudo systemctl status unattended-upgrades\n\n# Ver logs\nsudo cat /var/log/unattended-upgrades/unattended-upgrades.log")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Instalar unattended-upgrades
+sudo apt install unattended-upgrades apt-listchanges -y
+
+# Configurar
+sudo dpkg-reconfigure -plow unattended-upgrades
+
+# O editar manualmente
+sudo nano /etc/apt/apt.conf.d/50unattended-upgrades
+
+# Configuración recomendada:
+# Unattended-Upgrade::AutoFixInterruptedDpkg "true";
+# Unattended-Upgrade::MinimalSteps "true";
+# Unattended-Upgrade::Remove-Unused-Kernel-Packages "true";
+# Unattended-Upgrade::Remove-New-Unused-Dependencies "true";
+# Unattended-Upgrade::Remove-Unused-Dependencies "true";
+# Unattended-Upgrade::Automatic-Reboot "false";  # O true si se permite reboot automático
+
+# Habilitar actualizaciones automáticas
+sudo systemctl enable unattended-upgrades
+sudo systemctl start unattended-upgrades
+
+# Verificar estado
+sudo systemctl status unattended-upgrades
+
+# Ver logs
+sudo cat /var/log/unattended-upgrades/unattended-upgrades.log</code></pre>
+                        </div>
+
+                        <h3 id="migracion-debian">Migración de Versiones Debian</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Verificar versión actual\ncat /etc/debian_version\nlsb_release -a\n\n# Migración Debian (ejemplo: Bullseye → Bookworm)\n# 1. Actualizar sistema actual completamente\nsudo apt update\nsudo apt upgrade -y\nsudo apt full-upgrade -y\n\n# 2. Editar sources.list\nsudo nano /etc/apt/sources.list\n# Cambiar todas las referencias de 'bullseye' a 'bookworm'\n# O usar sed:\nsudo sed -i 's/bullseye/bookworm/g' /etc/apt/sources.list\n\n# 3. Actualizar lista de paquetes\nsudo apt update\n\n# 4. Verificar cambios sin aplicar\nsudo apt upgrade --dry-run\n\n# 5. Si todo está bien, actualizar\nsudo apt upgrade -y\nsudo apt full-upgrade -y\n\n# 6. Limpiar paquetes obsoletos\nsudo apt autoremove -y\nsudo apt autoclean\n\n# 7. Verificar versión nueva\ncat /etc/debian_version\n\n# 8. Reiniciar sistema\nsudo reboot")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Verificar versión actual
+cat /etc/debian_version
+lsb_release -a
+
+# Migración Debian (ejemplo: Bullseye → Bookworm)
+# 1. Actualizar sistema actual completamente
+sudo apt update
+sudo apt upgrade -y
+sudo apt full-upgrade -y
+
+# 2. Editar sources.list
+sudo nano /etc/apt/sources.list
+# Cambiar todas las referencias de 'bullseye' a 'bookworm'
+# O usar sed:
+sudo sed -i 's/bullseye/bookworm/g' /etc/apt/sources.list
+
+# 3. Actualizar lista de paquetes
+sudo apt update
+
+# 4. Verificar cambios sin aplicar
+sudo apt upgrade --dry-run
+
+# 5. Si todo está bien, actualizar
+sudo apt upgrade -y
+sudo apt full-upgrade -y
+
+# 6. Limpiar paquetes obsoletos
+sudo apt autoremove -y
+sudo apt autoclean
+
+# 7. Verificar versión nueva
+cat /etc/debian_version
+
+# 8. Reiniciar sistema
+sudo reboot</code></pre>
+                        </div>
+
                         <div class="alert alert-success mt-8">
                             <p class="font-semibold mb-2">✅ Debian</p>
-                            <p>Debian es estable y confiable, ideal para servidores. Usa APT para gestión de paquetes, systemd para servicios, y UFW para firewall básico. Para entornos más complejos, considera iptables. Siempre mantén el sistema actualizado con <code>apt update && apt upgrade</code>.</p>
+                            <p>Debian es estable y confiable, ideal para servidores. Usa APT para gestión de paquetes, systemd para servicios, y UFW para firewall básico. AppArmor está habilitado por defecto proporcionando control de acceso adicional. Para entornos más complejos, considera iptables. Siempre mantén el sistema actualizado con <code>apt update && apt upgrade</code>.</p>
                         </div>
                     </div>
                 </article>

@@ -124,9 +124,12 @@ KEYS *  # Cuidado en producción
 DBSIZE</code></pre>
                         </div>
 
-                        <h2 id="seguridad">Seguridad</h2>
+                        <h2 id="hardening-redis">Hardening de Redis</h2>
+                        <p>Redis por defecto no tiene autenticación y está expuesto a la red. El hardening es crítico para entornos de producción.</p>
+
+                        <h3 id="autenticacion-redis">Autenticación y ACL</h3>
                         <div class="command-block mb-4" x-data="copyCommand">
-                            <button @click="copy('# Configurar contraseña en redis.conf\n# requirepass ContraseñaSegura123\n\n# O desde CLI (temporal):\nCONFIG SET requirepass \"ContraseñaSegura123\"\n\n# Autenticarse\nAUTH ContraseñaSegura123\n\n# Deshabilitar comandos peligrosos\n# rename-command FLUSHDB \"\"\n# rename-command FLUSHALL \"\"\n# rename-command CONFIG \"CONFIG_9d8f8f8f8f8f8f8f\"\n\n# Bind a IP específico (redis.conf)\n# bind 127.0.0.1\n\n# Deshabilitar comandos desde archivo de configuración:\nsudo vi /etc/redis/redis.conf')" class="copy-btn" :class="{ 'copied': copied }">
+                            <button @click="copy("# Configurar contraseña en redis.conf\nsudo nano /etc/redis/redis.conf\n\n# Agregar:\nrequirepass ContraseñaSegura123\n\n# O desde CLI (temporal, se pierde al reiniciar):\nCONFIG SET requirepass \"ContraseñaSegura123\"\n\n# Autenticarse en CLI\nredis-cli\nAUTH ContraseñaSegura123\n\n# O con contraseña directamente\nredis-cli -a ContraseñaSegura123\n\n# Redis 6.0+: ACL (Access Control List)\n# Crear usuario con permisos específicos\nACL SETUSER appuser on >apppass123 ~app:* &* +@read +@write -@dangerous\n\n# Ver usuarios ACL\nACL LIST\n\n# Usar usuario ACL\nAUTH appuser apppass123\n\n# Reiniciar Redis para aplicar cambios\nsudo systemctl restart redis-server")" class="copy-btn" :class="{ 'copied': copied }">
                                 <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
                                 </svg>
@@ -135,29 +138,215 @@ DBSIZE</code></pre>
                                 </svg>
                             </button>
                             <pre><code># Configurar contraseña en redis.conf
-# requirepass ContraseñaSegura123
+sudo nano /etc/redis/redis.conf
 
-# O desde CLI (temporal):
+# Agregar:
+requirepass ContraseñaSegura123
+
+# O desde CLI (temporal, se pierde al reiniciar):
 CONFIG SET requirepass "ContraseñaSegura123"
 
-# Autenticarse
+# Autenticarse en CLI
+redis-cli
 AUTH ContraseñaSegura123
 
-# Deshabilitar comandos peligrosos
-# rename-command FLUSHDB ""
-# rename-command FLUSHALL ""
-# rename-command CONFIG "CONFIG_9d8f8f8f8f8f8f8f"
+# O con contraseña directamente
+redis-cli -a ContraseñaSegura123
 
-# Bind a IP específico (redis.conf)
-# bind 127.0.0.1
+# Redis 6.0+: ACL (Access Control List)
+# Crear usuario con permisos específicos
+ACL SETUSER appuser on >apppass123 ~app:* &* +@read +@write -@dangerous
 
-# Deshabilitar comandos desde archivo de configuración:
-sudo vi /etc/redis/redis.conf</code></pre>
+# Ver usuarios ACL
+ACL LIST
+
+# Usar usuario ACL
+AUTH appuser apppass123
+
+# Reiniciar Redis para aplicar cambios
+sudo systemctl restart redis-server</code></pre>
+                        </div>
+
+                        <h3 id="configuracion-segura-redis">Configuración Segura</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Editar redis.conf\nsudo nano /etc/redis/redis.conf\n\n# Configuraciones de seguridad recomendadas:\n\n# 1. Bind solo a localhost (si no necesita acceso remoto)\nbind 127.0.0.1 ::1\n\n# 2. Deshabilitar comandos peligrosos\nrename-command FLUSHDB \"\"\nrename-command FLUSHALL \"\"\nrename-command CONFIG \"CONFIG_9d8f8f8f8f8f8f8f\"\nrename-command EVAL \"\"\nrename-command SHUTDOWN \"SHUTDOWN_9d8f8f8f8f8f8f8f\"\n\n# 3. Proteger modo protegido (Redis 3.2+)\nprotected-mode yes\n\n# 4. Deshabilitar comandos peligrosos adicionales\nrename-command DEBUG \"\"\nrename-command KEYS \"\"\n\n# 5. Configurar timeout de conexión\ntimeout 300\n\n# 6. Limitar memoria (evitar DoS)\nmaxmemory 2gb\nmaxmemory-policy allkeys-lru\n\n# 7. Habilitar logging\nloglevel notice\nlogfile /var/log/redis/redis-server.log\n\n# Reiniciar Redis\nsudo systemctl restart redis-server")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Editar redis.conf
+sudo nano /etc/redis/redis.conf
+
+# Configuraciones de seguridad recomendadas:
+
+# 1. Bind solo a localhost (si no necesita acceso remoto)
+bind 127.0.0.1 ::1
+
+# 2. Deshabilitar comandos peligrosos
+rename-command FLUSHDB ""
+rename-command FLUSHALL ""
+rename-command CONFIG "CONFIG_9d8f8f8f8f8f8f8f"
+rename-command EVAL ""
+rename-command SHUTDOWN "SHUTDOWN_9d8f8f8f8f8f8f8f"
+
+# 3. Proteger modo protegido (Redis 3.2+)
+protected-mode yes
+
+# 4. Deshabilitar comandos peligrosos adicionales
+rename-command DEBUG ""
+rename-command KEYS ""
+
+# 5. Configurar timeout de conexión
+timeout 300
+
+# 6. Limitar memoria (evitar DoS)
+maxmemory 2gb
+maxmemory-policy allkeys-lru
+
+# 7. Habilitar logging
+loglevel notice
+logfile /var/log/redis/redis-server.log
+
+# Reiniciar Redis
+sudo systemctl restart redis-server</code></pre>
+                        </div>
+
+                        <h3 id="tls-redis">TLS/SSL para Redis</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Redis 6.0+ soporta TLS nativo\n# Generar certificados\nopenssl genrsa -out redis.key 2048\nopenssl req -new -x509 -key redis.key -out redis.crt -days 365\n\n# Configurar en redis.conf\nport 0\ntls-port 6380\ntls-cert-file /etc/redis/redis.crt\ntls-key-file /etc/redis/redis.key\ntls-ca-cert-file /etc/redis/ca.crt\n\n# Requerir autenticación cliente\n# tls-auth-clients yes\n\n# Conectar con TLS\nredis-cli --tls --cert redis.crt --key redis.key --cacert ca.crt -p 6380\n\n# O usar stunnel como proxy TLS (para versiones antiguas)\n# Instalar stunnel\nsudo apt install stunnel4 -y\n\n# Configurar stunnel\nsudo nano /etc/stunnel/redis.conf\n# client = no\n# [redis]\n# accept = 6380\n# connect = 127.0.0.1:6379")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Redis 6.0+ soporta TLS nativo
+# Generar certificados
+openssl genrsa -out redis.key 2048
+openssl req -new -x509 -key redis.key -out redis.crt -days 365
+
+# Configurar en redis.conf
+port 0
+tls-port 6380
+tls-cert-file /etc/redis/redis.crt
+tls-key-file /etc/redis/redis.key
+tls-ca-cert-file /etc/redis/ca.crt
+
+# Requerir autenticación cliente
+# tls-auth-clients yes
+
+# Conectar con TLS
+redis-cli --tls --cert redis.crt --key redis.key --cacert ca.crt -p 6380
+
+# O usar stunnel como proxy TLS (para versiones antiguas)
+# Instalar stunnel
+sudo apt install stunnel4 -y
+
+# Configurar stunnel
+sudo nano /etc/stunnel/redis.conf
+# client = no
+# [redis]
+# accept = 6380
+# connect = 127.0.0.1:6379</code></pre>
+                        </div>
+
+                        <h3 id="firewall-redis">Protección de Red</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Firewall: Bloquear acceso remoto si no es necesario\nsudo ufw deny 6379\n\n# O permitir solo desde IPs específicas\nsudo ufw allow from 10.0.0.0/24 to any port 6379\n\n# Verificar conexiones de red\nsudo netstat -tulpn | grep 6379\nsudo ss -tulpn | grep 6379\n\n# Verificar que Redis solo escucha en localhost\nredis-cli CONFIG GET bind\n\n# Si necesita acceso remoto, usar:\n# - TLS/SSL\n# - Autenticación fuerte\n# - Firewall restrictivo\n# - VPN o túnel SSH")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Firewall: Bloquear acceso remoto si no es necesario
+sudo ufw deny 6379
+
+# O permitir solo desde IPs específicas
+sudo ufw allow from 10.0.0.0/24 to any port 6379
+
+# Verificar conexiones de red
+sudo netstat -tulpn | grep 6379
+sudo ss -tulpn | grep 6379
+
+# Verificar que Redis solo escucha en localhost
+redis-cli CONFIG GET bind
+
+# Si necesita acceso remoto, usar:
+# - TLS/SSL
+# - Autenticación fuerte
+# - Firewall restrictivo
+# - VPN o túnel SSH</code></pre>
+                        </div>
+
+                        <h3 id="checklist-hardening-redis">Checklist de Hardening Redis</h3>
+                        <div class="checklist-container mb-6">
+                            <div class="checklist" data-checklist-id="redis-hardening">
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('redis-hardening', 0)" class="checklist-checkbox">
+                                        <span>Contraseña configurada (requirepass)</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('redis-hardening', 1)" class="checklist-checkbox">
+                                        <span>Comandos peligrosos deshabilitados (FLUSHDB, FLUSHALL, CONFIG)</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('redis-hardening', 2)" class="checklist-checkbox">
+                                        <span>Bind configurado solo a localhost (si no necesita acceso remoto)</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('redis-hardening', 3)" class="checklist-checkbox">
+                                        <span>Protected mode habilitado</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('redis-hardening', 4)" class="checklist-checkbox">
+                                        <span>TLS/SSL configurado (si requiere acceso remoto)</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('redis-hardening', 5)" class="checklist-checkbox">
+                                        <span>Firewall configurado para restringir acceso</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('redis-hardening', 6)" class="checklist-checkbox">
+                                        <span>Límite de memoria configurado (maxmemory)</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('redis-hardening', 7)" class="checklist-checkbox">
+                                        <span>Logging habilitado</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="checklist-progress mt-4">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" data-progress="redis-hardening"></div>
+                                </div>
+                                <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">Progreso: <span data-progress-text="redis-hardening">0%</span></p>
+                            </div>
                         </div>
 
                         <div class="alert alert-success mt-8">
                             <p class="font-semibold mb-2">✅ Redis</p>
-                            <p>Redis es una base de datos en memoria increíblemente rápida. Ideal para caching, sesiones, y pub/sub. Recuerda: Redis almacena todo en memoria, así que usa persistencia (RDB o AOF) si necesitas durabilidad de datos.</p>
+                            <p>Redis es una base de datos en memoria increíblemente rápida. Ideal para caching, sesiones, y pub/sub. Recuerda: Redis almacena todo en memoria, así que usa persistencia (RDB o AOF) si necesitas durabilidad de datos. Aplica hardening siguiendo el checklist antes de poner Redis en producción.</p>
                         </div>
                     </div>
                 </article>

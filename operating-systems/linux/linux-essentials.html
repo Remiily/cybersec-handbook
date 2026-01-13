@@ -365,9 +365,126 @@ tcpdump -i eth0 port 80          # Capturar solo puerto 80</code></pre>
                             <p>Disco lleno. Verifica con <code>df -h</code>, limpia logs con <code>journalctl --vacuum-time=7d</code>, o elimina archivos temporales.</p>
                         </div>
 
+                        <h2 id="hardening-basico-linux">Hardening Básico de Linux</h2>
+                        <p>Una vez que domines los comandos básicos, es importante aprender a asegurar tu sistema Linux. Aquí están los conceptos fundamentales de hardening.</p>
+
+                        <h3 id="actualizaciones-seguridad">Actualizaciones de Seguridad</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Actualizar sistema (Ubuntu/Debian)\nsudo apt update && sudo apt upgrade -y\n\n# Actualizar sistema (RHEL/Fedora)\nsudo yum update -y  # RHEL 7\nsudo dnf update -y  # RHEL 8+/Fedora\n\n# Verificar actualizaciones de seguridad disponibles\nsudo apt list --upgradable  # Ubuntu/Debian\nsudo yum check-update --security  # RHEL 7\nsudo dnf updateinfo list security  # RHEL 8+/Fedora\n\n# Instalar solo actualizaciones de seguridad\nsudo apt upgrade -y  # Ubuntu/Debian\nsudo yum update --security -y  # RHEL 7\nsudo dnf update --security -y  # RHEL 8+/Fedora")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Actualizar sistema (Ubuntu/Debian)
+sudo apt update && sudo apt upgrade -y
+
+# Actualizar sistema (RHEL/Fedora)
+sudo yum update -y  # RHEL 7
+sudo dnf update -y  # RHEL 8+/Fedora
+
+# Verificar actualizaciones de seguridad disponibles
+sudo apt list --upgradable  # Ubuntu/Debian
+sudo yum check-update --security  # RHEL 7
+sudo dnf updateinfo list security  # RHEL 8+/Fedora
+
+# Instalar solo actualizaciones de seguridad
+sudo apt upgrade -y  # Ubuntu/Debian
+sudo yum update --security -y  # RHEL 7
+sudo dnf update --security -y  # RHEL 8+/Fedora</code></pre>
+                        </div>
+
+                        <h3 id="usuarios-permisos">Gestión de Usuarios y Permisos</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Crear usuario nuevo\nsudo adduser nuevo_usuario\n\n# Dar permisos sudo\nsudo usermod -aG sudo nuevo_usuario  # Ubuntu/Debian\nsudo usermod -aG wheel nuevo_usuario  # RHEL/Fedora\n\n# Cambiar contraseña de usuario\nsudo passwd usuario\n\n# Ver usuarios del sistema\ncat /etc/passwd\n\n# Ver grupos\ncat /etc/group\n\n# Verificar permisos de archivos\nls -la archivo\n\n# Cambiar permisos (chmod)\nchmod 600 archivo  # Solo propietario puede leer/escribir\nchmod 644 archivo  # Propietario r/w, otros solo lectura\nchmod 755 directorio  # Propietario r/w/x, otros r/x\n\n# Cambiar propietario (chown)\nsudo chown usuario:grupo archivo\n\n# Ver quién está conectado\nwho\nw\n\n# Ver último login de usuarios\nlast")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Crear usuario nuevo
+sudo adduser nuevo_usuario
+
+# Dar permisos sudo
+sudo usermod -aG sudo nuevo_usuario  # Ubuntu/Debian
+sudo usermod -aG wheel nuevo_usuario  # RHEL/Fedora
+
+# Cambiar contraseña de usuario
+sudo passwd usuario
+
+# Ver usuarios del sistema
+cat /etc/passwd
+
+# Ver grupos
+cat /etc/group
+
+# Verificar permisos de archivos
+ls -la archivo
+
+# Cambiar permisos (chmod)
+chmod 600 archivo  # Solo propietario puede leer/escribir
+chmod 644 archivo  # Propietario r/w, otros solo lectura
+chmod 755 directorio  # Propietario r/w/x, otros r/x
+
+# Cambiar propietario (chown)
+sudo chown usuario:grupo archivo
+
+# Ver quién está conectado
+who
+w
+
+# Ver último login de usuarios
+last</code></pre>
+                        </div>
+
+                        <h3 id="firewall-basico">Firewall Básico</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# UFW (Ubuntu/Debian - más fácil)\nsudo ufw enable\nsudo ufw allow 22/tcp  # SSH\nsudo ufw allow 80/tcp  # HTTP\nsudo ufw allow 443/tcp  # HTTPS\nsudo ufw status\n\n# firewalld (RHEL/Fedora)\nsudo systemctl enable firewalld\nsudo systemctl start firewalld\nsudo firewall-cmd --permanent --add-service=ssh\nsudo firewall-cmd --permanent --add-service=http\nsudo firewall-cmd --permanent --add-service=https\nsudo firewall-cmd --reload\nsudo firewall-cmd --list-all\n\n# Verificar puertos abiertos\nsudo netstat -tulpn\nsudo ss -tulpn")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># UFW (Ubuntu/Debian - más fácil)
+sudo ufw enable
+sudo ufw allow 22/tcp  # SSH
+sudo ufw allow 80/tcp  # HTTP
+sudo ufw allow 443/tcp  # HTTPS
+sudo ufw status
+
+# firewalld (RHEL/Fedora)
+sudo systemctl enable firewalld
+sudo systemctl start firewalld
+sudo firewall-cmd --permanent --add-service=ssh
+sudo firewall-cmd --permanent --add-service=http
+sudo firewall-cmd --permanent --add-service=https
+sudo firewall-cmd --reload
+sudo firewall-cmd --list-all
+
+# Verificar puertos abiertos
+sudo netstat -tulpn
+sudo ss -tulpn</code></pre>
+                        </div>
+
+                        <div class="alert alert-info mb-6">
+                            <p class="font-semibold mb-2">💡 Conceptos Importantes de Seguridad</p>
+                            <ul class="list-disc list-inside">
+                                <li><strong>Principio de menor privilegio:</strong> Usuarios y procesos solo deben tener los permisos mínimos necesarios</li>
+                                <li><strong>Defensa en profundidad:</strong> Múltiples capas de seguridad (firewall, actualizaciones, permisos)</li>
+                                <li><strong>Actualizaciones regulares:</strong> Mantener el sistema actualizado es crítico para la seguridad</li>
+                                <li><strong>Monitoreo:</strong> Revisar logs regularmente para detectar actividad sospechosa</li>
+                            </ul>
+                        </div>
+
                         <div class="alert alert-success mt-8">
                             <p class="font-semibold mb-2">✅ Siguiente Paso</p>
-                            <p>Domina estos comandos básicos antes de avanzar. La práctica constante es clave. Experimenta en un entorno seguro antes de usar comandos en producción.</p>
+                            <p>Domina estos comandos básicos antes de avanzar. La práctica constante es clave. Experimenta en un entorno seguro antes de usar comandos en producción. Una vez que domines estos conceptos, avanza a las guías específicas de hardening para tu distribución.</p>
                         </div>
                     </div>
                 </article>

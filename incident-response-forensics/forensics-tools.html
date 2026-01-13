@@ -119,7 +119,7 @@ sudo apt install autopsy
 
                         <h2 id="wireshark">Wireshark (Network Forensics)</h2>
                         <div class="command-block mb-4" x-data="copyCommand">
-                            <button @click="copy("# Instalar Wireshark\nsudo apt install wireshark\n\n# Capturar paquetes (requiere privilegios)\nsudo wireshark\n\n# O desde línea de comandos:\nsudo tshark -i eth0 -w capture.pcap\n\n# Filtrar paquetes HTTP\ntshark -r capture.pcap -Y \"http\"\n\n# Filtrar por IP\ntshark -r capture.pcap -Y \"ip.addr == 192.168.1.100\"\n\n# Extraer archivos HTTP\ntshark -r capture.pcap --export-objects http,./extracted_files/\n\n# Análisis de DNS\ntshark -r capture.pcap -Y \"dns\"")" class="copy-btn" :class="{ 'copied': copied }">
+                            <button @click="copy("# Instalar Wireshark\nsudo apt install wireshark\n\n# Capturar paquetes (requiere privilegios)\nsudo wireshark\n\n# O desde línea de comandos:\nsudo tshark -i eth0 -w capture.pcap\n\n# Filtrar paquetes HTTP\ntshark -r capture.pcap -Y \"http\"\n\n# Filtrar por IP\ntshark -r capture.pcap -Y \"ip.addr == 192.168.1.100\"\n\n# Extraer archivos HTTP\ntshark -r capture.pcap --export-objects http,./extracted_files/\n\n# Análisis de DNS\ntshark -r capture.pcap -Y \"dns\"\n\n# Análisis de TLS/SSL\ntshark -r capture.pcap -Y \"ssl\"\n\n# Estadísticas de conversación\ntshark -r capture.pcap -q -z conv,tcp\n\n# Top talkers\ntshark -r capture.pcap -q -z endpoints,ip")" class="copy-btn" :class="{ 'copied': copied }">
                                 <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
                                 </svg>
@@ -146,12 +146,209 @@ tshark -r capture.pcap -Y "ip.addr == 192.168.1.100"
 tshark -r capture.pcap --export-objects http,./extracted_files/
 
 # Análisis de DNS
-tshark -r capture.pcap -Y "dns"</code></pre>
+tshark -r capture.pcap -Y "dns"
+
+# Análisis de TLS/SSL
+tshark -r capture.pcap -Y "ssl"
+
+# Estadísticas de conversación
+tshark -r capture.pcap -q -z conv,tcp
+
+# Top talkers
+tshark -r capture.pcap -q -z endpoints,ip</code></pre>
+                        </div>
+
+                        <h2 id="sleuthkit">Sleuth Kit (Disk Forensics)</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Instalar Sleuth Kit\nsudo apt install sleuthkit\n\n# Analizar imagen de disco\nmmls disk_image.dd\n\n# Listar archivos en partición\nfls -r -m / /dev/sda1 > file_list.txt\n\n# Recuperar archivo eliminado\nicat disk_image.dd inode_number > recovered_file\n\n# Análisis de timeline\nfls -r -m / /dev/sda1 | mactime -b - > timeline.csv\n\n# Buscar archivos por nombre\nfls -r /dev/sda1 | grep -i \"documento\"\n\n# Análisis de sistema de archivos\nfsstat /dev/sda1\n\n# Verificar hash de archivo\nmd5sum recovered_file\nsha256sum recovered_file")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Instalar Sleuth Kit
+sudo apt install sleuthkit
+
+# Analizar imagen de disco
+mmls disk_image.dd
+
+# Listar archivos en partición
+fls -r -m / /dev/sda1 > file_list.txt
+
+# Recuperar archivo eliminado
+icat disk_image.dd inode_number > recovered_file
+
+# Análisis de timeline
+fls -r -m / /dev/sda1 | mactime -b - > timeline.csv
+
+# Buscar archivos por nombre
+fls -r /dev/sda1 | grep -i "documento"
+
+# Análisis de sistema de archivos
+fsstat /dev/sda1
+
+# Verificar hash de archivo
+md5sum recovered_file
+sha256sum recovered_file</code></pre>
+                        </div>
+
+                        <h2 id="binwalk">Binwalk (Firmware/File Analysis)</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Instalar Binwalk\nsudo apt install binwalk\n\n# Analizar archivo/binario\nbinwalk firmware.bin\n\n# Extraer archivos embebidos\nbinwalk -e firmware.bin\n\n# Análisis de entropy (detectar cifrado)\nbinwalk -E firmware.bin\n\n# Buscar strings\nbinwalk -A firmware.bin\n\n# Análisis de signatures\nbinwalk -B firmware.bin")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Instalar Binwalk
+sudo apt install binwalk
+
+# Analizar archivo/binario
+binwalk firmware.bin
+
+# Extraer archivos embebidos
+binwalk -e firmware.bin
+
+# Análisis de entropy (detectar cifrado)
+binwalk -E firmware.bin
+
+# Buscar strings
+binwalk -A firmware.bin
+
+# Análisis de signatures
+binwalk -B firmware.bin</code></pre>
+                        </div>
+
+                        <h2 id="yara">YARA (Pattern Matching)</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Instalar YARA\nsudo apt install yara\n\n# Crear regla YARA\n# malware_rule.yar:\n# rule MalwareExample\n# {\n#     strings:\n#         $a = \"evil_string\"\n#         $b = /malicious_pattern/\n#     condition:\n#         $a or $b\n# }\n\n# Escanear archivo con regla\nyara malware_rule.yar suspicious_file.exe\n\n# Escanear directorio\nyara -r malware_rule.yar /path/to/scan\n\n# Usar reglas de comunidad\nyara -r /usr/share/yara/rules/ suspicious_file.exe")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Instalar YARA
+sudo apt install yara
+
+# Crear regla YARA
+# malware_rule.yar:
+# rule MalwareExample
+# {
+#     strings:
+#         $a = "evil_string"
+#         $b = /malicious_pattern/
+#     condition:
+#         $a or $b
+# }
+
+# Escanear archivo con regla
+yara malware_rule.yar suspicious_file.exe
+
+# Escanear directorio
+yara -r malware_rule.yar /path/to/scan
+
+# Usar reglas de comunidad
+yara -r /usr/share/yara/rules/ suspicious_file.exe</code></pre>
+                        </div>
+
+                        <h2 id="metodologia-forense">Metodología Forense</h2>
+
+                        <h3>Principios Fundamentales</h3>
+                        <ol>
+                            <li><strong>Preservación:</strong> No modificar evidencia original</li>
+                            <li><strong>Cadena de Custodia:</strong> Documentar quién tuvo acceso a evidencia</li>
+                            <li><strong>Documentación:</strong> Registrar todos los pasos y hallazgos</li>
+                            <li><strong>Reproducibilidad:</strong> Procesos deben ser reproducibles</li>
+                            <li><strong>Integridad:</strong> Verificar integridad con hashes (MD5, SHA256)</li>
+                        </ol>
+
+                        <h3>Proceso de Análisis</h3>
+                        <div class="steps-container">
+                            <div class="step">
+                                <h3>1. Adquisición</h3>
+                                <p>Crear imagen forense de evidencia (dd, FTK Imager, Guymager)</p>
+                            </div>
+                            <div class="step">
+                                <h3>2. Verificación</h3>
+                                <p>Calcular hash de imagen y verificar integridad</p>
+                            </div>
+                            <div class="step">
+                                <h3>3. Análisis</h3>
+                                <p>Analizar imagen con herramientas forenses (nunca original)</p>
+                            </div>
+                            <div class="step">
+                                <h3>4. Documentación</h3>
+                                <p>Documentar hallazgos, timeline y evidencia</p>
+                            </div>
+                            <div class="step">
+                                <h3>5. Reporte</h3>
+                                <p>Generar reporte forense con metodología y conclusiones</p>
+                            </div>
+                        </div>
+
+                        <h2 id="checklist-forensics">Checklist de Análisis Forense</h2>
+                        <div class="checklist-container mb-6">
+                            <div class="checklist" data-checklist-id="forensics">
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('forensics', 0)" class="checklist-checkbox">
+                                        <span>Imagen forense creada de evidencia original</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('forensics', 1)" class="checklist-checkbox">
+                                        <span>Hash calculado y verificado (MD5/SHA256)</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('forensics', 2)" class="checklist-checkbox">
+                                        <span>Cadena de custodia documentada</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('forensics', 3)" class="checklist-checkbox">
+                                        <span>Análisis realizado solo en copias, nunca originales</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('forensics', 4)" class="checklist-checkbox">
+                                        <span>Todos los pasos documentados y reproducibles</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('forensics', 5)" class="checklist-checkbox">
+                                        <span>Timeline de eventos creada</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('forensics', 6)" class="checklist-checkbox">
+                                        <span>Reporte forense generado con metodología</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="checklist-progress mt-4">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" data-progress="forensics"></div>
+                                </div>
+                                <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">Progreso: <span data-progress-text="forensics">0%</span></p>
+                            </div>
                         </div>
 
                         <div class="alert alert-success mt-8">
                             <p class="font-semibold mb-2">✅ Forensics Tools</p>
-                            <p>El análisis forense requiere preservación adecuada de evidencia y cadena de custodia. Siempre trabaja con copias de evidencia, nunca con originales. Documenta todos los pasos para que los hallazgos sean reproducibles y admisibles.</p>
+                            <p>El análisis forense requiere preservación adecuada de evidencia y cadena de custodia. Siempre trabaja con copias de evidencia, nunca con originales. Documenta todos los pasos para que los hallazgos sean reproducibles y admisibles. Usa herramientas validadas y mantén la integridad de la evidencia en todo momento.</p>
                         </div>
                     </div>
                 </article>

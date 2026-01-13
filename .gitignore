@@ -27,6 +27,11 @@ build/
 # Snyk Security Extension - AI Rules (auto-generated)
 .cursor/rules/snyk_rules.mdc
 
+# Git and Cursor files
+.gitignore
+.gitattributes
+.cursor/
+
 # Temporary and template files (should not be committed)
 PROJECT_STATUS.md
 *TEMPLATE*.html

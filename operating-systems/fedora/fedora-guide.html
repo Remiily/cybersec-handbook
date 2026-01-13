@@ -215,9 +215,156 @@ sudo firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address
 sudo firewall-cmd --reload</code></pre>
                         </div>
 
+                        <h2 id="hardening-fedora">Hardening de Fedora</h2>
+                        <p>Fedora incluye SELinux habilitado por defecto y herramientas modernas de seguridad. Sigue estos pasos para asegurar tu instalación.</p>
+
+                        <h3 id="selinux-fedora">Configuración de SELinux</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Verificar estado de SELinux\nsudo getenforce\nsudo sestatus\n\n# SELinux está en Enforcing por defecto en Fedora\n# Verificar modo actual\ncat /etc/selinux/config\n\n# Cambiar a modo Permissive temporalmente (para troubleshooting)\nsudo setenforce 0\n\n# Volver a Enforcing\nsudo setenforce 1\n\n# Verificar contexto de archivos\nls -Z /var/www/html\n\n# Verificar políticas\nsudo semanage boolean -l | grep httpd\n\n# Ver logs de SELinux\nsudo ausearch -m avc -ts recent\nsudo sealert -a /var/log/audit/audit.log")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Verificar estado de SELinux
+sudo getenforce
+sudo sestatus
+
+# SELinux está en Enforcing por defecto en Fedora
+# Verificar modo actual
+cat /etc/selinux/config
+
+# Cambiar a modo Permissive temporalmente (para troubleshooting)
+sudo setenforce 0
+
+# Volver a Enforcing
+sudo setenforce 1
+
+# Verificar contexto de archivos
+ls -Z /var/www/html
+
+# Verificar políticas
+sudo semanage boolean -l | grep httpd
+
+# Ver logs de SELinux
+sudo ausearch -m avc -ts recent
+sudo sealert -a /var/log/audit/audit.log</code></pre>
+                        </div>
+
+                        <h3 id="firewall-fedora">Firewall (firewalld)</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Verificar estado de firewalld\nsudo systemctl status firewalld\nsudo firewall-cmd --state\n\n# Habilitar firewalld\nsudo systemctl enable firewalld\nsudo systemctl start firewalld\n\n# Verificar zonas activas\nsudo firewall-cmd --get-active-zones\n\n# Configurar zona por defecto\nsudo firewall-cmd --set-default-zone=public\n\n# Permitir servicio\nsudo firewall-cmd --permanent --add-service=http\nsudo firewall-cmd --permanent --add-service=https\nsudo firewall-cmd --reload\n\n# Permitir puerto específico\nsudo firewall-cmd --permanent --add-port=8080/tcp\nsudo firewall-cmd --reload\n\n# Bloquear IP\nsudo firewall-cmd --permanent --add-rich-rule='rule family=\"ipv4\" source address=\"192.168.1.100\" reject'\nsudo firewall-cmd --reload\n\n# Listar todas las reglas\nsudo firewall-cmd --list-all")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Verificar estado de firewalld
+sudo systemctl status firewalld
+sudo firewall-cmd --state
+
+# Habilitar firewalld
+sudo systemctl enable firewalld
+sudo systemctl start firewalld
+
+# Verificar zonas activas
+sudo firewall-cmd --get-active-zones
+
+# Configurar zona por defecto
+sudo firewall-cmd --set-default-zone=public
+
+# Permitir servicio
+sudo firewall-cmd --permanent --add-service=http
+sudo firewall-cmd --permanent --add-service=https
+sudo firewall-cmd --reload
+
+# Permitir puerto específico
+sudo firewall-cmd --permanent --add-port=8080/tcp
+sudo firewall-cmd --reload
+
+# Bloquear IP
+sudo firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="192.168.1.100" reject'
+sudo firewall-cmd --reload
+
+# Listar todas las reglas
+sudo firewall-cmd --list-all</code></pre>
+                        </div>
+
+                        <h3 id="actualizaciones-fedora">Gestión de Actualizaciones</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Actualizar sistema completo\nsudo dnf update -y\nsudo dnf upgrade -y\n\n# Verificar actualizaciones de seguridad\nsudo dnf updateinfo list security\n\n# Instalar solo actualizaciones de seguridad\nsudo dnf update --security -y\n\n# Habilitar actualizaciones automáticas (opcional)\nsudo dnf install dnf-automatic\nsudo systemctl enable --now dnf-automatic.timer\n\n# Verificar actualizaciones pendientes\ndnf check-update\n\n# Limpiar caché\nsudo dnf clean all")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Actualizar sistema completo
+sudo dnf update -y
+sudo dnf upgrade -y
+
+# Verificar actualizaciones de seguridad
+sudo dnf updateinfo list security
+
+# Instalar solo actualizaciones de seguridad
+sudo dnf update --security -y
+
+# Habilitar actualizaciones automáticas (opcional)
+sudo dnf install dnf-automatic
+sudo systemctl enable --now dnf-automatic.timer
+
+# Verificar actualizaciones pendientes
+dnf check-update
+
+# Limpiar caché
+sudo dnf clean all</code></pre>
+                        </div>
+
+                        <h3 id="migracion-fedora">Migración de Versiones Fedora</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Verificar versión actual\ncat /etc/fedora-release\n\n# Actualizar a nueva versión de Fedora\n# Método recomendado: dnf system-upgrade\n\n# Instalar plugin\nsudo dnf install dnf-plugin-system-upgrade -y\n\n# Actualizar sistema actual primero\nsudo dnf update --refresh -y\n\n# Iniciar actualización a nueva versión (ejemplo: Fedora 38 → 39)\nsudo dnf system-upgrade download --releasever=39\n\n# Verificar que no hay problemas\nsudo dnf system-upgrade check\n\n# Si todo está bien, iniciar actualización\nsudo dnf system-upgrade reboot\n\n# El sistema se reiniciará y completará la actualización\n\n# Verificar versión nueva después del reboot\ncat /etc/fedora-release")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Verificar versión actual
+cat /etc/fedora-release
+
+# Actualizar a nueva versión de Fedora
+# Método recomendado: dnf system-upgrade
+
+# Instalar plugin
+sudo dnf install dnf-plugin-system-upgrade -y
+
+# Actualizar sistema actual primero
+sudo dnf update --refresh -y
+
+# Iniciar actualización a nueva versión (ejemplo: Fedora 38 → 39)
+sudo dnf system-upgrade download --releasever=39
+
+# Verificar que no hay problemas
+sudo dnf system-upgrade check
+
+# Si todo está bien, iniciar actualización
+sudo dnf system-upgrade reboot
+
+# El sistema se reiniciará y completará la actualización
+
+# Verificar versión nueva después del reboot
+cat /etc/fedora-release</code></pre>
+                        </div>
+
                         <div class="alert alert-success mt-8">
                             <p class="font-semibold mb-2">✅ Fedora</p>
-                            <p>Fedora es una distribución cutting-edge de Red Hat. Usa DNF como gestor de paquetes (más moderno que YUM) y firewalld para el firewall. Ideal para desarrollo y entornos que requieren las últimas características.</p>
+                            <p>Fedora es una distribución cutting-edge de Red Hat. Usa DNF como gestor de paquetes (más moderno que YUM) y firewalld para el firewall. Ideal para desarrollo y entornos que requieren las últimas características. SELinux está habilitado por defecto, proporcionando una capa adicional de seguridad.</p>
                         </div>
                     </div>
                 </article>

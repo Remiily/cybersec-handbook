@@ -113,10 +113,29 @@
 az ad policy list --query "[].{Name:displayName, State:state}" --output table</code></pre>
                         </div>
 
+                        <h2 id="introduccion-zero-trust">Introducción a Zero Trust</h2>
+                        <p>Zero Trust es un modelo de seguridad que asume que ninguna entidad (usuario, dispositivo, aplicación) es confiable por defecto, independientemente de su ubicación en la red. Todo acceso debe ser verificado explícitamente.</p>
+
+                        <div class="alert alert-info mb-6">
+                            <p class="font-semibold mb-2">💡 Cambio de Paradigma</p>
+                            <p>Zero Trust cambia el modelo tradicional de "confiar pero verificar" (perímetro de red) a "verificar siempre, nunca confiar". No hay perímetro de red confiable; cada solicitud de acceso se evalúa individualmente.</p>
+                        </div>
+
                         <h2 id="ztna">ZTNA (Zero Trust Network Access)</h2>
-                        <p>Alternativa a VPN tradicional basada en identidad:</p>
+                        <p>ZTNA es una alternativa moderna a VPN tradicional, basada en identidad y políticas granulares.</p>
+
+                        <h3 id="beneficios-ztna">Beneficios de ZTNA</h3>
+                        <ul>
+                            <li><strong>Sin VPN:</strong> Elimina la necesidad de tunelización VPN tradicional</li>
+                            <li><strong>Acceso Granular:</strong> Control a nivel de aplicación, no de red completa</li>
+                            <li><strong>Mejor Performance:</strong> Conexiones directas sin pasar por VPN concentrador</li>
+                            <li><strong>Menor Superficie de Ataque:</strong> Solo expone aplicaciones específicas</li>
+                            <li><strong>Escalabilidad:</strong> Fácil de escalar sin infraestructura adicional</li>
+                        </ul>
+
+                        <h3 id="implementacion-ztna">Implementación ZTNA</h3>
                         <div class="command-block mb-4" x-data="copyCommand">
-                            <button @click="copy("# Configuración básica ZTNA (ejemplo conceptual)\n# No hay acceso de red implícito\n# Todo acceso requiere autenticación\n# Segmentación por aplicación/usuario\n\n# Ejemplo con Cloudflare Access:\n# 1. Crear aplicación en Cloudflare Zero Trust\n# 2. Configurar Access Policy:\n#    - Rule: Email domain = @empresa.com\n#    - Rule: Require MFA\n#    - Rule: Device posture check\n# 3. Aplicar policy a aplicación\n\n# Beneficios:\n# - Sin necesidad de VPN\n# - Acceso granular\n# - Mejor performance\n# - Menor superficie de ataque")" class="copy-btn" :class="{ 'copied': copied }">
+                            <button @click="copy("# Configuración básica ZTNA (ejemplo conceptual)\n# No hay acceso de red implícito\n# Todo acceso requiere autenticación\n# Segmentación por aplicación/usuario\n\n# Ejemplo con Cloudflare Access:\n# 1. Crear aplicación en Cloudflare Zero Trust\n# 2. Configurar Access Policy:\n#    - Rule: Email domain = @empresa.com\n#    - Rule: Require MFA\n#    - Rule: Device posture check\n# 3. Aplicar policy a aplicación\n\n# Ejemplo con Zscaler ZPA:\n# 1. Crear Application Segment\n# 2. Definir App Connectors\n# 3. Configurar Access Policy:\n#    - Users/Groups\n#    - Device posture\n#    - Time-based access\n# 4. Publicar aplicación\n\n# Beneficios:\n# - Sin necesidad de VPN\n# - Acceso granular\n# - Mejor performance\n# - Menor superficie de ataque")" class="copy-btn" :class="{ 'copied': copied }">
                                 <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
                                 </svg>
@@ -137,6 +156,15 @@ az ad policy list --query "[].{Name:displayName, State:state}" --output table</c
 #    - Rule: Device posture check
 # 3. Aplicar policy a aplicación
 
+# Ejemplo con Zscaler ZPA:
+# 1. Crear Application Segment
+# 2. Definir App Connectors
+# 3. Configurar Access Policy:
+#    - Users/Groups
+#    - Device posture
+#    - Time-based access
+# 4. Publicar aplicación
+
 # Beneficios:
 # - Sin necesidad de VPN
 # - Acceso granular
@@ -144,9 +172,186 @@ az ad policy list --query "[].{Name:displayName, State:state}" --output table</c
 # - Menor superficie de ataque</code></pre>
                         </div>
 
+                        <h2 id="conditional-access">Conditional Access</h2>
+                        <p>El acceso condicional evalúa múltiples señales antes de permitir acceso a recursos.</p>
+
+                        <h3 id="señales-evaluacion">Señales de Evaluación</h3>
+                        <div class="overflow-x-auto mb-6">
+                            <table>
+                                <thead>
+                                    <tr><th>Señal</th><th>Ejemplo</th><th>Uso</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>Identidad</td><td>Usuario, grupo, rol</td><td>¿Quién está intentando acceder?</td></tr>
+                                    <tr><td>Ubicación</td><td>IP, país, red</td><td>¿Desde dónde se está accediendo?</td></tr>
+                                    <tr><td>Dispositivo</td><td>Compliance, MDM, health</td><td>¿El dispositivo es seguro?</td></tr>
+                                    <tr><td>Aplicación</td><td>Tipo de app, sensibilidad</td><td>¿A qué recurso se accede?</td></tr>
+                                    <tr><td>Riesgo</td><td>Comportamiento anómalo, threat intelligence</td><td>¿Hay indicadores de riesgo?</td></tr>
+                                    <tr><td>Tiempo</td><td>Horario, día de la semana</td><td>¿Es un horario permitido?</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h2 id="implementacion-aws">Implementación en AWS</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# AWS Zero Trust con IAM Policies\n# Política de ejemplo: Requerir MFA para acceso S3\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Deny\",\n      \"Action\": \"s3:*\",\n      \"Resource\": \"*\",\n      \"Condition\": {\n        \"BoolIfExists\": {\n          \"aws:MultiFactorAuthPresent\": \"false\"\n        }\n      }\n    }\n  ]\n}\n\n# Política: Requerir IP específica\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Deny\",\n      \"Action\": \"*\",\n      \"Resource\": \"*\",\n      \"Condition\": {\n        \"IpAddressIfExists\": {\n          \"aws:SourceIp\": [\"!203.0.113.0/24\"]\n        }\n      }\n    }\n  ]\n}\n\n# AWS Security Groups (micro-segmentación)\n# Permitir solo desde IPs específicas\naws ec2 authorize-security-group-ingress \\\n  --group-id sg-12345678 \\\n  --protocol tcp \\\n  --port 443 \\\n  --cidr 203.0.113.0/24")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># AWS Zero Trust con IAM Policies
+# Política de ejemplo: Requerir MFA para acceso S3
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Deny",
+      "Action": "s3:*",
+      "Resource": "*",
+      "Condition": {
+        "BoolIfExists": {
+          "aws:MultiFactorAuthPresent": "false"
+        }
+      }
+    }
+  ]
+}
+
+# Política: Requerir IP específica
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Deny",
+      "Action": "*",
+      "Resource": "*",
+      "Condition": {
+        "IpAddressIfExists": {
+          "aws:SourceIp": ["!203.0.113.0/24"]
+        }
+      }
+    }
+  ]
+}
+
+# AWS Security Groups (micro-segmentación)
+# Permitir solo desde IPs específicas
+aws ec2 authorize-security-group-ingress \
+  --group-id sg-12345678 \
+  --protocol tcp \
+  --port 443 \
+  --cidr 203.0.113.0/24</code></pre>
+                        </div>
+
+                        <h2 id="roadmap-implementacion">Roadmap de Implementación Zero Trust</h2>
+
+                        <h3>Fase 1: Identidad (Prioridad Alta)</h3>
+                        <ul>
+                            <li>Implementar MFA para todos los usuarios</li>
+                            <li>Unificar identidades (SSO)</li>
+                            <li>Implementar principio de menor privilegio</li>
+                            <li>Revisar y limpiar cuentas inactivas</li>
+                        </ul>
+
+                        <h3>Fase 2: Dispositivos (Prioridad Alta)</h3>
+                        <ul>
+                            <li>Implementar MDM (Intune, Jamf)</li>
+                            <li>Device compliance y health checks</li>
+                            <li>Endpoint protection (EDR)</li>
+                            <li>Device posture assessment</li>
+                        </ul>
+
+                        <h3>Fase 3: Aplicaciones (Prioridad Media)</h3>
+                        <ul>
+                            <li>Application proxy para apps internas</li>
+                            <li>Conditional access basado en señales</li>
+                            <li>ZTNA para acceso remoto</li>
+                            <li>API security y protección</li>
+                        </ul>
+
+                        <h3>Fase 4: Datos (Prioridad Media)</h3>
+                        <ul>
+                            <li>Data classification</li>
+                            <li>DLP (Data Loss Prevention)</li>
+                            <li>Encryption en tránsito y en reposo</li>
+                            <li>Rights Management</li>
+                        </ul>
+
+                        <h3>Fase 5: Infraestructura (Prioridad Baja)</h3>
+                        <ul>
+                            <li>Workload protection</li>
+                            <li>Micro-segmentación</li>
+                            <li>Network security policies</li>
+                            <li>Cloud security posture</li>
+                        </ul>
+
+                        <h2 id="checklist-zero-trust">Checklist de Implementación Zero Trust</h2>
+                        <div class="checklist-container mb-6">
+                            <div class="checklist" data-checklist-id="zero-trust">
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('zero-trust', 0)" class="checklist-checkbox">
+                                        <span>MFA implementado para todos los usuarios</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('zero-trust', 1)" class="checklist-checkbox">
+                                        <span>SSO configurado para aplicaciones</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('zero-trust', 2)" class="checklist-checkbox">
+                                        <span>Device compliance y health checks activos</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('zero-trust', 3)" class="checklist-checkbox">
+                                        <span>Conditional access policies configuradas</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('zero-trust', 4)" class="checklist-checkbox">
+                                        <span>ZTNA implementado para acceso remoto</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('zero-trust', 5)" class="checklist-checkbox">
+                                        <span>Data classification y DLP activos</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('zero-trust', 6)" class="checklist-checkbox">
+                                        <span>Monitoreo y alertas configuradas</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="checklist-progress mt-4">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" data-progress="zero-trust"></div>
+                                </div>
+                                <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">Progreso: <span data-progress-text="zero-trust">0%</span></p>
+                            </div>
+                        </div>
+
+                        <h2 id="recursos-adicionales">Recursos Adicionales</h2>
+                        <ul>
+                            <li><strong>NIST Zero Trust Architecture:</strong> <a href="https://www.nist.gov/publications/zero-trust-architecture" class="text-blue-600 dark:text-blue-400">nist.gov</a></li>
+                            <li><strong>Microsoft Zero Trust:</strong> <a href="https://www.microsoft.com/en-us/security/business/zero-trust" class="text-blue-600 dark:text-blue-400">microsoft.com</a></li>
+                            <li><strong>Cloudflare Zero Trust:</strong> <a href="https://www.cloudflare.com/zero-trust/" class="text-blue-600 dark:text-blue-400">cloudflare.com</a></li>
+                        </ul>
+
                         <div class="alert alert-success mt-8">
                             <p class="font-semibold mb-2">✅ Zero Trust</p>
-                            <p>Zero Trust no es un producto, es un modelo de seguridad. La implementación es un viaje, no un destino. Empieza con identidad y dispositivos, luego expande a aplicaciones y datos. Prioriza las áreas de mayor riesgo primero.</p>
+                            <p>Zero Trust no es un producto, es un modelo de seguridad. La implementación es un viaje, no un destino. Empieza con identidad y dispositivos, luego expande a aplicaciones y datos. Prioriza las áreas de mayor riesgo primero. Recuerda: "Never trust, always verify".</p>
                         </div>
                     </div>
                 </article>

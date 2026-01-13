@@ -298,6 +298,240 @@ DROP USER 'usuario'@'localhost';</code></pre>
                             </p>
                         </div>
 
+                        <h2 id="hardening-mysql">Hardening de MySQL</h2>
+                        <p>El hardening de MySQL es crítico para proteger datos sensibles en producción. Sigue estos pasos para asegurar tu instalación.</p>
+
+                        <h3 id="configuracion-segura">Configuración Segura</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Editar configuración MySQL\nsudo nano /etc/mysql/mysql.conf.d/mysqld.cnf\n\n# Configuraciones de seguridad recomendadas:\n[mysqld]\n# Deshabilitar carga de archivos locales\nlocal-infile = 0\n\n# Deshabilitar símbolos\nsymbolic-links = 0\n\n# Limitar conexiones\nmax_connections = 100\n\n# Timeout de conexiones inactivas\nwait_timeout = 600\ninteractive_timeout = 600\n\n# Deshabilitar acceso remoto de root\nskip-networking  # Solo conexiones locales (opcional, según necesidad)\n\n# Habilitar logging\nlog-error = /var/log/mysql/error.log\nslow_query_log = 1\nslow_query_log_file = /var/log/mysql/slow-query.log\nlong_query_time = 2\n\n# Reiniciar MySQL\nsudo systemctl restart mysql")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Editar configuración MySQL
+sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf
+
+# Configuraciones de seguridad recomendadas:
+[mysqld]
+# Deshabilitar carga de archivos locales
+local-infile = 0
+
+# Deshabilitar símbolos
+symbolic-links = 0
+
+# Limitar conexiones
+max_connections = 100
+
+# Timeout de conexiones inactivas
+wait_timeout = 600
+interactive_timeout = 600
+
+# Deshabilitar acceso remoto de root
+skip-networking  # Solo conexiones locales (opcional, según necesidad)
+
+# Habilitar logging
+log-error = /var/log/mysql/error.log
+slow_query_log = 1
+slow_query_log_file = /var/log/mysql/slow-query.log
+long_query_time = 2
+
+# Reiniciar MySQL
+sudo systemctl restart mysql</code></pre>
+                        </div>
+
+                        <h3 id="usuarios-seguros">Gestión Segura de Usuarios</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("-- Eliminar usuarios anónimos\nDELETE FROM mysql.user WHERE User='';\n\n-- Eliminar usuarios root remotos\nDELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');\n\n-- Cambiar contraseña de root\nALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'contraseña_segura';\n\n-- Crear usuario con permisos mínimos\nCREATE USER 'appuser'@'localhost' IDENTIFIED BY 'contraseña_segura';\nGRANT SELECT, INSERT, UPDATE ON appdb.* TO 'appuser'@'localhost';\n\n-- Verificar usuarios\nSELECT User, Host FROM mysql.user;\n\n-- Verificar permisos\nSHOW GRANTS FOR 'appuser'@'localhost';\n\n-- Aplicar cambios\nFLUSH PRIVILEGES;")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code>-- Eliminar usuarios anónimos
+DELETE FROM mysql.user WHERE User='';
+
+-- Eliminar usuarios root remotos
+DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');
+
+-- Cambiar contraseña de root
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'contraseña_segura';
+
+-- Crear usuario con permisos mínimos
+CREATE USER 'appuser'@'localhost' IDENTIFIED BY 'contraseña_segura';
+GRANT SELECT, INSERT, UPDATE ON appdb.* TO 'appuser'@'localhost';
+
+-- Verificar usuarios
+SELECT User, Host FROM mysql.user;
+
+-- Verificar permisos
+SHOW GRANTS FOR 'appuser'@'localhost';
+
+-- Aplicar cambios
+FLUSH PRIVILEGES;</code></pre>
+                        </div>
+
+                        <h3 id="cifrado-mysql">Cifrado en Tránsito y Reposo</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Habilitar SSL/TLS en MySQL\n# Generar certificados\nsudo mysql_ssl_rsa_setup --uid=mysql\n\n# Configurar en /etc/mysql/mysql.conf.d/mysqld.cnf:\n[mysqld]\nssl-ca = /var/lib/mysql/ca.pem\nssl-cert = /var/lib/mysql/server-cert.pem\nssl-key = /var/lib/mysql/server-key.pem\nrequire_secure_transport = ON  # Requerir conexiones SSL\n\n# Reiniciar MySQL\nsudo systemctl restart mysql\n\n# Verificar SSL\nSHOW VARIABLES LIKE '%ssl%';\n\n# Conectar con SSL\nmysql -u usuario -p --ssl-mode=REQUIRED\n\n# Cifrado en reposo (MySQL Enterprise)\n# Usar Transparent Data Encryption (TDE)\n# O cifrado a nivel de sistema de archivos (LUKS)")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Habilitar SSL/TLS en MySQL
+# Generar certificados
+sudo mysql_ssl_rsa_setup --uid=mysql
+
+# Configurar en /etc/mysql/mysql.conf.d/mysqld.cnf:
+[mysqld]
+ssl-ca = /var/lib/mysql/ca.pem
+ssl-cert = /var/lib/mysql/server-cert.pem
+ssl-key = /var/lib/mysql/server-key.pem
+require_secure_transport = ON  # Requerir conexiones SSL
+
+# Reiniciar MySQL
+sudo systemctl restart mysql
+
+# Verificar SSL
+SHOW VARIABLES LIKE '%ssl%';
+
+# Conectar con SSL
+mysql -u usuario -p --ssl-mode=REQUIRED
+
+# Cifrado en reposo (MySQL Enterprise)
+# Usar Transparent Data Encryption (TDE)
+# O cifrado a nivel de sistema de archivos (LUKS)</code></pre>
+                        </div>
+
+                        <h3 id="auditoria-mysql">Auditoría y Monitoreo</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("-- Habilitar audit log (MySQL Enterprise)\n-- O usar MariaDB Audit Plugin para MySQL Community\n\n-- Verificar conexiones activas\nSHOW PROCESSLIST;\n\n-- Ver conexiones por usuario\nSELECT user, host, COUNT(*) as connections FROM information_schema.processlist GROUP BY user, host;\n\n-- Verificar usuarios con privilegios administrativos\nSELECT User, Host FROM mysql.user WHERE Super_priv = 'Y' OR Grant_priv = 'Y';\n\n-- Revisar permisos excesivos\nSELECT User, Host, Db, Select_priv, Insert_priv, Update_priv, Delete_priv FROM mysql.db WHERE User != '';\n\n-- Monitorear queries lentas\nSELECT * FROM mysql.slow_log ORDER BY start_time DESC LIMIT 10;\n\n-- Verificar configuración de seguridad\nSELECT * FROM mysql.user WHERE User = 'root' AND Host = '%';")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code>-- Habilitar audit log (MySQL Enterprise)
+-- O usar MariaDB Audit Plugin para MySQL Community
+
+-- Verificar conexiones activas
+SHOW PROCESSLIST;
+
+-- Ver conexiones por usuario
+SELECT user, host, COUNT(*) as connections FROM information_schema.processlist GROUP BY user, host;
+
+-- Verificar usuarios con privilegios administrativos
+SELECT User, Host FROM mysql.user WHERE Super_priv = 'Y' OR Grant_priv = 'Y';
+
+-- Revisar permisos excesivos
+SELECT User, Host, Db, Select_priv, Insert_priv, Update_priv, Delete_priv FROM mysql.db WHERE User != '';
+
+-- Monitorear queries lentas
+SELECT * FROM mysql.slow_log ORDER BY start_time DESC LIMIT 10;
+
+-- Verificar configuración de seguridad
+SELECT * FROM mysql.user WHERE User = 'root' AND Host = '%';</code></pre>
+                        </div>
+
+                        <h3 id="firewall-mysql">Protección de Red</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Firewall: Permitir solo IPs específicas\nsudo ufw allow from 10.0.0.0/24 to any port 3306\n\n# O bloquear completamente acceso remoto si no es necesario\nsudo ufw deny 3306\n\n# Verificar conexiones de red\nsudo netstat -tulpn | grep 3306\nsudo ss -tulpn | grep 3306\n\n# Configurar bind-address en MySQL\n# /etc/mysql/mysql.conf.d/mysqld.cnf:\nbind-address = 127.0.0.1  # Solo localhost\n# O\nbind-address = 10.0.0.100  # IP específica\n\n# Reiniciar MySQL\nsudo systemctl restart mysql")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Firewall: Permitir solo IPs específicas
+sudo ufw allow from 10.0.0.0/24 to any port 3306
+
+# O bloquear completamente acceso remoto si no es necesario
+sudo ufw deny 3306
+
+# Verificar conexiones de red
+sudo netstat -tulpn | grep 3306
+sudo ss -tulpn | grep 3306
+
+# Configurar bind-address en MySQL
+# /etc/mysql/mysql.conf.d/mysqld.cnf:
+bind-address = 127.0.0.1  # Solo localhost
+# O
+bind-address = 10.0.0.100  # IP específica
+
+# Reiniciar MySQL
+sudo systemctl restart mysql</code></pre>
+                        </div>
+
+                        <h2 id="checklist-hardening-mysql">Checklist de Hardening MySQL</h2>
+                        <div class="checklist-container mb-6">
+                            <div class="checklist" data-checklist-id="mysql-hardening">
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('mysql-hardening', 0)" class="checklist-checkbox">
+                                        <span>mysql_secure_installation ejecutado</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('mysql-hardening', 1)" class="checklist-checkbox">
+                                        <span>Usuarios anónimos eliminados</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('mysql-hardening', 2)" class="checklist-checkbox">
+                                        <span>Acceso remoto de root deshabilitado</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('mysql-hardening', 3)" class="checklist-checkbox">
+                                        <span>SSL/TLS configurado para conexiones</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('mysql-hardening', 4)" class="checklist-checkbox">
+                                        <span>bind-address configurado correctamente</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('mysql-hardening', 5)" class="checklist-checkbox">
+                                        <span>Firewall configurado para restringir acceso</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('mysql-hardening', 6)" class="checklist-checkbox">
+                                        <span>Logging y monitoreo habilitados</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('mysql-hardening', 7)" class="checklist-checkbox">
+                                        <span>Usuarios creados con principio de menor privilegio</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="checklist-progress mt-4">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" data-progress="mysql-hardening"></div>
+                                </div>
+                                <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">Progreso: <span data-progress-text="mysql-hardening">0%</span></p>
+                            </div>
+                        </div>
+
                         <h2 id="cheatsheet-mysql">Cheatsheet MySQL</h2>
                         <div class="overflow-x-auto">
                             <table>
@@ -321,7 +555,7 @@ DROP USER 'usuario'@'localhost';</code></pre>
 
                         <div class="alert alert-success mt-8">
                             <p class="font-semibold mb-2">✅ MySQL Dominado</p>
-                            <p>Con estos comandos puedes administrar eficientemente MySQL. Para más detalles, consulta la documentación oficial o usa <code>HELP comando;</code> dentro de MySQL.</p>
+                            <p>Con estos comandos puedes administrar eficientemente MySQL. Para más detalles, consulta la documentación oficial o usa <code>HELP comando;</code> dentro de MySQL. Recuerda aplicar hardening siguiendo el checklist antes de poner MySQL en producción.</p>
                         </div>
                     </div>
                 </article>

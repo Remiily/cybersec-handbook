@@ -172,9 +172,127 @@ sudo firewall-cmd --reload
 sudo firewall-cmd --list-all</code></pre>
                         </div>
 
+                        <h2 id="hardening-rhel">Hardening de RHEL/CentOS</h2>
+                        <p>RHEL incluye SELinux habilitado por defecto y herramientas de seguridad empresariales. Sigue estos pasos para asegurar tu instalación.</p>
+
+                        <h3 id="selinux-rhel">Configuración de SELinux</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Verificar estado de SELinux\nsudo getenforce\nsudo sestatus\n\n# SELinux está en Enforcing por defecto en RHEL\n# Verificar modo en configuración\ncat /etc/selinux/config\n\n# Cambiar a modo Permissive temporalmente\nsudo setenforce 0\n\n# Volver a Enforcing\nsudo setenforce 1\n\n# Verificar contexto de archivos\nls -Z /var/www/html\n\n# Ver políticas de SELinux\nsudo semanage boolean -l\n\n# Ver logs de SELinux\nsudo ausearch -m avc -ts recent\nsudo sealert -a /var/log/audit/audit.log\n\n# Instalar herramientas de SELinux\nsudo yum install setools setroubleshoot -y  # RHEL 7\nsudo dnf install setools setroubleshoot -y  # RHEL 8+")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Verificar estado de SELinux
+sudo getenforce
+sudo sestatus
+
+# SELinux está en Enforcing por defecto en RHEL
+# Verificar modo en configuración
+cat /etc/selinux/config
+
+# Cambiar a modo Permissive temporalmente
+sudo setenforce 0
+
+# Volver a Enforcing
+sudo setenforce 1
+
+# Verificar contexto de archivos
+ls -Z /var/www/html
+
+# Ver políticas de SELinux
+sudo semanage boolean -l
+
+# Ver logs de SELinux
+sudo ausearch -m avc -ts recent
+sudo sealert -a /var/log/audit/audit.log
+
+# Instalar herramientas de SELinux
+sudo yum install setools setroubleshoot -y  # RHEL 7
+sudo dnf install setools setroubleshoot -y  # RHEL 8+</code></pre>
+                        </div>
+
+                        <h3 id="openscap-rhel">OpenSCAP para Compliance</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Instalar OpenSCAP\nsudo yum install openscap-scanner scap-security-guide -y  # RHEL 7\nsudo dnf install openscap-scanner scap-security-guide -y  # RHEL 8+\n\n# Evaluar sistema contra benchmark CIS\nsudo oscap xccdf eval --profile xccdf_org.ssgproject.content_profile_cis \\\n  --results oscap-results.xml \\\n  --report oscap-report.html \\\n  /usr/share/xml/scap/ssg/content/ssg-rhel8-xccdf.xml\n\n# Evaluar contra STIG\nsudo oscap xccdf eval --profile xccdf_org.ssgproject.content_profile_stig \\\n  --results stig-results.xml \\\n  --report stig-report.html \\\n  /usr/share/xml/scap/ssg/content/ssg-rhel8-xccdf.xml\n\n# Aplicar remediación automática (cuidado: revisar cambios primero)\nsudo oscap xccdf eval --profile xccdf_org.ssgproject.content_profile_cis \\\n  --remediate \\\n  /usr/share/xml/scap/ssg/content/ssg-rhel8-xccdf.xml\n\n# Generar reporte HTML\n# Abrir oscap-report.html en navegador")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Instalar OpenSCAP
+sudo yum install openscap-scanner scap-security-guide -y  # RHEL 7
+sudo dnf install openscap-scanner scap-security-guide -y  # RHEL 8+
+
+# Evaluar sistema contra benchmark CIS
+sudo oscap xccdf eval --profile xccdf_org.ssgproject.content_profile_cis \
+  --results oscap-results.xml \
+  --report oscap-report.html \
+  /usr/share/xml/scap/ssg/content/ssg-rhel8-xccdf.xml
+
+# Evaluar contra STIG
+sudo oscap xccdf eval --profile xccdf_org.ssgproject.content_profile_stig \
+  --results stig-results.xml \
+  --report stig-report.html \
+  /usr/share/xml/scap/ssg/content/ssg-rhel8-xccdf.xml
+
+# Aplicar remediación automática (cuidado: revisar cambios primero)
+sudo oscap xccdf eval --profile xccdf_org.ssgproject.content_profile_cis \
+  --remediate \
+  /usr/share/xml/scap/ssg/content/ssg-rhel8-xccdf.xml
+
+# Generar reporte HTML
+# Abrir oscap-report.html en navegador</code></pre>
+                        </div>
+
+                        <h3 id="migracion-rhel">Migración de Versiones RHEL</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Verificar versión actual\ncat /etc/redhat-release\n\n# Migración RHEL 7 → RHEL 8 (usando Leapp)\n# Instalar Leapp\nsudo yum install leapp leapp-upgrade -y\n\n# Pre-upgrade check\nsudo leapp preupgrade\n\n# Revisar reporte\ncat /var/log/leapp/leapp-preupgrade.log\n\n# Si hay problemas, resolverlos antes de continuar\n\n# Iniciar upgrade\nsudo leapp upgrade\n\n# Reiniciar sistema\nsudo reboot\n\n# Después del reboot, completar migración\nsudo leapp upgrade --resume\n\n# Verificar versión nueva\ncat /etc/redhat-release\n\n# Para RHEL 8 → RHEL 9, usar leapp también\n# Proceso similar pero con leapp para RHEL 9")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Verificar versión actual
+cat /etc/redhat-release
+
+# Migración RHEL 7 → RHEL 8 (usando Leapp)
+# Instalar Leapp
+sudo yum install leapp leapp-upgrade -y
+
+# Pre-upgrade check
+sudo leapp preupgrade
+
+# Revisar reporte
+cat /var/log/leapp/leapp-preupgrade.log
+
+# Si hay problemas, resolverlos antes de continuar
+
+# Iniciar upgrade
+sudo leapp upgrade
+
+# Reiniciar sistema
+sudo reboot
+
+# Después del reboot, completar migración
+sudo leapp upgrade --resume
+
+# Verificar versión nueva
+cat /etc/redhat-release
+
+# Para RHEL 8 → RHEL 9, usar leapp también
+# Proceso similar pero con leapp para RHEL 9</code></pre>
+                        </div>
+
                         <div class="alert alert-success mt-8">
                             <p class="font-semibold mb-2">✅ RHEL/CentOS</p>
-                            <p>RHEL es la distribución empresarial de Red Hat. CentOS Stream es la versión community. Ambos usan SELinux por defecto y son ideales para entornos de producción que requieren estabilidad y soporte a largo plazo.</p>
+                            <p>RHEL es la distribución empresarial de Red Hat. CentOS Stream es la versión community. Ambos usan SELinux por defecto y son ideales para entornos de producción que requieren estabilidad y soporte a largo plazo. Usa OpenSCAP para compliance automatizado con benchmarks CIS y STIG.</p>
                         </div>
                     </div>
                 </article>

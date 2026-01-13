@@ -124,33 +124,237 @@ from guardrails.hub import DetectPII
 guard = Guard().use(DetectPII())</code></pre>
                         </div>
 
+                        <h2 id="adversarial-examples">Adversarial Examples</h2>
+                        <p>Inputs diseñados específicamente para engañar a modelos de machine learning.</p>
+
+                        <h3>Tipos de Ataques Adversariales</h3>
+                        <div class="overflow-x-auto mb-6">
+                            <table>
+                                <thead>
+                                    <tr><th>Tipo</th><th>Descripción</th><th>Ejemplo</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>Evasion Attack</td><td>Ataque en tiempo de inferencia</td><td>Imagen modificada para clasificación incorrecta</td></tr>
+                                    <tr><td>Poisoning Attack</td><td>Corrupción de datos de entrenamiento</td><td>Datos maliciosos en dataset de entrenamiento</td></tr>
+                                    <tr><td>Model Extraction</td><td>Robo de modelo mediante queries</td><td>Reconstruir modelo mediante API calls</td></tr>
+                                    <tr><td>Membership Inference</td><td>Determinar si dato fue usado en entrenamiento</td><td>Inferir datos de entrenamiento</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h3>Mitigaciones</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Adversarial Training (ejemplo conceptual)\n# Entrenar modelo con ejemplos adversariales\n# Mejora robustez del modelo\n\n# Detección de adversarial examples\nimport numpy as np\nfrom sklearn.ensemble import IsolationForest\n\ndef detect_adversarial(input_data, model, threshold=0.5):\n    # Obtener predicción del modelo\n    prediction = model.predict(input_data)\n    confidence = model.predict_proba(input_data).max()\n    \n    # Si confianza es baja, podría ser adversarial\n    if confidence < threshold:\n        return True, \"Low confidence prediction\"\n    \n    # Detección basada en anomalías\n    detector = IsolationForest(contamination=0.1)\n    is_anomaly = detector.fit_predict([input_data])[0] == -1\n    \n    return is_anomaly, \"Anomaly detected\" if is_anomaly else \"Normal\"\n\n# Input preprocessing para reducir adversarial noise\n# - Normalización\n# - Smoothing\n# - Feature squeezing")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Adversarial Training (ejemplo conceptual)
+# Entrenar modelo con ejemplos adversariales
+# Mejora robustez del modelo
+
+# Detección de adversarial examples
+import numpy as np
+from sklearn.ensemble import IsolationForest
+
+def detect_adversarial(input_data, model, threshold=0.5):
+    # Obtener predicción del modelo
+    prediction = model.predict(input_data)
+    confidence = model.predict_proba(input_data).max()
+    
+    # Si confianza es baja, podría ser adversarial
+    if confidence < threshold:
+        return True, "Low confidence prediction"
+    
+    # Detección basada en anomalías
+    detector = IsolationForest(contamination=0.1)
+    is_anomaly = detector.fit_predict([input_data])[0] == -1
+    
+    return is_anomaly, "Anomaly detected" if is_anomaly else "Normal"
+
+# Input preprocessing para reducir adversarial noise
+# - Normalización
+# - Smoothing
+# - Feature squeezing</code></pre>
+                        </div>
+
+                        <h2 id="data-protection">Protección de Datos</h2>
+
+                        <h3 id="differential-privacy">Differential Privacy</h3>
+                        <p>Proteger privacidad de datos individuales en datasets de entrenamiento.</p>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Differential Privacy (ejemplo conceptual)\n# Agregar ruido a datos para proteger privacidad\n# Mantener utilidad estadística\n\n# Ejemplo con librería diffprivlib\n# pip install diffprivlib\nfrom diffprivlib.models import LogisticRegression\n\n# Entrenar modelo con differential privacy\nclf = LogisticRegression(epsilon=1.0)  # epsilon controla privacidad\nclf.fit(X_train, y_train)\n\n# Epsilon más bajo = más privacidad, menos precisión\n# Epsilon más alto = menos privacidad, más precisión\n\n# Data masking para datos sensibles\nimport hashlib\n\ndef mask_sensitive_data(data, salt):\n    # Hash de datos sensibles\n    return hashlib.sha256((data + salt).encode()).hexdigest()")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Differential Privacy (ejemplo conceptual)
+# Agregar ruido a datos para proteger privacidad
+# Mantener utilidad estadística
+
+# Ejemplo con librería diffprivlib
+# pip install diffprivlib
+from diffprivlib.models import LogisticRegression
+
+# Entrenar modelo con differential privacy
+clf = LogisticRegression(epsilon=1.0)  # epsilon controla privacidad
+clf.fit(X_train, y_train)
+
+# Epsilon más bajo = más privacidad, menos precisión
+# Epsilon más alto = menos privacidad, más precisión
+
+# Data masking para datos sensibles
+import hashlib
+
+def mask_sensitive_data(data, salt):
+    # Hash de datos sensibles
+    return hashlib.sha256((data + salt).encode()).hexdigest()</code></pre>
+                        </div>
+
+                        <h2 id="model-security">Seguridad de Modelos</h2>
+
+                        <h3 id="model-watermarking">Model Watermarking</h3>
+                        <p>Marcar modelos para detectar robo o uso no autorizado.</p>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Model Watermarking (ejemplo conceptual)\n# Insertar marca de agua en modelo\n# Permite detectar uso no autorizado\n\n# Ejemplo básico:\n# 1. Entrenar modelo con trigger set especial\n# 2. Modelo responde de forma específica a triggers\n# 3. Si modelo robado responde igual, se detecta robo\n\n# Protección de API\n# - Rate limiting\n# - API keys\n# - Request signing\n# - Usage monitoring\n\n# Ejemplo de rate limiting\nfrom flask import Flask\nfrom flask_limiter import Limiter\n\napp = Flask(__name__)\nlimiter = Limiter(app, key_func=lambda: request.remote_addr)\n\n@app.route('/api/predict')\n@limiter.limit('10 per minute')\ndef predict():\n    # Lógica de predicción\n    pass")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Model Watermarking (ejemplo conceptual)
+# Insertar marca de agua en modelo
+# Permite detectar uso no autorizado
+
+# Ejemplo básico:
+# 1. Entrenar modelo con trigger set especial
+# 2. Modelo responde de forma específica a triggers
+# 3. Si modelo robado responde igual, se detecta robo
+
+# Protección de API
+# - Rate limiting
+# - API keys
+# - Request signing
+# - Usage monitoring
+
+# Ejemplo de rate limiting
+from flask import Flask
+from flask_limiter import Limiter
+
+app = Flask(__name__)
+limiter = Limiter(app, key_func=lambda: request.remote_addr)
+
+@app.route('/api/predict')
+@limiter.limit('10 per minute')
+def predict():
+    # Lógica de predicción
+    pass</code></pre>
+                        </div>
+
                         <h2 id="best-practices">Mejores Prácticas</h2>
                         <div class="steps-container">
                             <div class="step">
                                 <h3>1. Input Validation</h3>
-                                <p>Validar y sanitizar todos los inputs de usuario</p>
+                                <p>Validar y sanitizar todos los inputs de usuario. Detectar patrones de prompt injection.</p>
                             </div>
                             <div class="step">
                                 <h3>2. Output Filtering</h3>
-                                <p>Filtrar outputs antes de mostrarlos a usuarios</p>
+                                <p>Filtrar outputs antes de mostrarlos a usuarios. Detectar PII y contenido sensible.</p>
                             </div>
                             <div class="step">
                                 <h3>3. Rate Limiting</h3>
-                                <p>Limitar requests para prevenir abuse</p>
+                                <p>Limitar requests para prevenir abuse y model extraction attacks.</p>
                             </div>
                             <div class="step">
                                 <h3>4. Monitoring</h3>
-                                <p>Monitorear uso anómalo y patrones sospechosos</p>
+                                <p>Monitorear uso anómalo, patrones sospechosos y intentos de ataque.</p>
                             </div>
                             <div class="step">
                                 <h3>5. Data Protection</h3>
-                                <p>Proteger datos de entrenamiento y modelos</p>
+                                <p>Proteger datos de entrenamiento con differential privacy y data masking.</p>
+                            </div>
+                            <div class="step">
+                                <h3>6. Model Security</h3>
+                                <p>Proteger modelos con watermarking, API security y access controls.</p>
+                            </div>
+                            <div class="step">
+                                <h3>7. Adversarial Defense</h3>
+                                <p>Implementar adversarial training y detección de adversarial examples.</p>
                             </div>
                         </div>
 
+                        <h2 id="checklist-ai-security">Checklist de Seguridad IA</h2>
+                        <div class="checklist-container mb-6">
+                            <div class="checklist" data-checklist-id="ai-security">
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('ai-security', 0)" class="checklist-checkbox">
+                                        <span>Input validation y sanitización de prompts implementada</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('ai-security', 1)" class="checklist-checkbox">
+                                        <span>Output filtering para detectar PII y contenido sensible</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('ai-security', 2)" class="checklist-checkbox">
+                                        <span>Rate limiting configurado para prevenir abuse</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('ai-security', 3)" class="checklist-checkbox">
+                                        <span>Monitoreo de uso anómalo y patrones sospechosos</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('ai-security', 4)" class="checklist-checkbox">
+                                        <span>Datos de entrenamiento protegidos con differential privacy</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('ai-security', 5)" class="checklist-checkbox">
+                                        <span>Model watermarking implementado</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('ai-security', 6)" class="checklist-checkbox">
+                                        <span>Adversarial training y detección implementados</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="checklist-progress mt-4">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" data-progress="ai-security"></div>
+                                </div>
+                                <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">Progreso: <span data-progress-text="ai-security">0%</span></p>
+                            </div>
+                        </div>
+
+                        <h2 id="recursos-adicionales">Recursos Adicionales</h2>
+                        <ul>
+                            <li><strong>OWASP LLM Top 10:</strong> <a href="https://owasp.org/www-project-llm-top-10/" class="text-blue-600 dark:text-blue-400">owasp.org</a></li>
+                            <li><strong>MITRE ATLAS:</strong> <a href="https://atlas.mitre.org" class="text-blue-600 dark:text-blue-400">atlas.mitre.org</a></li>
+                            <li><strong>NIST AI Risk Management:</strong> <a href="https://www.nist.gov/itl/ai-risk-management-framework" class="text-blue-600 dark:text-blue-400">nist.gov</a></li>
+                        </ul>
+
                         <div class="alert alert-success mt-8">
                             <p class="font-semibold mb-2">✅ AI Security</p>
-                            <p>La seguridad en IA es un campo en evolución. Los modelos LLM son particularmente vulnerables a prompt injection. Siempre valida inputs, usa guardrails, y considera el contexto de seguridad de la aplicación que usa IA.</p>
+                            <p>La seguridad en IA es un campo en evolución. Los modelos LLM son particularmente vulnerables a prompt injection. Siempre valida inputs, usa guardrails, y considera el contexto de seguridad de la aplicación que usa IA. Implementa defensas en profundidad y monitorea continuamente.</p>
                         </div>
                     </div>
                 </article>
