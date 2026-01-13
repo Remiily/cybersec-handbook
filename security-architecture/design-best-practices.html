@@ -236,9 +236,127 @@
                             </table>
                         </div>
 
+                        <h2 id="threat-modeling">Threat Modeling</h2>
+                        <p>El threat modeling es un proceso estructurado para identificar y mitigar amenazas de seguridad en el diseño de sistemas.</p>
+
+                        <h3 id="proceso-threat-modeling">Proceso de Threat Modeling</h3>
+                        <div class="steps-container">
+                            <div class="step">
+                                <h3>1. Identificar Activos</h3>
+                                <ul>
+                                    <li>Datos sensibles (PII, credenciales, información financiera)</li>
+                                    <li>Sistemas críticos (bases de datos, APIs, servicios de autenticación)</li>
+                                    <li>Infraestructura (servidores, redes, cloud resources)</li>
+                                </ul>
+                            </div>
+                            <div class="step">
+                                <h3>2. Identificar Amenazas</h3>
+                                <ul>
+                                    <li>Usar frameworks como STRIDE (Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service, Elevation of Privilege)</li>
+                                    <li>Revisar MITRE ATT&CK para tácticas y técnicas</li>
+                                    <li>Considerar amenazas específicas del dominio</li>
+                                </ul>
+                            </div>
+                            <div class="step">
+                                <h3>3. Analizar Vulnerabilidades</h3>
+                                <ul>
+                                    <li>Identificar puntos de entrada (APIs, interfaces de usuario, servicios externos)</li>
+                                    <li>Analizar flujos de datos</li>
+                                    <li>Identificar controles de seguridad existentes</li>
+                                </ul>
+                            </div>
+                            <div class="step">
+                                <h3>4. Mitigar Amenazas</h3>
+                                <ul>
+                                    <li>Diseñar controles de seguridad</li>
+                                    <li>Priorizar mitigaciones según riesgo</li>
+                                    <li>Documentar decisiones de diseño</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <h3 id="herramientas-threat-modeling">Herramientas de Threat Modeling</h3>
+                        <div class="overflow-x-auto mb-6">
+                            <table>
+                                <thead>
+                                    <tr><th>Herramienta</th><th>Descripción</th><th>Uso</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Microsoft Threat Modeling Tool</td>
+                                        <td>Herramienta gratuita de Microsoft</td>
+                                        <td>Diagramas DFD, análisis STRIDE</td>
+                                    </tr>
+                                    <tr>
+                                        <td>OWASP Threat Dragon</td>
+                                        <td>Herramienta open-source de OWASP</td>
+                                        <td>Web-based, integración con repositorios</td>
+                                    </tr>
+                                    <tr>
+                                        <td>IriusRisk</td>
+                                        <td>Plataforma comercial</td>
+                                        <td>Enterprise, integración con SDLC</td>
+                                    </tr>
+                                    <tr>
+                                        <td>ThreatModeler</td>
+                                        <td>Plataforma comercial</td>
+                                        <td>Enterprise, automatización</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h2 id="checklist-design">Checklist de Diseño Seguro</h2>
+                        <div class="checklist-container mb-6">
+                            <div class="checklist" data-checklist-id="security-design">
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('security-design', 0)" class="checklist-checkbox">
+                                        <span>Threat modeling realizado en fase de diseño</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('security-design', 1)" class="checklist-checkbox">
+                                        <span>Defense in depth implementado (múltiples capas)</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('security-design', 2)" class="checklist-checkbox">
+                                        <span>Principio de menor privilegio aplicado</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('security-design', 3)" class="checklist-checkbox">
+                                        <span>Fail secure configurado (default deny)</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('security-design', 4)" class="checklist-checkbox">
+                                        <span>Encriptación en tránsito y en reposo</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('security-design', 5)" class="checklist-checkbox">
+                                        <span>Logging y monitoreo implementados</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="checklist-progress mt-4">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" data-progress="security-design"></div>
+                                </div>
+                                <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">Progreso: <span data-progress-text="security-design">0%</span></p>
+                            </div>
+                        </div>
+
                         <div class="alert alert-success mt-8">
                             <p class="font-semibold mb-2">✅ Security Design Best Practices</p>
-                            <p>La seguridad debe diseñarse desde el inicio. El threat modeling ayuda a identificar riesgos temprano cuando es más barato mitigarlos. Estos principios aplican a cualquier arquitectura, desde aplicaciones pequeñas hasta sistemas enterprise. Recuerda: seguridad por diseño, no como añadido.</p>
+                            <p>La seguridad debe diseñarse desde el inicio. El threat modeling ayuda a identificar riesgos temprano cuando es más barato mitigarlos. Estos principios aplican a cualquier arquitectura, desde aplicaciones pequeñas hasta sistemas enterprise. Recuerda: seguridad por diseño, no como añadido. Documenta todas las decisiones de seguridad y revisa regularmente la arquitectura a medida que evoluciona.</p>
                         </div>
                     </div>
                 </article>

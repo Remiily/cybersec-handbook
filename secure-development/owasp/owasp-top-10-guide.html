@@ -209,9 +209,142 @@
                             </div>
                         </div>
 
+                        <h2 id="ejemplos-practicos">Ejemplos Prácticos de Vulnerabilidades</h2>
+                        <h3 id="ejemplo-broken-access">Ejemplo: Broken Access Control</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("// ❌ VULNERABLE - IDOR (Insecure Direct Object Reference)\n// Usuario puede acceder a datos de otros usuarios\napp.get('/api/user/:id', (req, res) => {\n  const userId = req.params.id;\n  // No verifica si el usuario autenticado tiene permiso\n  const user = db.getUser(userId);\n  res.json(user);\n});\n\n// ✅ SEGURO - Verificar permisos\napp.get('/api/user/:id', authenticate, (req, res) => {\n  const userId = req.params.id;\n  const authenticatedUserId = req.user.id;\n  \n  // Verificar que el usuario solo accede a sus propios datos\n  if (userId !== authenticatedUserId && !req.user.isAdmin) {\n    return res.status(403).json({ error: 'Forbidden' });\n  }\n  \n  const user = db.getUser(userId);\n  res.json(user);\n});\n\n// ✅ SEGURO - Usar ID del usuario autenticado directamente\napp.get('/api/user/me', authenticate, (req, res) => {\n  const user = db.getUser(req.user.id);\n  res.json(user);\n});")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code>// ❌ VULNERABLE - IDOR (Insecure Direct Object Reference)
+// Usuario puede acceder a datos de otros usuarios
+app.get('/api/user/:id', (req, res) => {
+  const userId = req.params.id;
+  // No verifica si el usuario autenticado tiene permiso
+  const user = db.getUser(userId);
+  res.json(user);
+});
+
+// ✅ SEGURO - Verificar permisos
+app.get('/api/user/:id', authenticate, (req, res) => {
+  const userId = req.params.id;
+  const authenticatedUserId = req.user.id;
+  
+  // Verificar que el usuario solo accede a sus propios datos
+  if (userId !== authenticatedUserId && !req.user.isAdmin) {
+    return res.status(403).json({ error: 'Forbidden' });
+  }
+  
+  const user = db.getUser(userId);
+  res.json(user);
+});
+
+// ✅ SEGURO - Usar ID del usuario autenticado directamente
+app.get('/api/user/me', authenticate, (req, res) => {
+  const user = db.getUser(req.user.id);
+  res.json(user);
+});</code></pre>
+                        </div>
+
+                        <h3 id="ejemplo-ssrf">Ejemplo: SSRF (Server-Side Request Forgery)</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("// ❌ VULNERABLE - SSRF\n// Permite hacer requests a recursos internos\napp.get('/api/fetch', (req, res) => {\n  const url = req.query.url;\n  // No valida la URL\n  fetch(url).then(response => {\n    res.json(response);\n  });\n});\n\n// ✅ SEGURO - Validar y whitelist de URLs\napp.get('/api/fetch', (req, res) => {\n  const url = req.query.url;\n  \n  // Whitelist de dominios permitidos\n  const allowedDomains = ['api.example.com', 'cdn.example.com'];\n  const urlObj = new URL(url);\n  \n  if (!allowedDomains.includes(urlObj.hostname)) {\n    return res.status(400).json({ error: 'Invalid URL' });\n  }\n  \n  // Bloquear IPs privadas\n  if (isPrivateIP(urlObj.hostname)) {\n    return res.status(400).json({ error: 'Private IP not allowed' });\n  }\n  \n  fetch(url).then(response => {\n    res.json(response);\n  });\n});\n\n// Función helper para detectar IPs privadas\nfunction isPrivateIP(hostname) {\n  // Resolver hostname a IP y verificar rangos privados\n  // 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16, 127.0.0.0/8\n}")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code>// ❌ VULNERABLE - SSRF
+// Permite hacer requests a recursos internos
+app.get('/api/fetch', (req, res) => {
+  const url = req.query.url;
+  // No valida la URL
+  fetch(url).then(response => {
+    res.json(response);
+  });
+});
+
+// ✅ SEGURO - Validar y whitelist de URLs
+app.get('/api/fetch', (req, res) => {
+  const url = req.query.url;
+  
+  // Whitelist de dominios permitidos
+  const allowedDomains = ['api.example.com', 'cdn.example.com'];
+  const urlObj = new URL(url);
+  
+  if (!allowedDomains.includes(urlObj.hostname)) {
+    return res.status(400).json({ error: 'Invalid URL' });
+  }
+  
+  // Bloquear IPs privadas
+  if (isPrivateIP(urlObj.hostname)) {
+    return res.status(400).json({ error: 'Private IP not allowed' });
+  }
+  
+  fetch(url).then(response => {
+    res.json(response);
+  });
+});
+
+// Función helper para detectar IPs privadas
+function isPrivateIP(hostname) {
+  // Resolver hostname a IP y verificar rangos privados
+  // 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16, 127.0.0.0/8
+}</code></pre>
+                        </div>
+
+                        <h2 id="testing-owasp">Testing de Vulnerabilidades OWASP</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Herramientas para testing de OWASP Top 10\n\n# OWASP ZAP - Automated Scanner\nzap-baseline.py -t https://target.com\n\n# Burp Suite - Manual Testing\n# 1. Configurar proxy\n# 2. Interceptar requests\n# 3. Modificar parámetros\n# 4. Analizar respuestas\n\n# SQLMap - SQL Injection\nsqlmap -u \"http://target.com/page?id=1\" --dbs\n\n# XSSer - XSS Testing\nxsser --url=\"http://target.com\" --auto\n\n# Nikto - Web Scanner\nnikto -h https://target.com\n\n# Nuclei - Vulnerability Scanner\nnuclei -u https://target.com -t nuclei-templates/\n\n# Semgrep - Code Analysis\nsemgrep --config=p/owasp-top-ten .\n\n# Snyk - Dependency Scanning\nsnyk test\n\n# SonarQube - SAST\nsonar-scanner -Dsonar.projectKey=my-project")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Herramientas para testing de OWASP Top 10
+
+# OWASP ZAP - Automated Scanner
+zap-baseline.py -t https://target.com
+
+# Burp Suite - Manual Testing
+# 1. Configurar proxy
+# 2. Interceptar requests
+# 3. Modificar parámetros
+# 4. Analizar respuestas
+
+# SQLMap - SQL Injection
+sqlmap -u "http://target.com/page?id=1" --dbs
+
+# XSSer - XSS Testing
+xsser --url="http://target.com" --auto
+
+# Nikto - Web Scanner
+nikto -h https://target.com
+
+# Nuclei - Vulnerability Scanner
+nuclei -u https://target.com -t nuclei-templates/
+
+# Semgrep - Code Analysis
+semgrep --config=p/owasp-top-ten .
+
+# Snyk - Dependency Scanning
+snyk test
+
+# SonarQube - SAST
+sonar-scanner -Dsonar.projectKey=my-project</code></pre>
+                        </div>
+
                         <div class="alert alert-success mt-8">
                             <p class="font-semibold mb-2">✅ OWASP Top 10</p>
-                            <p>El OWASP Top 10 es un estándar de referencia para desarrolladores y profesionales de seguridad. Úsalo como checklist en cada proyecto.</p>
+                            <p>El OWASP Top 10 es un estándar de referencia para desarrolladores y profesionales de seguridad. Úsalo como checklist en cada proyecto. Integra testing automatizado (SAST, DAST) en tu pipeline CI/CD y realiza pruebas manuales para vulnerabilidades complejas. Recuerda que el OWASP Top 10 se actualiza periódicamente, mantente al día con la versión más reciente.</p>
                         </div>
                     </div>
                 </article>

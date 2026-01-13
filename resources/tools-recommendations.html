@@ -210,9 +210,112 @@
                             </table>
                         </div>
 
+                        <h2 id="herramientas-grc">GRC y Compliance</h2>
+                        <div class="overflow-x-auto mb-6">
+                            <table>
+                                <thead>
+                                    <tr><th>Herramienta</th><th>Uso</th><th>Instalación</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><code>OpenSCAP</code></td>
+                                        <td>Evaluación de compliance (CIS, STIG)</td>
+                                        <td><code>sudo apt install openscap-scanner</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>Lynis</code></td>
+                                        <td>Auditoría de seguridad de sistemas</td>
+                                        <td><code>sudo apt install lynis</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>Vuls</code></td>
+                                        <td>Scanner de vulnerabilidades</td>
+                                        <td><code>go install github.com/future-architect/vuls@latest</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>DefectDojo</code></td>
+                                        <td>Plataforma de gestión de vulnerabilidades</td>
+                                        <td>Docker: <code>docker-compose up</code></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h2 id="herramientas-cloud">Cloud Security</h2>
+                        <div class="overflow-x-auto mb-6">
+                            <table>
+                                <thead>
+                                    <tr><th>Herramienta</th><th>Uso</th><th>Instalación</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><code>CloudSploit</code></td>
+                                        <td>Auditoría de seguridad AWS</td>
+                                        <td><code>npm install -g cloudsploit</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>Prowler</code></td>
+                                        <td>Auditoría de seguridad AWS</td>
+                                        <td><code>pip install prowler</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>Scout Suite</code></td>
+                                        <td>Auditoría multi-cloud (AWS, Azure, GCP)</td>
+                                        <td><code>pip install scoutsuite</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>Checkov</code></td>
+                                        <td>Análisis estático de IaC (Terraform, CloudFormation)</td>
+                                        <td><code>pip install checkov</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>tfsec</code></td>
+                                        <td>Análisis de seguridad de Terraform</td>
+                                        <td><code>brew install tfsec</code></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h2 id="herramientas-devsecops">DevSecOps</h2>
+                        <div class="overflow-x-auto mb-6">
+                            <table>
+                                <thead>
+                                    <tr><th>Herramienta</th><th>Uso</th><th>Instalación</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><code>Trivy</code></td>
+                                        <td>Container y filesystem scanning</td>
+                                        <td><code>brew install trivy</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>Grype</code></td>
+                                        <td>Vulnerability scanner para imágenes</td>
+                                        <td><code>brew install grype</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>Syft</code></td>
+                                        <td>Generación de SBOM</td>
+                                        <td><code>brew install syft</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>GitLeaks</code></td>
+                                        <td>Detección de secrets en repositorios</td>
+                                        <td><code>brew install gitleaks</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>TruffleHog</code></td>
+                                        <td>Detección de secrets y credenciales</td>
+                                        <td><code>pip install truffleHog</code></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
                         <div class="alert alert-info mt-8">
                             <p class="font-semibold mb-2">💡 Nota</p>
-                            <p>Esta lista se actualiza constantemente. Muchas herramientas tienen versiones gratuitas y comerciales. Siempre verifica las licencias antes de usar en entornos de producción.</p>
+                            <p>Esta lista se actualiza constantemente. Muchas herramientas tienen versiones gratuitas y comerciales. Siempre verifica las licencias antes de usar en entornos de producción. Considera el contexto de tu organización al seleccionar herramientas - algunas son mejores para entornos enterprise, otras para equipos pequeños.</p>
                         </div>
                     </div>
                 </article>

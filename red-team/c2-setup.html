@@ -225,6 +225,204 @@ generate --http https://legitimate-cdn.com --domain-front --os windows
 # - Puede ser detectado con análisis de tráfico</code></pre>
                         </div>
 
+                        <h2 id="cobalt-strike">Cobalt Strike</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Cobalt Strike - Framework comercial\n# Requiere licencia\n\n# Iniciar Team Server\n./teamserver [IP] [PASSWORD] [PROFILE]\n\n# Conectar desde cliente\n./cobaltstrike\n# Connect > [IP]:[PORT] > [USER] > [PASSWORD]\n\n# Crear listener\n# CobaltStrike > Listeners > Add\n# - HTTP/HTTPS\n# - DNS\n# - SMB\n# - External\n\n# Generar payload\n# Attacks > Packages > Windows Executable\n# O Attacks > Web Drive-by > Scripted Web Delivery\n\n# Interactuar con beacon\n# Beacons > Interact\n# Comandos:\n# shell whoami\n# ls\n# cd C:\\\n# upload file.exe\n# download file.txt\n# execute file.exe\n\n# Malleable C2 Profile\n# Personalizar comportamiento del beacon\n# - User-Agents\n# - Headers HTTP\n# - URIs\n# - Sleep times\n# - Jitter")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Cobalt Strike - Framework comercial
+# Requiere licencia
+
+# Iniciar Team Server
+./teamserver [IP] [PASSWORD] [PROFILE]
+
+# Conectar desde cliente
+./cobaltstrike
+# Connect > [IP]:[PORT] > [USER] > [PASSWORD]
+
+# Crear listener
+# CobaltStrike > Listeners > Add
+# - HTTP/HTTPS
+# - DNS
+# - SMB
+# - External
+
+# Generar payload
+# Attacks > Packages > Windows Executable
+# O Attacks > Web Drive-by > Scripted Web Delivery
+
+# Interactuar con beacon
+# Beacons > Interact
+# Comandos:
+# shell whoami
+# ls
+# cd C:\
+# upload file.exe
+# download file.txt
+# execute file.exe
+
+# Malleable C2 Profile
+# Personalizar comportamiento del beacon
+# - User-Agents
+# - Headers HTTP
+# - URIs
+# - Sleep times
+# - Jitter</code></pre>
+                        </div>
+
+                        <h2 id="configuracion-avanzada">Configuración Avanzada</h2>
+                        <h3 id="malleable-profile">Malleable C2 Profile (Cobalt Strike)</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Ejemplo de Malleable C2 Profile\n# Guardar como: profile.profile\n\nhttp-get {\n    set uri \"/api/v1/health\";\n    set verb \"GET\";\n    \n    client {\n        header \"Accept\" \"application/json\";\n        header \"User-Agent\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64)\";\n        \n        metadata {\n            base64url;\n            prepend \"session=\";\n            header \"Cookie\";\n        }\n    }\n    \n    server {\n        header \"Content-Type\" \"application/json\";\n        header \"Server\" \"nginx/1.18.0\";\n        \n        output {\n            base64url;\n            prepend \"{\"data\":\"";\n            append \"}\";\n            print;\n        }\n    }\n}\n\nhttp-post {\n    set uri \"/api/v1/data\";\n    set verb \"POST\";\n    \n    client {\n        header \"Content-Type\" \"application/json\";\n        \n        id {\n            base64url;\n            prepend \"{\"id\":\"";\n            append \"}\";\n            parameter \"data\";\n        }\n        \n        output {\n            base64url;\n            prepend \"{\"result\":\"";\n            append \"}\";\n            print;\n        }\n    }\n    \n    server {\n        header \"Content-Type\" \"application/json\";\n        \n        output {\n            base64url;\n            prepend \"{\"status\":\"";\n            append \"}\";\n            print;\n        }\n    }\n}\n\nhttp-stager {\n    set uri_x86 \"/download/update\";\n    set uri_x64 \"/download/update64\";\n    \n    client {\n        header \"User-Agent\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64)\";\n    }\n}\n\nstage {\n    set sleep \"60000\";\n    set jitter \"20\";\n    set userwx \"false\";\n    set cleanup \"true\";\n}")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Ejemplo de Malleable C2 Profile
+# Guardar como: profile.profile
+
+http-get {
+    set uri "/api/v1/health";
+    set verb "GET";
+    
+    client {
+        header "Accept" "application/json";
+        header "User-Agent" "Mozilla/5.0 (Windows NT 10.0; Win64; x64)";
+        
+        metadata {
+            base64url;
+            prepend "session=";
+            header "Cookie";
+        }
+    }
+    
+    server {
+        header "Content-Type" "application/json";
+        header "Server" "nginx/1.18.0";
+        
+        output {
+            base64url;
+            prepend "{"data":"";
+            append "}";
+            print;
+        }
+    }
+}
+
+http-post {
+    set uri "/api/v1/data";
+    set verb "POST";
+    
+    client {
+        header "Content-Type" "application/json";
+        
+        id {
+            base64url;
+            prepend "{"id":"";
+            append "}";
+            parameter "data";
+        }
+        
+        output {
+            base64url;
+            prepend "{"result":"";
+            append "}";
+            print;
+        }
+    }
+    
+    server {
+        header "Content-Type" "application/json";
+        
+        output {
+            base64url;
+            prepend "{"status":"";
+            append "}";
+            print;
+        }
+    }
+}
+
+http-stager {
+    set uri_x86 "/download/update";
+    set uri_x64 "/download/update64";
+    
+    client {
+        header "User-Agent" "Mozilla/5.0 (Windows NT 10.0; Win64; x64)";
+    }
+}
+
+stage {
+    set sleep "60000";
+    set jitter "20";
+    set userwx "false";
+    set cleanup "true";
+}</code></pre>
+                        </div>
+
+                        <h3 id="deteccion-evasion">Detección y Evasión</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Técnicas de evasión comunes\n\n# 1. TIMING\n# - Sleep: Tiempo entre beacons (ej: 60 segundos)\n# - Jitter: Variación aleatoria del sleep (ej: 20%)\n# - Configurar en profile o framework\n\n# 2. TRAFFIC PATTERNS\n# - Imitar tráfico legítimo\n# - Usar User-Agents reales\n# - Headers HTTP normales\n# - URIs que parecen legítimas\n\n# 3. ENCRYPTION\n# - Siempre usar HTTPS\n# - Certificados válidos cuando sea posible\n# - Cifrado de payloads\n\n# 4. PROCESS INJECTION\n# - Inyección en procesos legítimos\n# - Hollow process injection\n# - DLL injection\n# - Thread hijacking\n\n# 5. PERSISTENCE\n# - Múltiples métodos de persistencia\n# - Scheduled tasks\n# - Service installation\n# - Registry keys\n# - Startup folders\n\n# 6. ANTI-FORENSICS\n# - Limpiar logs\n# - Timestomping\n# - Eliminar artefactos\n# - Minimizar footprint\n\n# Detección desde Blue Team:\n# - Anomalías en tráfico de red\n# - Procesos inyectados\n# - Conexiones a dominios sospechosos\n# - Comportamiento anormal de procesos\n# - Logs de seguridad")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Técnicas de evasión comunes
+
+# 1. TIMING
+# - Sleep: Tiempo entre beacons (ej: 60 segundos)
+# - Jitter: Variación aleatoria del sleep (ej: 20%)
+# - Configurar en profile o framework
+
+# 2. TRAFFIC PATTERNS
+# - Imitar tráfico legítimo
+# - Usar User-Agents reales
+# - Headers HTTP normales
+# - URIs que parecen legítimas
+
+# 3. ENCRYPTION
+# - Siempre usar HTTPS
+# - Certificados válidos cuando sea posible
+# - Cifrado de payloads
+
+# 4. PROCESS INJECTION
+# - Inyección en procesos legítimos
+# - Hollow process injection
+# - DLL injection
+# - Thread hijacking
+
+# 5. PERSISTENCE
+# - Múltiples métodos de persistencia
+# - Scheduled tasks
+# - Service installation
+# - Registry keys
+# - Startup folders
+
+# 6. ANTI-FORENSICS
+# - Limpiar logs
+# - Timestomping
+# - Eliminar artefactos
+# - Minimizar footprint
+
+# Detección desde Blue Team:
+# - Anomalías en tráfico de red
+# - Procesos inyectados
+# - Conexiones a dominios sospechosos
+# - Comportamiento anormal de procesos
+# - Logs de seguridad</code></pre>
+                        </div>
+
                         <h2 id="best-practices">Mejores Prácticas</h2>
                         <ul>
                             <li><strong>Usar HTTPS:</strong> Siempre usar cifrado para comunicaciones C2</li>
@@ -234,6 +432,11 @@ generate --http https://legitimate-cdn.com --domain-front --os windows
                             <li><strong>Certificados válidos:</strong> Usar certificados SSL/TLS válidos cuando sea posible</li>
                             <li><strong>Logging mínimo:</strong> Reducir logging en servidor C2</li>
                             <li><strong>Redundancia:</strong> Configurar múltiples listeners y dominios</li>
+                            <li><strong>Malleable Profiles:</strong> Personalizar comportamiento para evasión</li>
+                            <li><strong>Testing:</strong> Probar payloads en entorno controlado antes de ejercicios</li>
+                            <li><strong>Documentación:</strong> Documentar configuración y técnicas usadas</li>
+                            <li><strong>Cleanup:</strong> Limpiar artefactos después de ejercicios</li>
+                            <li><strong>Autorización:</strong> Solo usar en ejercicios autorizados con scope definido</li>
                         </ul>
 
                         <h2 id="checklist-c2">Checklist de Configuración C2</h2>
@@ -302,38 +505,11 @@ generate --http https://legitimate-cdn.com --domain-front --os windows
         </div>
     </footer>
 
+    <script src="../../assets/js/navigation.js"></script>
     <script src="../../assets/js/search.js"></script>
     <script src="../../assets/js/main.js"></script>
     <style>[x-cloak] { display: none !important; }</style>
-            <script>
-        // Inicializar navegación cuando el DOM esté listo
-        (function() {
-            function initNav() {
-                if (typeof initNavigation === 'function') {
-                    initNavigation();
-                } else if (typeof generateNavigation === 'function') {
-                    const sidebar = document.querySelector('.sidebar nav');
-                    if (sidebar) {
-                        sidebar.innerHTML = generateNavigation();
-                        if (typeof highlightCurrentPage === 'function') {
-                            highlightCurrentPage();
-                        }
-                    }
-                }
-            }
-            
-            // Esperar a que todos los scripts estén cargados
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', function() {
-                    setTimeout(initNav, 200);
-                });
-            } else {
-                // DOM ya está listo, pero esperar un poco para asegurar que Alpine.js esté listo
-                setTimeout(initNav, 200);
-            }
-        })();
-    </script>
-        <script>
+    <script>
         // Inicializar navegación cuando el DOM esté listo
         (function() {
             function initNav() {

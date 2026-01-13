@@ -211,9 +211,317 @@
                             </table>
                         </div>
 
+                        <h2 id="herramientas-automatizacion">Herramientas de Automatización</h2>
+                        <h3 id="sast-tools">SAST (Static Application Security Testing)</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Herramientas SAST para code review automatizado\n\n# Semgrep - Fast SAST\nsemgrep --config=auto .\n# O con reglas específicas\nsemgrep --config=p/security-audit .\n\n# SonarQube - Comprehensive SAST\nsonar-scanner -Dsonar.projectKey=my-project\n\n# CodeQL (GitHub)\ncodeql database create --language=javascript\ncodeql database analyze --format=sarif\n\n# Bandit (Python)\nbandit -r /path/to/code\n\n# ESLint Security Plugin (JavaScript)\nnpm install --save-dev eslint-plugin-security\neslint --plugin security .\n\n# Brakeman (Ruby)\nbrakeman /path/to/app\n\n# Gosec (Go)\ngosec ./...")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Herramientas SAST para code review automatizado
+
+# Semgrep - Fast SAST
+semgrep --config=auto .
+# O con reglas específicas
+semgrep --config=p/security-audit .
+
+# SonarQube - Comprehensive SAST
+sonar-scanner -Dsonar.projectKey=my-project
+
+# CodeQL (GitHub)
+codeql database create --language=javascript
+codeql database analyze --format=sarif
+
+# Bandit (Python)
+bandit -r /path/to/code
+
+# ESLint Security Plugin (JavaScript)
+npm install --save-dev eslint-plugin-security
+eslint --plugin security .
+
+# Brakeman (Ruby)
+brakeman /path/to/app
+
+# Gosec (Go)
+gosec ./...</code></pre>
+                        </div>
+
+                        <h2 id="ejemplos-vulnerabilidades">Ejemplos de Vulnerabilidades por Lenguaje</h2>
+                        <h3 id="javascript-nodejs">JavaScript/Node.js</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("// ❌ VULNERABLE: XSS\nfunction displayUser(userInput) {\n  document.getElementById('output').innerHTML = userInput;\n}\n\n// ✅ SEGURO: Output encoding\nfunction displayUser(userInput) {\n  const encoded = DOMPurify.sanitize(userInput);\n  document.getElementById('output').textContent = encoded;\n}\n\n// ❌ VULNERABLE: Command Injection\nconst { exec } = require('child_process');\nexec('ls ' + userInput);\n\n// ✅ SEGURO: Validación y sanitización\nconst { exec } = require('child_process');\nif (/^[a-zA-Z0-9_-]+$/.test(userInput)) {\n  exec('ls ' + userInput, { shell: false });\n}\n\n// ❌ VULNERABLE: Prototype Pollution\nfunction merge(target, source) {\n  for (let key in source) {\n    target[key] = source[key];\n  }\n  return target;\n}\n\n// ✅ SEGURO: Validación de keys\nfunction merge(target, source) {\n  for (let key in source) {\n    if (key !== '__proto__' && key !== 'constructor') {\n      target[key] = source[key];\n    }\n  }\n  return target;\n}\n\n// ❌ VULNERABLE: Secret hardcodeado\nconst API_KEY = 'sk_live_1234567890';\n\n// ✅ SEGURO: Variable de entorno\nconst API_KEY = process.env.API_KEY;")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code>// ❌ VULNERABLE: XSS
+function displayUser(userInput) {
+  document.getElementById('output').innerHTML = userInput;
+}
+
+// ✅ SEGURO: Output encoding
+function displayUser(userInput) {
+  const encoded = DOMPurify.sanitize(userInput);
+  document.getElementById('output').textContent = encoded;
+}
+
+// ❌ VULNERABLE: Command Injection
+const { exec } = require('child_process');
+exec('ls ' + userInput);
+
+// ✅ SEGURO: Validación y sanitización
+const { exec } = require('child_process');
+if (/^[a-zA-Z0-9_-]+$/.test(userInput)) {
+  exec('ls ' + userInput, { shell: false });
+}
+
+// ❌ VULNERABLE: Prototype Pollution
+function merge(target, source) {
+  for (let key in source) {
+    target[key] = source[key];
+  }
+  return target;
+}
+
+// ✅ SEGURO: Validación de keys
+function merge(target, source) {
+  for (let key in source) {
+    if (key !== '__proto__' && key !== 'constructor') {
+      target[key] = source[key];
+    }
+  }
+  return target;
+}
+
+// ❌ VULNERABLE: Secret hardcodeado
+const API_KEY = 'sk_live_1234567890';
+
+// ✅ SEGURO: Variable de entorno
+const API_KEY = process.env.API_KEY;</code></pre>
+                        </div>
+
+                        <h3 id="python">Python</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# ❌ VULNERABLE: SQL Injection\nimport sqlite3\nconn = sqlite3.connect('db.sqlite')\ncursor = conn.cursor()\ncursor.execute(\"SELECT * FROM users WHERE id = \" + user_id)\n\n# ✅ SEGURO: Prepared statements\nimport sqlite3\nconn = sqlite3.connect('db.sqlite')\ncursor = conn.cursor()\ncursor.execute(\"SELECT * FROM users WHERE id = ?\", (user_id,))\n\n# ❌ VULNERABLE: Command Injection\nimport os\nos.system('rm ' + filename)\n\n# ✅ SEGURO: Validación y subprocess\nimport subprocess\nif filename.isalnum():  # Validación simple\n    subprocess.run(['rm', filename], check=True)\n\n# ❌ VULNERABLE: Path Traversal\nwith open('/var/www/uploads/' + filename, 'r') as f:\n    content = f.read()\n\n# ✅ SEGURO: Validación de path\nimport os\nbase_path = '/var/www/uploads/'\nfull_path = os.path.join(base_path, filename)\nif not os.path.commonpath([base_path, full_path]) == base_path:\n    raise ValueError('Invalid path')\nwith open(full_path, 'r') as f:\n    content = f.read()\n\n# ❌ VULNERABLE: Pickle deserialization insegura\nimport pickle\nwith open('data.pkl', 'rb') as f:\n    data = pickle.load(f)\n\n# ✅ SEGURO: JSON o validación\nimport json\nwith open('data.json', 'r') as f:\n    data = json.load(f)")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># ❌ VULNERABLE: SQL Injection
+import sqlite3
+conn = sqlite3.connect('db.sqlite')
+cursor = conn.cursor()
+cursor.execute("SELECT * FROM users WHERE id = " + user_id)
+
+# ✅ SEGURO: Prepared statements
+import sqlite3
+conn = sqlite3.connect('db.sqlite')
+cursor = conn.cursor()
+cursor.execute("SELECT * FROM users WHERE id = ?", (user_id,))
+
+# ❌ VULNERABLE: Command Injection
+import os
+os.system('rm ' + filename)
+
+# ✅ SEGURO: Validación y subprocess
+import subprocess
+if filename.isalnum():  # Validación simple
+    subprocess.run(['rm', filename], check=True)
+
+# ❌ VULNERABLE: Path Traversal
+with open('/var/www/uploads/' + filename, 'r') as f:
+    content = f.read()
+
+# ✅ SEGURO: Validación de path
+import os
+base_path = '/var/www/uploads/'
+full_path = os.path.join(base_path, filename)
+if not os.path.commonpath([base_path, full_path]) == base_path:
+    raise ValueError('Invalid path')
+with open(full_path, 'r') as f:
+    content = f.read()
+
+# ❌ VULNERABLE: Pickle deserialization insegura
+import pickle
+with open('data.pkl', 'rb') as f:
+    data = pickle.load(f)
+
+# ✅ SEGURO: JSON o validación
+import json
+with open('data.json', 'r') as f:
+    data = json.load(f)</code></pre>
+                        </div>
+
+                        <h3 id="java">Java</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("// ❌ VULNERABLE: SQL Injection\nString query = \"SELECT * FROM users WHERE id = \" + userId;\nStatement stmt = conn.createStatement();\nResultSet rs = stmt.executeQuery(query);\n\n// ✅ SEGURO: PreparedStatement\nString query = \"SELECT * FROM users WHERE id = ?\";\nPreparedStatement pstmt = conn.prepareStatement(query);\npstmt.setInt(1, userId);\nResultSet rs = pstmt.executeQuery();\n\n// ❌ VULNERABLE: XXE (XML External Entity)\nDocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();\nDocumentBuilder builder = factory.newDocumentBuilder();\nDocument doc = builder.parse(inputStream);\n\n// ✅ SEGURO: Deshabilitar XXE\nDocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();\nfactory.setFeature(\"http://apache.org/xml/features/disallow-doctype-decl\", true);\nfactory.setFeature(\"http://xml.org/sax/features/external-general-entities\", false);\nfactory.setFeature(\"http://xml.org/sax/features/external-parameter-entities\", false);\nDocumentBuilder builder = factory.newDocumentBuilder();\nDocument doc = builder.parse(inputStream);\n\n// ❌ VULNERABLE: Deserialization insegura\nObjectInputStream ois = new ObjectInputStream(inputStream);\nObject obj = ois.readObject();\n\n// ✅ SEGURO: Validación o usar JSON\n// Usar Jackson, Gson, o similar para JSON\n// O implementar readResolve() y validación")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code>// ❌ VULNERABLE: SQL Injection
+String query = "SELECT * FROM users WHERE id = " + userId;
+Statement stmt = conn.createStatement();
+ResultSet rs = stmt.executeQuery(query);
+
+// ✅ SEGURO: PreparedStatement
+String query = "SELECT * FROM users WHERE id = ?";
+PreparedStatement pstmt = conn.prepareStatement(query);
+pstmt.setInt(1, userId);
+ResultSet rs = pstmt.executeQuery();
+
+// ❌ VULNERABLE: XXE (XML External Entity)
+DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+DocumentBuilder builder = factory.newDocumentBuilder();
+Document doc = builder.parse(inputStream);
+
+// ✅ SEGURO: Deshabilitar XXE
+DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+DocumentBuilder builder = factory.newDocumentBuilder();
+Document doc = builder.parse(inputStream);
+
+// ❌ VULNERABLE: Deserialization insegura
+ObjectInputStream ois = new ObjectInputStream(inputStream);
+Object obj = ois.readObject();
+
+// ✅ SEGURO: Validación o usar JSON
+// Usar Jackson, Gson, o similar para JSON
+// O implementar readResolve() y validación</code></pre>
+                        </div>
+
+                        <h2 id="integracion-cicd">Integración con CI/CD</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# GitHub Actions - Code Review Automatizado\nname: Security Code Review\n\non:\n  pull_request:\n    branches: [ main, develop ]\n\njobs:\n  security-scan:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v3\n      \n      - name: Run Semgrep\n        uses: returntocorp/semgrep-action@v1\n        with:\n          config: >\n            p/security-audit\n            p/owasp-top-ten\n      \n      - name: Run Bandit (Python)\n        if: contains(github.event.pull_request.head.ref, 'python')\n        run: |\n          pip install bandit\n          bandit -r . -f json -o bandit-report.json\n      \n      - name: Run ESLint Security\n        if: contains(github.event.pull_request.head.ref, 'js')\n        run: |\n          npm install eslint-plugin-security\n          npx eslint --plugin security .\n      \n      - name: Check for secrets\n        uses: trufflesecurity/trufflehog@main\n        with:\n          path: ./\n          base: ${{ github.event.pull_request.base.sha }}\n          head: ${{ github.event.pull_request.head.sha }}\n\n# GitLab CI - Code Review\nsecurity-review:\n  stage: test\n  script:\n    - semgrep --config=auto .\n    - bandit -r . || true\n    - npm audit || true\n  only:\n    - merge_requests")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># GitHub Actions - Code Review Automatizado
+name: Security Code Review
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  security-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Run Semgrep
+        uses: returntocorp/semgrep-action@v1
+        with:
+          config: >
+            p/security-audit
+            p/owasp-top-ten
+      
+      - name: Run Bandit (Python)
+        if: contains(github.event.pull_request.head.ref, 'python')
+        run: |
+          pip install bandit
+          bandit -r . -f json -o bandit-report.json
+      
+      - name: Run ESLint Security
+        if: contains(github.event.pull_request.head.ref, 'js')
+        run: |
+          npm install eslint-plugin-security
+          npx eslint --plugin security .
+      
+      - name: Check for secrets
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: ${{ github.event.pull_request.base.sha }}
+          head: ${{ github.event.pull_request.head.sha }}
+
+# GitLab CI - Code Review
+security-review:
+  stage: test
+  script:
+    - semgrep --config=auto .
+    - bandit -r . || true
+    - npm audit || true
+  only:
+    - merge_requests</code></pre>
+                        </div>
+
+                        <h2 id="metricas-code-review">Métricas de Code Review</h2>
+                        <div class="table-container mb-6">
+                            <table class="min-w-full">
+                                <thead>
+                                    <tr>
+                                        <th>Métrica</th>
+                                        <th>Descripción</th>
+                                        <th>Objetivo</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Tiempo de Revisión</strong></td>
+                                        <td>Tiempo promedio desde PR hasta aprobación</td>
+                                        <td>&lt; 24 horas</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Vulnerabilidades Detectadas</strong></td>
+                                        <td>Número de vulnerabilidades encontradas en reviews</td>
+                                        <td>Tracking para mejorar</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Tasa de Detección SAST</strong></td>
+                                        <td>Porcentaje de vulnerabilidades encontradas por SAST vs manual</td>
+                                        <td>&gt; 60% por SAST</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Coverage de Revisión</strong></td>
+                                        <td>Porcentaje de código revisado antes de merge</td>
+                                        <td>100%</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Vulnerabilidades en Producción</strong></td>
+                                        <td>Número de vulnerabilidades que llegaron a producción</td>
+                                        <td>0 (objetivo)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h2 id="mejores-practicas-review">Mejores Prácticas de Code Review</h2>
+                        <ul>
+                            <li><strong>Revisar temprano y frecuentemente:</strong> Revisar PRs pequeños es más efectivo</li>
+                            <li><strong>Enfoque en seguridad:</strong> No solo funcionalidad, también seguridad</li>
+                            <li><strong>Contexto completo:</strong> Entender el propósito del cambio</li>
+                            <li><strong>Feedback constructivo:</strong> Explicar el por qué, no solo el qué</li>
+                            <li><strong>Automatizar lo repetitivo:</strong> Usar SAST para detectar patrones comunes</li>
+                            <li><strong>Documentar decisiones:</strong> Si se acepta un riesgo, documentarlo</li>
+                            <li><strong>Training continuo:</strong> Compartir conocimiento de seguridad en reviews</li>
+                            <li><strong>Revisión por pares:</strong> Al menos 2 aprobaciones para cambios críticos</li>
+                            <li><strong>Checklist obligatorio:</strong> Usar checklist antes de aprobar</li>
+                            <li><strong>Revisar dependencias:</strong> Verificar que no hay vulnerabilidades conocidas</li>
+                        </ul>
+
                         <div class="alert alert-success mt-8">
                             <p class="font-semibold mb-2">✅ Code Review Efectivo</p>
-                            <p>Usa este checklist sistemáticamente. La revisión de seguridad debe ser parte integral del proceso de desarrollo, no una actividad separada.</p>
+                            <p>Usa este checklist sistemáticamente. La revisión de seguridad debe ser parte integral del proceso de desarrollo, no una actividad separada. Combina revisión manual con herramientas automatizadas (SAST) para máxima efectividad. El objetivo no es solo encontrar vulnerabilidades, sino también educar al equipo en prácticas seguras. Integra herramientas de seguridad en tu CI/CD para detectar problemas automáticamente antes de que lleguen a producción.</p>
                         </div>
                     </div>
                 </article>
@@ -229,38 +537,11 @@
         </div>
     </footer>
 
+    <script src="../../assets/js/navigation.js"></script>
     <script src="../../assets/js/search.js"></script>
     <script src="../../assets/js/main.js"></script>
     <style>[x-cloak] { display: none !important; }</style>
-            <script>
-        // Inicializar navegación cuando el DOM esté listo
-        (function() {
-            function initNav() {
-                if (typeof initNavigation === 'function') {
-                    initNavigation();
-                } else if (typeof generateNavigation === 'function') {
-                    const sidebar = document.querySelector('.sidebar nav');
-                    if (sidebar) {
-                        sidebar.innerHTML = generateNavigation();
-                        if (typeof highlightCurrentPage === 'function') {
-                            highlightCurrentPage();
-                        }
-                    }
-                }
-            }
-            
-            // Esperar a que todos los scripts estén cargados
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', function() {
-                    setTimeout(initNav, 200);
-                });
-            } else {
-                // DOM ya está listo, pero esperar un poco para asegurar que Alpine.js esté listo
-                setTimeout(initNav, 200);
-            }
-        })();
-    </script>
-        <script>
+    <script>
         // Inicializar navegación cuando el DOM esté listo
         (function() {
             function initNav() {

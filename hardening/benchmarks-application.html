@@ -239,9 +239,134 @@ auditpol /set /category:"Logon/Logoff" /success:enable /failure:enable</code></p
                             </table>
                         </div>
 
+                        <h2 id="openscap-detalle">OpenSCAP - Detalle de Uso</h2>
+                        <h3 id="evaluacion-cis">Evaluación CIS Benchmark</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Evaluar sistema contra CIS Benchmark\n# Descargar benchmark CIS\nwget https://workbench.cisecurity.org/files/XXXX/ubuntu2004-cis-level1-server.xml\n\n# Evaluar sistema\nsudo oscap xccdf eval --profile xccdf_org.cisecurity.benchmarks_profile_Level_1_Server \\\n  --results results.xml \\\n  --report report.html \\\n  ubuntu2004-cis-level1-server.xml\n\n# Ver resultados\noscap xccdf generate report results.xml > report.html\n\n# Remediar automáticamente (con precaución)\nsudo oscap xccdf eval --remediate --profile xccdf_org.cisecurity.benchmarks_profile_Level_1_Server \\\n  ubuntu2004-cis-level1-server.xml\n\n# Generar script de remediación\noscap xccdf generate fix --profile xccdf_org.cisecurity.benchmarks_profile_Level_1_Server \\\n  --fix-type bash \\\n  ubuntu2004-cis-level1-server.xml > remediation.sh")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Evaluar sistema contra CIS Benchmark
+# Descargar benchmark CIS
+wget https://workbench.cisecurity.org/files/XXXX/ubuntu2004-cis-level1-server.xml
+
+# Evaluar sistema
+sudo oscap xccdf eval --profile xccdf_org.cisecurity.benchmarks_profile_Level_1_Server \
+  --results results.xml \
+  --report report.html \
+  ubuntu2004-cis-level1-server.xml
+
+# Ver resultados
+oscap xccdf generate report results.xml > report.html
+
+# Remediar automáticamente (con precaución)
+sudo oscap xccdf eval --remediate --profile xccdf_org.cisecurity.benchmarks_profile_Level_1_Server \
+  ubuntu2004-cis-level1-server.xml
+
+# Generar script de remediación
+oscap xccdf generate fix --profile xccdf_org.cisecurity.benchmarks_profile_Level_1_Server \
+  --fix-type bash \
+  ubuntu2004-cis-level1-server.xml > remediation.sh</code></pre>
+                        </div>
+
+                        <h2 id="proceso-aplicacion">Proceso de Aplicación de Benchmarks</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Proceso recomendado para aplicar benchmarks\n\n# 1. Baseline Assessment\n# Evaluar estado actual del sistema\nsudo lynis audit system\nsudo oscap xccdf eval --profile <profile> <benchmark>.xml\n\n# 2. Documentar Hallazgos\n# - Identificar configuraciones no conformes\n# - Priorizar según riesgo\n# - Documentar impacto de cambios\n\n# 3. Testing en Staging\n# - Aplicar cambios en entorno de prueba\n# - Validar funcionalidad\n# - Verificar que no hay incompatibilidades\n\n# 4. Planificación\n# - Crear plan de remediación\n# - Asignar ventanas de mantenimiento\n# - Preparar rollback plan\n\n# 5. Aplicación Gradual\n# - Aplicar cambios en fases\n# - Monitorear sistema post-cambios\n# - Validar que benchmarks se cumplen\n\n# 6. Validación Final\n# - Re-evaluar sistema\n# - Documentar compliance\n# - Establecer monitoreo continuo")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Proceso recomendado para aplicar benchmarks
+
+# 1. Baseline Assessment
+# Evaluar estado actual del sistema
+sudo lynis audit system
+sudo oscap xccdf eval --profile <profile> <benchmark>.xml
+
+# 2. Documentar Hallazgos
+# - Identificar configuraciones no conformes
+# - Priorizar según riesgo
+# - Documentar impacto de cambios
+
+# 3. Testing en Staging
+# - Aplicar cambios en entorno de prueba
+# - Validar funcionalidad
+# - Verificar que no hay incompatibilidades
+
+# 4. Planificación
+# - Crear plan de remediación
+# - Asignar ventanas de mantenimiento
+# - Preparar rollback plan
+
+# 5. Aplicación Gradual
+# - Aplicar cambios en fases
+# - Monitorear sistema post-cambios
+# - Validar que benchmarks se cumplen
+
+# 6. Validación Final
+# - Re-evaluar sistema
+# - Documentar compliance
+# - Establecer monitoreo continuo</code></pre>
+                        </div>
+
+                        <h2 id="checklist-benchmarks">Checklist de Aplicación de Benchmarks</h2>
+                        <div class="checklist-container mb-6">
+                            <div class="checklist" data-checklist-id="benchmarks-application">
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('benchmarks-application', 0)" class="checklist-checkbox">
+                                        <span>Benchmark seleccionado (CIS, STIG, etc.)</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('benchmarks-application', 1)" class="checklist-checkbox">
+                                        <span>Baseline assessment completado</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('benchmarks-application', 2)" class="checklist-checkbox">
+                                        <span>Cambios probados en entorno de staging</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('benchmarks-application', 3)" class="checklist-checkbox">
+                                        <span>Plan de remediación documentado</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('benchmarks-application', 4)" class="checklist-checkbox">
+                                        <span>Benchmark aplicado en producción</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('benchmarks-application', 5)" class="checklist-checkbox">
+                                        <span>Validación y re-evaluación completada</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="checklist-progress mt-4">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" data-progress="benchmarks-application"></div>
+                                </div>
+                                <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">Progreso: <span data-progress-text="benchmarks-application">0%</span></p>
+                            </div>
+                        </div>
+
                         <div class="alert alert-success mt-8">
                             <p class="font-semibold mb-2">✅ CIS/STIG Benchmarks</p>
-                            <p>Los benchmarks CIS y STIG proporcionan configuración segura probada. Empieza con Level 1 y avanza gradualmente. Usa herramientas como Lynis y OpenSCAP para automatizar el proceso. Siempre prueba en staging antes de aplicar cambios en producción. La compliance es un proceso continuo, no un evento único.</p>
+                            <p>Los benchmarks CIS y STIG proporcionan configuración segura probada. Empieza con Level 1 y avanza gradualmente. Usa herramientas como Lynis y OpenSCAP para automatizar el proceso. Siempre prueba en staging antes de aplicar cambios en producción. La compliance es un proceso continuo, no un evento único. Establece monitoreo continuo para detectar desviaciones de los benchmarks.</p>
                         </div>
                     </div>
                 </article>

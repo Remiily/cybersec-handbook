@@ -165,18 +165,137 @@ def validate_ip(ip):
     return False</code></pre>
                         </div>
 
+                        <h2 id="vulnerabilidades-comunes">Vulnerabilidades Comunes en Python</h2>
+                        <h3 id="command-injection">Command Injection</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# ❌ VULNERABLE\nimport os\nuser_input = input(\"Enter command: \")\nos.system(f\"ping {user_input}\")\n\n# ✅ SEGURO - Usar subprocess con lista\nimport subprocess\nimport shlex\n\nuser_input = input(\"Enter IP: \")\n# Validar input primero\nif not re.match(r'^[0-9.]+$', user_input):\n    raise ValueError(\"Invalid IP address\")\n\n# Usar subprocess con lista de argumentos\nsubprocess.run(['ping', '-c', '4', user_input], check=True)\n\n# O usar shlex.quote para escapar\nsafe_input = shlex.quote(user_input)\nsubprocess.run(f\"ping -c 4 {safe_input}\", shell=True)")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># ❌ VULNERABLE
+import os
+user_input = input("Enter command: ")
+os.system(f"ping {user_input}")
+
+# ✅ SEGURO - Usar subprocess con lista
+import subprocess
+import shlex
+
+user_input = input("Enter IP: ")
+# Validar input primero
+if not re.match(r'^[0-9.]+$', user_input):
+    raise ValueError("Invalid IP address")
+
+# Usar subprocess con lista de argumentos
+subprocess.run(['ping', '-c', '4', user_input], check=True)
+
+# O usar shlex.quote para escapar
+safe_input = shlex.quote(user_input)
+subprocess.run(f"ping -c 4 {safe_input}", shell=True)</code></pre>
+                        </div>
+
+                        <h3 id="pickle-insecure">Pickle Insecure Deserialization</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# ❌ VULNERABLE - Pickle puede ejecutar código arbitrario\nimport pickle\n\n# Nunca deserializar datos no confiables\nuser_data = input(\"Enter data: \")\nobj = pickle.loads(user_data.encode())  # PELIGROSO\n\n# ✅ SEGURO - Usar JSON o validar origen\nimport json\n\nuser_data = input(\"Enter data: \")\ntry:\n    obj = json.loads(user_data)  # JSON es seguro\n except json.JSONDecodeError:\n    raise ValueError(\"Invalid JSON\")\n\n# Si DEBES usar pickle:\n# 1. Solo deserializar datos de fuentes confiables\n# 2. Validar estructura antes de deserializar\n# 3. Considerar usar dill o cloudpickle con restricciones")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># ❌ VULNERABLE - Pickle puede ejecutar código arbitrario
+import pickle
+
+# Nunca deserializar datos no confiables
+user_data = input("Enter data: ")
+obj = pickle.loads(user_data.encode())  # PELIGROSO
+
+# ✅ SEGURO - Usar JSON o validar origen
+import json
+
+user_data = input("Enter data: ")
+try:
+    obj = json.loads(user_data)  # JSON es seguro
+except json.JSONDecodeError:
+    raise ValueError("Invalid JSON")
+
+# Si DEBES usar pickle:
+# 1. Solo deserializar datos de fuentes confiables
+# 2. Validar estructura antes de deserializar
+# 3. Considerar usar dill o cloudpickle con restricciones</code></pre>
+                        </div>
+
                         <h2 id="herramientas-populares">Herramientas Populares en Python</h2>
+                        <div class="overflow-x-auto mb-6">
+                            <table>
+                                <thead>
+                                    <tr><th>Herramienta</th><th>Propósito</th><th>Instalación</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><code>Scapy</code></td>
+                                        <td>Manipulación de paquetes de red</td>
+                                        <td><code>pip install scapy</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>Impacket</code></td>
+                                        <td>Protocolos de red de bajo nivel (SMB, LDAP, etc.)</td>
+                                        <td><code>pip install impacket</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>Requests</code></td>
+                                        <td>HTTP library (más seguro que urllib)</td>
+                                        <td><code>pip install requests</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>Cryptography</code></td>
+                                        <td>Operaciones criptográficas</td>
+                                        <td><code>pip install cryptography</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>Paramiko</code></td>
+                                        <td>Cliente SSH</td>
+                                        <td><code>pip install paramiko</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>python-nmap</code></td>
+                                        <td>Wrapper para Nmap</td>
+                                        <td><code>pip install python-nmap</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>PyCryptodome</code></td>
+                                        <td>Algoritmos criptográficos</td>
+                                        <td><code>pip install pycryptodome</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>BeautifulSoup4</code></td>
+                                        <td>Parsing HTML/XML</td>
+                                        <td><code>pip install beautifulsoup4</code></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h2 id="best-practices-python">Mejores Prácticas de Seguridad en Python</h2>
                         <ul>
-                            <li><strong>Metasploit Framework:</strong> Escrito en Ruby, pero APIs en Python</li>
-                            <li><strong>Scapy:</strong> Manipulación de paquetes de red</li>
-                            <li><strong>Impacket:</strong> Protocolos de red de bajo nivel</li>
-                            <li><strong>Requests:</strong> HTTP library (más seguro que urllib)</li>
-                            <li><strong>Cryptography:</strong> Operaciones criptográficas</li>
+                            <li><strong>Validar todo el input:</strong> Nunca confiar en datos del usuario</li>
+                            <li><strong>Usar subprocess en lugar de os.system:</strong> Más seguro y controlable</li>
+                            <li><strong>Evitar pickle para datos no confiables:</strong> Usar JSON o YAML</li>
+                            <li><strong>Mantener dependencias actualizadas:</strong> <code>pip list --outdated</code> y actualizar regularmente</li>
+                            <li><strong>Usar virtual environments:</strong> Aislar dependencias por proyecto</li>
+                            <li><strong>No hardcodear secrets:</strong> Usar variables de entorno o secret managers</li>
+                            <li><strong>Usar HTTPS:</strong> Siempre para comunicaciones externas</li>
+                            <li><strong>Sanitizar output:</strong> Especialmente en aplicaciones web</li>
                         </ul>
 
                         <div class="alert alert-success mt-8">
                             <p class="font-semibold mb-2">✅ Python para Seguridad</p>
-                            <p>Python es perfecto para automatización, análisis de datos y creación de herramientas. Enfócate en las librerías de seguridad específicas y buenas prácticas de código seguro.</p>
+                            <p>Python es perfecto para automatización, análisis de datos y creación de herramientas. Enfócate en las librerías de seguridad específicas y buenas prácticas de código seguro. Siempre valida input, usa subprocess en lugar de os.system, y mantén las dependencias actualizadas para evitar vulnerabilidades conocidas.</p>
                         </div>
                     </div>
                 </article>

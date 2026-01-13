@@ -197,9 +197,317 @@
                             </table>
                         </div>
 
+                        <h2 id="habilidades-ciso">Habilidades Clave para CISO</h2>
+                        <h3 id="tecnicas">Habilidades Técnicas</h3>
+                        <ul>
+                            <li><strong>Arquitectura de Seguridad:</strong> Diseñar estrategias de seguridad a nivel empresarial</li>
+                            <li><strong>Risk Management:</strong> Evaluar y gestionar riesgos de seguridad</li>
+                            <li><strong>Compliance:</strong> Conocimiento profundo de frameworks (ISO 27001, NIST, GDPR, etc.)</li>
+                            <li><strong>Incident Response:</strong> Liderar respuesta a incidentes críticos</li>
+                            <li><strong>Cloud Security:</strong> Seguridad en entornos cloud (AWS, Azure, GCP)</li>
+                        </ul>
+
+                        <h3 id="gestion">Habilidades de Gestión</h3>
+                        <ul>
+                            <li><strong>Liderazgo de Equipos:</strong> Gestionar equipos de seguridad multidisciplinarios</li>
+                            <li><strong>Presupuestos:</strong> Gestionar presupuestos de seguridad y justificar inversiones</li>
+                            <li><strong>Vendor Management:</strong> Gestionar relaciones con proveedores de seguridad</li>
+                            <li><strong>Project Management:</strong> Liderar proyectos de seguridad complejos</li>
+                            <li><strong>Change Management:</strong> Gestionar cambios organizacionales en seguridad</li>
+                        </ul>
+
+                        <h3 id="negocio">Habilidades de Negocio</h3>
+                        <ul>
+                            <li><strong>Comunicación Ejecutiva:</strong> Presentar a C-level y board</li>
+                            <li><strong>ROI de Seguridad:</strong> Demostrar valor de seguridad en términos de negocio</li>
+                            <li><strong>Estrategia:</strong> Alinear seguridad con objetivos de negocio</li>
+                            <li><strong>Regulación:</strong> Entender impacto de regulaciones en el negocio</li>
+                            <li><strong>Business Continuity:</strong> Asegurar continuidad del negocio</li>
+                        </ul>
+
+                        <h2 id="certificaciones-ciso">Certificaciones Recomendadas para CISO</h2>
+                        <div class="overflow-x-auto mb-6">
+                            <table>
+                                <thead>
+                                    <tr><th>Certificación</th><th>Enfoque</th><th>Relevancia</th><th>Cuándo Obtenerla</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>CISSP</td>
+                                        <td>Conocimiento general de seguridad</td>
+                                        <td>Alta - Requisito común</td>
+                                        <td>Fase 2-3 (3-8 años)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>CISM</td>
+                                        <td>Gestión de seguridad de información</td>
+                                        <td>Alta - Enfoque en gestión</td>
+                                        <td>Fase 3-4 (5-10 años)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>CGEIT</td>
+                                        <td>Gobierno de TI empresarial</td>
+                                        <td>Media - Para roles ejecutivos</td>
+                                        <td>Fase 4-5 (8-12 años)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>CRISC</td>
+                                        <td>Gestión de riesgos y control</td>
+                                        <td>Alta - Risk management</td>
+                                        <td>Fase 3-4 (5-10 años)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>CISO Executive</td>
+                                        <td>Liderazgo ejecutivo en seguridad</td>
+                                        <td>Alta - Específico para CISO</td>
+                                        <td>Fase 4-5 (10+ años)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>MBA (opcional)</td>
+                                        <td>Negocios y gestión</td>
+                                        <td>Media - Útil para contexto de negocio</td>
+                                        <td>Fase 3-4 (5-10 años)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h2 id="estrategias-por-fase">Estrategias Detalladas por Fase</h2>
+                        <h3 id="fase-1-detalle">Fase 1: Técnico (0-3 años) - Estrategias</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Plan de Acción Fase 1\n\n# 1. FUNDAMENTOS TÉCNICOS\n# - Dominar al menos 2 áreas: Network Security, Endpoint Security, Cloud Security\n# - Obtener certificaciones básicas: Security+, CEH, GSEC\n# - Construir laboratorio personal (homelab)\n# - Contribuir a proyectos open source de seguridad\n\n# 2. EXPERIENCIA PRÁCTICA\n# - Buscar roles en SOC, Pentesting, o Security Engineering\n# - Rotar entre diferentes equipos si es posible\n# - Aceptar proyectos desafiantes\n# - Documentar todo lo que aprendes\n\n# 3. NETWORKING\n# - Unirse a comunidades locales de seguridad (OWASP, ISSA)\n# - Asistir a conferencias (BSides, DEF CON, Black Hat)\n# - Conectar con profesionales en LinkedIn\n# - Buscar mentoría\n\n# 4. DESARROLLO PROFESIONAL\n# - Crear blog o canal técnico\n# - Contribuir a documentación técnica\n# - Presentar en meetups locales\n# - Obtener feedback constante\n\n# 5. METAS ESPECÍFICAS\n# - Certificaciones: Security+ (año 1), CEH o GSEC (año 2)\n# - Proyectos: Automatizar al menos 2 procesos de seguridad\n# - Network: 50+ conexiones profesionales relevantes\n# - Conocimiento: Dominar 3 herramientas principales de tu área")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Plan de Acción Fase 1
+
+# 1. FUNDAMENTOS TÉCNICOS
+# - Dominar al menos 2 áreas: Network Security, Endpoint Security, Cloud Security
+# - Obtener certificaciones básicas: Security+, CEH, GSEC
+# - Construir laboratorio personal (homelab)
+# - Contribuir a proyectos open source de seguridad
+
+# 2. EXPERIENCIA PRÁCTICA
+# - Buscar roles en SOC, Pentesting, o Security Engineering
+# - Rotar entre diferentes equipos si es posible
+# - Aceptar proyectos desafiantes
+# - Documentar todo lo que aprendes
+
+# 3. NETWORKING
+# - Unirse a comunidades locales de seguridad (OWASP, ISSA)
+# - Asistir a conferencias (BSides, DEF CON, Black Hat)
+# - Conectar con profesionales en LinkedIn
+# - Buscar mentoría
+
+# 4. DESARROLLO PROFESIONAL
+# - Crear blog o canal técnico
+# - Contribuir a documentación técnica
+# - Presentar en meetups locales
+# - Obtener feedback constante
+
+# 5. METAS ESPECÍFICAS
+# - Certificaciones: Security+ (año 1), CEH o GSEC (año 2)
+# - Proyectos: Automatizar al menos 2 procesos de seguridad
+# - Network: 50+ conexiones profesionales relevantes
+# - Conocimiento: Dominar 3 herramientas principales de tu área</code></pre>
+                        </div>
+
+                        <h3 id="fase-4-detalle">Fase 4: Manager/Director (8-12 años) - Estrategias</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Plan de Acción Fase 4\n\n# 1. LIDERAZGO EJECUTIVO\n# - Desarrollar habilidades de presentación ejecutiva\n# - Aprender a comunicar riesgo en términos de negocio\n# - Construir relaciones con C-level\n# - Participar en board meetings (si es posible)\n\n# 2. GESTIÓN ESTRATÉGICA\n# - Desarrollar estrategia de seguridad a 3-5 años\n# - Gestionar presupuestos de $1M+\n# - Liderar transformaciones de seguridad\n# - Alinear seguridad con objetivos de negocio\n\n# 3. NETWORKING EJECUTIVO\n# - Unirse a organizaciones ejecutivas (CISO Forums)\n# - Asistir a eventos de alto nivel\n# - Buscar mentoría de CISOs actuales\n# - Construir advisory board personal\n\n# 4. DESARROLLO DE NEGOCIO\n# - Entender modelos de negocio de la industria\n# - Aprender sobre finanzas corporativas\n# - Desarrollar casos de negocio para seguridad\n# - Medir ROI de iniciativas de seguridad\n\n# 5. PREPARACIÓN PARA CISO\n# - Buscar roles de Deputy CISO o Director Senior\n# - Obtener certificaciones ejecutivas (CGEIT, CISO Executive)\n# - Considerar MBA o educación ejecutiva\n# - Desarrollar expertise en compliance y risk management\n\n# 6. METAS ESPECÍFICAS\n# - Certificaciones: CISM, CRISC, CGEIT\n# - Equipos: Gestionar equipos de 10+ personas\n# - Presupuesto: Gestionar presupuestos de $500K+\n# - Network: 200+ conexiones ejecutivas\n# - Presentaciones: Presentar a board al menos 2 veces/año")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Plan de Acción Fase 4
+
+# 1. LIDERAZGO EJECUTIVO
+# - Desarrollar habilidades de presentación ejecutiva
+# - Aprender a comunicar riesgo en términos de negocio
+# - Construir relaciones con C-level
+# - Participar en board meetings (si es posible)
+
+# 2. GESTIÓN ESTRATÉGICA
+# - Desarrollar estrategia de seguridad a 3-5 años
+# - Gestionar presupuestos de $1M+
+# - Liderar transformaciones de seguridad
+# - Alinear seguridad con objetivos de negocio
+
+# 3. NETWORKING EJECUTIVO
+# - Unirse a organizaciones ejecutivas (CISO Forums)
+# - Asistir a eventos de alto nivel
+# - Buscar mentoría de CISOs actuales
+# - Construir advisory board personal
+
+# 4. DESARROLLO DE NEGOCIO
+# - Entender modelos de negocio de la industria
+# - Aprender sobre finanzas corporativas
+# - Desarrollar casos de negocio para seguridad
+# - Medir ROI de iniciativas de seguridad
+
+# 5. PREPARACIÓN PARA CISO
+# - Buscar roles de Deputy CISO o Director Senior
+# - Obtener certificaciones ejecutivas (CGEIT, CISO Executive)
+# - Considerar MBA o educación ejecutiva
+# - Desarrollar expertise en compliance y risk management
+
+# 6. METAS ESPECÍFICAS
+# - Certificaciones: CISM, CRISC, CGEIT
+# - Equipos: Gestionar equipos de 10+ personas
+# - Presupuesto: Gestionar presupuestos de $500K+
+# - Network: 200+ conexiones ejecutivas
+# - Presentaciones: Presentar a board al menos 2 veces/año</code></pre>
+                        </div>
+
+                        <h2 id="networking-mentoria">Networking y Mentoría</h2>
+                        <h3 id="comunidades">Comunidades y Organizaciones</h3>
+                        <ul>
+                            <li><strong>ISSA (Information Systems Security Association):</strong> Capítulos locales y nacionales</li>
+                            <li><strong>OWASP:</strong> Para desarrollo seguro y aplicaciones</li>
+                            <li><strong>ISACA:</strong> Para governance, risk y compliance</li>
+                            <li><strong>CISO Forums:</strong> Eventos exclusivos para CISOs y aspirantes</li>
+                            <li><strong>BSides:</strong> Conferencias locales de seguridad</li>
+                            <li><strong>Black Hat / DEF CON:</strong> Conferencias principales de la industria</li>
+                            <li><strong>RSA Conference:</strong> Evento corporativo de seguridad</li>
+                        </ul>
+
+                        <h3 id="buscar-mentoria">Cómo Buscar Mentoría</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Estrategia de Mentoría\n\n# 1. IDENTIFICAR MENTORES POTENCIALES\n# - CISOs en tu industria\n# - Directores de Seguridad con experiencia\n# - Profesionales 5-10 años por delante\n# - Buscar en LinkedIn, conferencias, comunidades\n\n# 2. ACERCAMIENTO INICIAL\n# - Mensaje personalizado explicando tu situación\n# - Mencionar por qué específicamente quieres su mentoría\n# - Proponer reunión de 30 minutos\n# - Ser respetuoso de su tiempo\n\n# 3. ESTRUCTURA DE MENTORÍA\n# - Reuniones mensuales de 1 hora\n# - Preparar preguntas específicas\n# - Compartir progreso regularmente\n# - Agradecer y dar feedback\n\n# 4. MÚLTIPLES MENTORES\n# - Mentor técnico (para habilidades técnicas)\n# - Mentor de gestión (para liderazgo)\n# - Mentor de negocio (para estrategia)\n# - Mentor de carrera (para desarrollo profesional)\n\n# 5. SER MENTOR TAMBIÉN\n# - Mentor a juniors mientras avanzas\n# - Construye tu reputación como líder\n# - Desarrolla habilidades de enseñanza\n# - Expande tu network")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Estrategia de Mentoría
+
+# 1. IDENTIFICAR MENTORES POTENCIALES
+# - CISOs en tu industria
+# - Directores de Seguridad con experiencia
+# - Profesionales 5-10 años por delante
+# - Buscar en LinkedIn, conferencias, comunidades
+
+# 2. ACERCAMIENTO INICIAL
+# - Mensaje personalizado explicando tu situación
+# - Mencionar por qué específicamente quieres su mentoría
+# - Proponer reunión de 30 minutos
+# - Ser respetuoso de su tiempo
+
+# 3. ESTRUCTURA DE MENTORÍA
+# - Reuniones mensuales de 1 hora
+# - Preparar preguntas específicas
+# - Compartir progreso regularmente
+# - Agradecer y dar feedback
+
+# 4. MÚLTIPLES MENTORES
+# - Mentor técnico (para habilidades técnicas)
+# - Mentor de gestión (para liderazgo)
+# - Mentor de negocio (para estrategia)
+# - Mentor de carrera (para desarrollo profesional)
+
+# 5. SER MENTOR TAMBIÉN
+# - Mentor a juniors mientras avanzas
+# - Construye tu reputación como líder
+# - Desarrolla habilidades de enseñanza
+# - Expande tu network</code></pre>
+                        </div>
+
+                        <h2 id="desafios-comunes">Desafíos Comunes y Cómo Superarlos</h2>
+                        <div class="table-container mb-6">
+                            <table class="min-w-full">
+                                <thead>
+                                    <tr>
+                                        <th>Desafío</th>
+                                        <th>Solución</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Falta de experiencia en gestión</strong></td>
+                                        <td>Buscar roles de liderazgo técnico primero, luego gestión de equipos pequeños. Tomar cursos de gestión de proyectos.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Falta de habilidades de negocio</strong></td>
+                                        <td>Tomar cursos de finanzas, MBA ejecutivo, o trabajar estrechamente con equipos de negocio.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Network limitado</strong></td>
+                                        <td>Asistir a eventos, unirse a comunidades, ser activo en LinkedIn, ofrecer valor a otros.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Falta de certificaciones</strong></td>
+                                        <td>Crear plan de certificaciones por fases. Priorizar CISSP y CISM primero.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Comunicación ejecutiva</strong></td>
+                                        <td>Tomar cursos de presentación, practicar con mentores, buscar oportunidades de presentar.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Equilibrio técnico vs gestión</strong></td>
+                                        <td>Mantener conocimiento técnico actualizado pero enfocarse en estrategia y liderazgo.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h2 id="compensacion-salarios">Compensación y Salarios</h2>
+                        <div class="table-container mb-6">
+                            <table class="min-w-full">
+                                <thead>
+                                    <tr>
+                                        <th>Rol</th>
+                                        <th>Salario Base (USD)</th>
+                                        <th>Total Compensación</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Security Analyst (0-3 años)</td>
+                                        <td>$60K - $90K</td>
+                                        <td>$65K - $100K</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Security Engineer (3-5 años)</td>
+                                        <td>$90K - $130K</td>
+                                        <td>$100K - $150K</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Senior Security Engineer (5-8 años)</td>
+                                        <td>$130K - $180K</td>
+                                        <td>$150K - $220K</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Security Manager (8-10 años)</td>
+                                        <td>$140K - $200K</td>
+                                        <td>$160K - $250K</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Director of Security (10-12 años)</td>
+                                        <td>$180K - $250K</td>
+                                        <td>$220K - $350K</td>
+                                    </tr>
+                                    <tr>
+                                        <td>CISO (12+ años)</td>
+                                        <td>$200K - $400K+</td>
+                                        <td>$300K - $800K+</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="mb-4"><strong>Nota:</strong> Los salarios varían significativamente por ubicación, industria, tamaño de empresa y experiencia. Empresas tecnológicas y financieras típicamente ofrecen compensación más alta.</p>
+
                         <div class="alert alert-success mt-8">
                             <p class="font-semibold mb-2">✅ Roadmap a CISO</p>
-                            <p>El camino a CISO requiere combinación de habilidades técnicas, de gestión y de negocio. Desarrolla tu network, busca oportunidades de liderazgo y comunica el valor de seguridad en términos de negocio.</p>
+                            <p>El camino a CISO requiere combinación de habilidades técnicas, de gestión y de negocio. Desarrolla tu network, busca oportunidades de liderazgo y comunica el valor de seguridad en términos de negocio. Construye experiencia en múltiples áreas (técnica, gestión, compliance) y busca certificaciones relevantes que demuestren tu competencia. Recuerda que el camino es un maratón, no un sprint - construye tu carrera paso a paso, buscando oportunidades de crecimiento en cada fase.</p>
                         </div>
                     </div>
                 </article>
@@ -215,38 +523,11 @@
         </div>
     </footer>
 
+    <script src="../../assets/js/navigation.js"></script>
     <script src="../../assets/js/search.js"></script>
     <script src="../../assets/js/main.js"></script>
     <style>[x-cloak] { display: none !important; }</style>
-            <script>
-        // Inicializar navegación cuando el DOM esté listo
-        (function() {
-            function initNav() {
-                if (typeof initNavigation === 'function') {
-                    initNavigation();
-                } else if (typeof generateNavigation === 'function') {
-                    const sidebar = document.querySelector('.sidebar nav');
-                    if (sidebar) {
-                        sidebar.innerHTML = generateNavigation();
-                        if (typeof highlightCurrentPage === 'function') {
-                            highlightCurrentPage();
-                        }
-                    }
-                }
-            }
-            
-            // Esperar a que todos los scripts estén cargados
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', function() {
-                    setTimeout(initNav, 200);
-                });
-            } else {
-                // DOM ya está listo, pero esperar un poco para asegurar que Alpine.js esté listo
-                setTimeout(initNav, 200);
-            }
-        })();
-    </script>
-        <script>
+    <script>
         // Inicializar navegación cuando el DOM esté listo
         (function() {
             function initNav() {

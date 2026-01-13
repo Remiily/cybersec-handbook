@@ -272,9 +272,497 @@ curl -u elastic:PASSWORD -X GET "localhost:9200/_cat/shards?v"
 curl -u elastic:PASSWORD -X GET "localhost:9200/_tasks?pretty"</code></pre>
                         </div>
 
+                        <h2 id="hardening-completo">Hardening Completo de Elasticsearch</h2>
+                        <p class="mb-4">El hardening de Elasticsearch requiere múltiples capas de seguridad. A continuación se detallan las configuraciones esenciales para entornos de producción.</p>
+
+                        <h3 id="configuracion-ssl-tls">Configuración SSL/TLS</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Generar certificados para Elasticsearch\n# Usar elasticsearch-certutil\nsudo /usr/share/elasticsearch/bin/elasticsearch-certutil ca\nsudo /usr/share/elasticsearch/bin/elasticsearch-certutil cert --ca elastic-stack-ca.p12\n\n# Mover certificados a ubicación segura\nsudo mkdir -p /etc/elasticsearch/certs\nsudo cp elastic-stack-ca.p12 /etc/elasticsearch/certs/\nsudo cp elastic-certificates.p12 /etc/elasticsearch/certs/\nsudo chown elasticsearch:elasticsearch /etc/elasticsearch/certs/*\nsudo chmod 600 /etc/elasticsearch/certs/*\n\n# Configurar SSL en elasticsearch.yml\n# /etc/elasticsearch/elasticsearch.yml\nxpack.security.transport.ssl.enabled: true\nxpack.security.transport.ssl.verification_mode: certificate\nxpack.security.transport.ssl.keystore.path: certs/elastic-certificates.p12\nxpack.security.transport.ssl.truststore.path: certs/elastic-certificates.p12\n\n# HTTP SSL\nxpack.security.http.ssl.enabled: true\nxpack.security.http.ssl.keystore.path: certs/elastic-certificates.p12\nxpack.security.http.ssl.truststore.path: certs/elastic-certificates.p12\n\n# Reiniciar Elasticsearch\nsudo systemctl restart elasticsearch")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Generar certificados para Elasticsearch
+# Usar elasticsearch-certutil
+sudo /usr/share/elasticsearch/bin/elasticsearch-certutil ca
+sudo /usr/share/elasticsearch/bin/elasticsearch-certutil cert --ca elastic-stack-ca.p12
+
+# Mover certificados a ubicación segura
+sudo mkdir -p /etc/elasticsearch/certs
+sudo cp elastic-stack-ca.p12 /etc/elasticsearch/certs/
+sudo cp elastic-certificates.p12 /etc/elasticsearch/certs/
+sudo chown elasticsearch:elasticsearch /etc/elasticsearch/certs/*
+sudo chmod 600 /etc/elasticsearch/certs/*
+
+# Configurar SSL en elasticsearch.yml
+# /etc/elasticsearch/elasticsearch.yml
+xpack.security.transport.ssl.enabled: true
+xpack.security.transport.ssl.verification_mode: certificate
+xpack.security.transport.ssl.keystore.path: certs/elastic-certificates.p12
+xpack.security.transport.ssl.truststore.path: certs/elastic-certificates.p12
+
+# HTTP SSL
+xpack.security.http.ssl.enabled: true
+xpack.security.http.ssl.keystore.path: certs/elastic-certificates.p12
+xpack.security.http.ssl.truststore.path: certs/elastic-certificates.p12
+
+# Reiniciar Elasticsearch
+sudo systemctl restart elasticsearch</code></pre>
+                        </div>
+
+                        <h3 id="roles-avanzados">Gestión Avanzada de Roles</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Crear rol de solo lectura para índices específicos\ncurl -u elastic:PASSWORD -X POST \"localhost:9200/_security/role/readonly_logs?pretty\" \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n    \"cluster\": [\"monitor\"],\n    \"indices\": [{\n      \"names\": [\"logs-*\"],\n      \"privileges\": [\"read\", \"view_index_metadata\"],\n      \"query\": {\n        \"match_all\": {}\n      }\n    }]\n  }'\n\n# Crear rol de escritura limitada\ncurl -u elastic:PASSWORD -X POST \"localhost:9200/_security/role/write_app?pretty\" \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n    \"indices\": [{\n      \"names\": [\"app-*\"],\n      \"privileges\": [\"write\", \"create_index\"],\n      \"field_security\": {\n        \"grant\": [\"*\"],\n        \"except\": [\"password\", \"token\", \"secret\"]\n      }\n    }]\n  }'\n\n# Crear rol de administrador de índices (sin acceso a cluster)\ncurl -u elastic:PASSWORD -X POST \"localhost:9200/_security/role/index_admin?pretty\" \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n    \"indices\": [{\n      \"names\": [\"*\"],\n      \"privileges\": [\"all\"]\n    }],\n    \"cluster\": [\"monitor\"]\n  }'\n\n# Asignar múltiples roles a usuario\ncurl -u elastic:PASSWORD -X POST \"localhost:9200/_security/user/app_user?pretty\" \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n    \"password\": \"SecurePassword123!\",\n    \"roles\": [\"write_app\", \"readonly_logs\"],\n    \"full_name\": \"Application User\",\n    \"email\": \"app@example.com\"\n  }'")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Crear rol de solo lectura para índices específicos
+curl -u elastic:PASSWORD -X POST "localhost:9200/_security/role/readonly_logs?pretty" \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "cluster": ["monitor"],
+    "indices": [{
+      "names": ["logs-*"],
+      "privileges": ["read", "view_index_metadata"],
+      "query": {
+        "match_all": {}
+      }
+    }]
+  }'
+
+# Crear rol de escritura limitada
+curl -u elastic:PASSWORD -X POST "localhost:9200/_security/role/write_app?pretty" \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "indices": [{
+      "names": ["app-*"],
+      "privileges": ["write", "create_index"],
+      "field_security": {
+        "grant": ["*"],
+        "except": ["password", "token", "secret"]
+      }
+    }]
+  }'
+
+# Crear rol de administrador de índices (sin acceso a cluster)
+curl -u elastic:PASSWORD -X POST "localhost:9200/_security/role/index_admin?pretty" \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "indices": [{
+      "names": ["*"],
+      "privileges": ["all"]
+    }],
+    "cluster": ["monitor"]
+  }'
+
+# Asignar múltiples roles a usuario
+curl -u elastic:PASSWORD -X POST "localhost:9200/_security/user/app_user?pretty" \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "password": "SecurePassword123!",
+    "roles": ["write_app", "readonly_logs"],
+    "full_name": "Application User",
+    "email": "app@example.com"
+  }'</code></pre>
+                        </div>
+
+                        <h3 id="configuracion-red">Configuración de Red y Firewall</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Configurar red en elasticsearch.yml\n# /etc/elasticsearch/elasticsearch.yml\n\n# Solo escuchar en interfaces específicas\nnetwork.host: 127.0.0.1\nhttp.port: 9200\ntransport.port: 9300\n\n# Para cluster multi-nodo, usar IPs privadas\n# network.host: 10.0.1.10\n# network.publish_host: 10.0.1.10\n# network.bind_host: 10.0.1.10\n\n# Configurar firewall (UFW)\nsudo ufw allow from 10.0.0.0/8 to any port 9200\nsudo ufw allow from 10.0.0.0/8 to any port 9300\nsudo ufw deny 9200\nsudo ufw deny 9300\n\n# Verificar reglas de firewall\nsudo ufw status numbered\n\n# Configurar iptables (alternativa)\nsudo iptables -A INPUT -p tcp -s 10.0.0.0/8 --dport 9200 -j ACCEPT\nsudo iptables -A INPUT -p tcp -s 10.0.0.0/8 --dport 9300 -j ACCEPT\nsudo iptables -A INPUT -p tcp --dport 9200 -j DROP\nsudo iptables -A INPUT -p tcp --dport 9300 -j DROP")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Configurar red en elasticsearch.yml
+# /etc/elasticsearch/elasticsearch.yml
+
+# Solo escuchar en interfaces específicas
+network.host: 127.0.0.1
+http.port: 9200
+transport.port: 9300
+
+# Para cluster multi-nodo, usar IPs privadas
+# network.host: 10.0.1.10
+# network.publish_host: 10.0.1.10
+# network.bind_host: 10.0.1.10
+
+# Configurar firewall (UFW)
+sudo ufw allow from 10.0.0.0/8 to any port 9200
+sudo ufw allow from 10.0.0.0/8 to any port 9300
+sudo ufw deny 9200
+sudo ufw deny 9300
+
+# Verificar reglas de firewall
+sudo ufw status numbered
+
+# Configurar iptables (alternativa)
+sudo iptables -A INPUT -p tcp -s 10.0.0.0/8 --dport 9200 -j ACCEPT
+sudo iptables -A INPUT -p tcp -s 10.0.0.0/8 --dport 9300 -j ACCEPT
+sudo iptables -A INPUT -p tcp --dport 9200 -j DROP
+sudo iptables -A INPUT -p tcp --dport 9300 -j DROP</code></pre>
+                        </div>
+
+                        <h2 id="indices-templates">Gestión de Índices y Templates</h2>
+                        <h3 id="index-templates">Index Templates</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Crear index template para logs\ncurl -u elastic:PASSWORD -X PUT \"localhost:9200/_index_template/logs_template?pretty\" \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n    \"index_patterns\": [\"logs-*\"],\n    \"template\": {\n      \"settings\": {\n        \"number_of_shards\": 1,\n        \"number_of_replicas\": 1,\n        \"index.lifecycle.name\": \"logs-policy\",\n        \"index.lifecycle.rollover_alias\": \"logs\"\n      },\n      \"mappings\": {\n        \"properties\": {\n          \"@timestamp\": {\"type\": \"date\"},\n          \"level\": {\"type\": \"keyword\"},\n          \"message\": {\"type\": \"text\"}\n        }\n      }\n    },\n    \"priority\": 200\n  }'\n\n# Crear component template reutilizable\ncurl -u elastic:PASSWORD -X PUT \"localhost:9200/_component_template/logs_mappings?pretty\" \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n    \"template\": {\n      \"mappings\": {\n        \"properties\": {\n          \"@timestamp\": {\"type\": \"date\"},\n          \"level\": {\"type\": \"keyword\"}\n        }\n      }\n    }\n  }'\n\n# Listar templates\ncurl -u elastic:PASSWORD -X GET \"localhost:9200/_index_template?pretty\"\n\n# Ver template específico\ncurl -u elastic:PASSWORD -X GET \"localhost:9200/_index_template/logs_template?pretty\"")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Crear index template para logs
+curl -u elastic:PASSWORD -X PUT "localhost:9200/_index_template/logs_template?pretty" \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "index_patterns": ["logs-*"],
+    "template": {
+      "settings": {
+        "number_of_shards": 1,
+        "number_of_replicas": 1,
+        "index.lifecycle.name": "logs-policy",
+        "index.lifecycle.rollover_alias": "logs"
+      },
+      "mappings": {
+        "properties": {
+          "@timestamp": {"type": "date"},
+          "level": {"type": "keyword"},
+          "message": {"type": "text"}
+        }
+      }
+    },
+    "priority": 200
+  }'
+
+# Crear component template reutilizable
+curl -u elastic:PASSWORD -X PUT "localhost:9200/_component_template/logs_mappings?pretty" \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "template": {
+      "mappings": {
+        "properties": {
+          "@timestamp": {"type": "date"},
+          "level": {"type": "keyword"}
+        }
+      }
+    }
+  }'
+
+# Listar templates
+curl -u elastic:PASSWORD -X GET "localhost:9200/_index_template?pretty"
+
+# Ver template específico
+curl -u elastic:PASSWORD -X GET "localhost:9200/_index_template/logs_template?pretty"</code></pre>
+                        </div>
+
+                        <h3 id="index-lifecycle">Index Lifecycle Management (ILM)</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Crear política de lifecycle para logs\ncurl -u elastic:PASSWORD -X PUT \"localhost:9200/_ilm/policy/logs-policy?pretty\" \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n    \"policy\": {\n      \"phases\": {\n        \"hot\": {\n          \"actions\": {\n            \"rollover\": {\n              \"max_size\": \"50GB\",\n              \"max_age\": \"30d\"\n            },\n            \"set_priority\": {\n              \"priority\": 100\n            }\n          }\n        },\n        \"warm\": {\n          \"min_age\": \"30d\",\n          \"actions\": {\n            \"set_priority\": {\n              \"priority\": 50\n            },\n            \"allocate\": {\n              \"number_of_replicas\": 0\n            }\n          }\n        },\n        \"cold\": {\n          \"min_age\": \"90d\",\n          \"actions\": {\n            \"set_priority\": {\n              \"priority\": 0\n            }\n          }\n        },\n        \"delete\": {\n          \"min_age\": \"365d\",\n          \"actions\": {\n            \"delete\": {}\n          }\n        }\n      }\n    }\n  }'\n\n# Verificar política\ncurl -u elastic:PASSWORD -X GET \"localhost:9200/_ilm/policy/logs-policy?pretty\"\n\n# Verificar estado de ILM\ncurl -u elastic:PASSWORD -X GET \"localhost:9200/_ilm/status?pretty\"")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Crear política de lifecycle para logs
+curl -u elastic:PASSWORD -X PUT "localhost:9200/_ilm/policy/logs-policy?pretty" \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "policy": {
+      "phases": {
+        "hot": {
+          "actions": {
+            "rollover": {
+              "max_size": "50GB",
+              "max_age": "30d"
+            },
+            "set_priority": {
+              "priority": 100
+            }
+          }
+        },
+        "warm": {
+          "min_age": "30d",
+          "actions": {
+            "set_priority": {
+              "priority": 50
+            },
+            "allocate": {
+              "number_of_replicas": 0
+            }
+          }
+        },
+        "cold": {
+          "min_age": "90d",
+          "actions": {
+            "set_priority": {
+              "priority": 0
+            }
+          }
+        },
+        "delete": {
+          "min_age": "365d",
+          "actions": {
+            "delete": {}
+          }
+        }
+      }
+    }
+  }'
+
+# Verificar política
+curl -u elastic:PASSWORD -X GET "localhost:9200/_ilm/policy/logs-policy?pretty"
+
+# Verificar estado de ILM
+curl -u elastic:PASSWORD -X GET "localhost:9200/_ilm/status?pretty"</code></pre>
+                        </div>
+
+                        <h2 id="optimizacion-rendimiento">Optimización y Rendimiento</h2>
+                        <h3 id="configuracion-jvm">Configuración JVM</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Configurar JVM heap\n# /etc/elasticsearch/jvm.options\n\n# Heap size (50% de RAM disponible, máximo 32GB)\n-Xms8g\n-Xmx8g\n\n# Garbage Collector (G1GC recomendado para heaps >4GB)\n-XX:+UseG1GC\n-XX:G1HeapRegionSize=16m\n-XX:InitiatingHeapOccupancyPercent=30\n-XX:G1MixedGCCountTarget=8\n-XX:G1MixedGCLiveThresholdPercent=85\n-XX:G1HeapWastePercent=5\n\n# Logs de GC\n-Xlog:gc*,gc+age=trace,safepoint:logs/gc.log:utctime,pid,tid,level:filecount=32,filesize=64m\n\n# Verificar configuración\ncurl -u elastic:PASSWORD -X GET \"localhost:9200/_nodes/jvm?pretty\"")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Configurar JVM heap
+# /etc/elasticsearch/jvm.options
+
+# Heap size (50% de RAM disponible, máximo 32GB)
+-Xms8g
+-Xmx8g
+
+# Garbage Collector (G1GC recomendado para heaps >4GB)
+-XX:+UseG1GC
+-XX:G1HeapRegionSize=16m
+-XX:InitiatingHeapOccupancyPercent=30
+-XX:G1MixedGCCountTarget=8
+-XX:G1MixedGCLiveThresholdPercent=85
+-XX:G1HeapWastePercent=5
+
+# Logs de GC
+-Xlog:gc*,gc+age=trace,safepoint:logs/gc.log:utctime,pid,tid,level:filecount=32,filesize=64m
+
+# Verificar configuración
+curl -u elastic:PASSWORD -X GET "localhost:9200/_nodes/jvm?pretty"</code></pre>
+                        </div>
+
+                        <h3 id="optimizacion-indices">Optimización de Índices</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Forzar merge de segmentos (solo índices read-only)\ncurl -u elastic:PASSWORD -X POST \"localhost:9200/my_index/_forcemerge?max_num_segments=1&pretty\"\n\n# Actualizar configuración de índice\ncurl -u elastic:PASSWORD -X PUT \"localhost:9200/my_index/_settings?pretty\" \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n    \"index\": {\n      \"number_of_replicas\": 1,\n      \"refresh_interval\": \"30s\",\n      \"translog.durability\": \"async\",\n      \"translog.sync_interval\": \"5s\"\n    }\n  }'\n\n# Deshabilitar refresh temporalmente para bulk insert\ncurl -u elastic:PASSWORD -X PUT \"localhost:9200/my_index/_settings?pretty\" \\\n  -H 'Content-Type: application/json' \\\n  -d '{\"index\": {\"refresh_interval\": \"-1\"}}'\n\n# Re-habilitar refresh\ncurl -u elastic:PASSWORD -X PUT \"localhost:9200/my_index/_settings?pretty\" \\\n  -H 'Content-Type: application/json' \\\n  -d '{\"index\": {\"refresh_interval\": \"1s\"}}'\n\n# Ver estadísticas de índice\ncurl -u elastic:PASSWORD -X GET \"localhost:9200/my_index/_stats?pretty\"")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Forzar merge de segmentos (solo índices read-only)
+curl -u elastic:PASSWORD -X POST "localhost:9200/my_index/_forcemerge?max_num_segments=1&pretty"
+
+# Actualizar configuración de índice
+curl -u elastic:PASSWORD -X PUT "localhost:9200/my_index/_settings?pretty" \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "index": {
+      "number_of_replicas": 1,
+      "refresh_interval": "30s",
+      "translog.durability": "async",
+      "translog.sync_interval": "5s"
+    }
+  }'
+
+# Deshabilitar refresh temporalmente para bulk insert
+curl -u elastic:PASSWORD -X PUT "localhost:9200/my_index/_settings?pretty" \
+  -H 'Content-Type: application/json' \
+  -d '{"index": {"refresh_interval": "-1"}}'
+
+# Re-habilitar refresh
+curl -u elastic:PASSWORD -X PUT "localhost:9200/my_index/_settings?pretty" \
+  -H 'Content-Type: application/json' \
+  -d '{"index": {"refresh_interval": "1s"}}'
+
+# Ver estadísticas de índice
+curl -u elastic:PASSWORD -X GET "localhost:9200/my_index/_stats?pretty"</code></pre>
+                        </div>
+
+                        <h2 id="troubleshooting">Troubleshooting Común</h2>
+                        <h3 id="problemas-cluster">Problemas de Cluster</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Verificar estado del cluster\ncurl -u elastic:PASSWORD -X GET \"localhost:9200/_cluster/health?pretty\"\n\n# Verificar nodos desconectados\ncurl -u elastic:PASSWORD -X GET \"localhost:9200/_cat/nodes?v&h=name,ip,node.role,load,heap.percent,ram.percent\"\n\n# Ver shards no asignados\ncurl -u elastic:PASSWORD -X GET \"localhost:9200/_cat/shards?v&h=index,shard,prirep,state,unassigned.reason\" | grep UNASSIGNED\n\n# Forzar asignación de shard (solo si es seguro)\ncurl -u elastic:PASSWORD -X POST \"localhost:9200/_cluster/reroute?pretty\" \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n    \"commands\": [{\n      \"allocate_replica\": {\n        \"index\": \"my_index\",\n        \"shard\": 0,\n        \"node\": \"node_name\"\n      }\n    }]\n  }'\n\n# Ver logs de Elasticsearch\nsudo journalctl -u elasticsearch -f\nsudo tail -f /var/log/elasticsearch/elasticsearch.log")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Verificar estado del cluster
+curl -u elastic:PASSWORD -X GET "localhost:9200/_cluster/health?pretty"
+
+# Verificar nodos desconectados
+curl -u elastic:PASSWORD -X GET "localhost:9200/_cat/nodes?v&h=name,ip,node.role,load,heap.percent,ram.percent"
+
+# Ver shards no asignados
+curl -u elastic:PASSWORD -X GET "localhost:9200/_cat/shards?v&h=index,shard,prirep,state,unassigned.reason" | grep UNASSIGNED
+
+# Forzar asignación de shard (solo si es seguro)
+curl -u elastic:PASSWORD -X POST "localhost:9200/_cluster/reroute?pretty" \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "commands": [{
+      "allocate_replica": {
+        "index": "my_index",
+        "shard": 0,
+        "node": "node_name"
+      }
+    }]
+  }'
+
+# Ver logs de Elasticsearch
+sudo journalctl -u elasticsearch -f
+sudo tail -f /var/log/elasticsearch/elasticsearch.log</code></pre>
+                        </div>
+
+                        <h3 id="problemas-rendimiento">Problemas de Rendimiento</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Verificar hot threads (procesos consumiendo CPU)\ncurl -u elastic:PASSWORD -X GET \"localhost:9200/_nodes/hot_threads?pretty\"\n\n# Verificar tareas lentas\ncurl -u elastic:PASSWORD -X GET \"localhost:9200/_tasks?detailed=true&actions=*search&pretty\"\n\n# Cancelar tarea específica\ncurl -u elastic:PASSWORD -X POST \"localhost:9200/_tasks/TASK_ID/_cancel?pretty\"\n\n# Verificar uso de memoria\ncurl -u elastic:PASSWORD -X GET \"localhost:9200/_cat/nodes?v&h=name,heap.percent,ram.percent,disk.used_percent\"\n\n# Verificar índices grandes\ncurl -u elastic:PASSWORD -X GET \"localhost:9200/_cat/indices?v&s=store.size:desc&h=index,store.size,docs.count\"\n\n# Verificar segmentos de índices\ncurl -u elastic:PASSWORD -X GET \"localhost:9200/_cat/segments/my_index?v\"")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Verificar hot threads (procesos consumiendo CPU)
+curl -u elastic:PASSWORD -X GET "localhost:9200/_nodes/hot_threads?pretty"
+
+# Verificar tareas lentas
+curl -u elastic:PASSWORD -X GET "localhost:9200/_tasks?detailed=true&actions=*search&pretty"
+
+# Cancelar tarea específica
+curl -u elastic:PASSWORD -X POST "localhost:9200/_tasks/TASK_ID/_cancel?pretty"
+
+# Verificar uso de memoria
+curl -u elastic:PASSWORD -X GET "localhost:9200/_cat/nodes?v&h=name,heap.percent,ram.percent,disk.used_percent"
+
+# Verificar índices grandes
+curl -u elastic:PASSWORD -X GET "localhost:9200/_cat/indices?v&s=store.size:desc&h=index,store.size,docs.count"
+
+# Verificar segmentos de índices
+curl -u elastic:PASSWORD -X GET "localhost:9200/_cat/segments/my_index?v"</code></pre>
+                        </div>
+
+                        <h2 id="mejores-practicas">Mejores Prácticas de Producción</h2>
+                        <div class="checklist-container mb-6">
+                            <h3 class="text-xl font-semibold mb-4">Checklist de Hardening</h3>
+                            <div class="checklist" data-checklist-id="elasticsearch-hardening">
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('elasticsearch-hardening', 0)" class="checklist-checkbox">
+                                        <span>Habilitar xpack.security en producción</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('elasticsearch-hardening', 1)" class="checklist-checkbox">
+                                        <span>Configurar SSL/TLS para transporte y HTTP</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('elasticsearch-hardening', 2)" class="checklist-checkbox">
+                                        <span>Restringir acceso de red con firewall</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('elasticsearch-hardening', 3)" class="checklist-checkbox">
+                                        <span>Crear usuarios con principio de menor privilegio</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('elasticsearch-hardening', 4)" class="checklist-checkbox">
+                                        <span>Configurar roles específicos por índice</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('elasticsearch-hardening', 5)" class="checklist-checkbox">
+                                        <span>Implementar snapshots automáticos</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('elasticsearch-hardening', 6)" class="checklist-checkbox">
+                                        <span>Configurar Index Lifecycle Management (ILM)</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('elasticsearch-hardening', 7)" class="checklist-checkbox">
+                                        <span>Monitorear health del cluster regularmente</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('elasticsearch-hardening', 8)" class="checklist-checkbox">
+                                        <span>Configurar JVM heap apropiadamente (50% RAM, max 32GB)</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('elasticsearch-hardening', 9)" class="checklist-checkbox">
+                                        <span>Implementar rotación de logs</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="checklist-progress mt-4">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" data-progress="elasticsearch-hardening" style="width: 0%"></div>
+                                </div>
+                                <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">Progreso: <span data-progress-text="elasticsearch-hardening">0</span>/10</p>
+                            </div>
+                            <div class="flex gap-2 mt-4">
+                                <button onclick="resetChecklist('elasticsearch-hardening')" class="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 text-sm">Resetear</button>
+                                <button onclick="exportChecklist('elasticsearch-hardening')" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm">Exportar JSON</button>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-info mt-6">
+                            <p class="font-semibold mb-2">💡 Recomendaciones Adicionales</p>
+                            <ul class="list-disc list-inside space-y-1">
+                                <li>Usar un reverse proxy (Nginx, HAProxy) para exponer Elasticsearch públicamente</li>
+                                <li>Implementar rate limiting en el reverse proxy</li>
+                                <li>Configurar alertas para health del cluster (yellow/red)</li>
+                                <li>Realizar backups incrementales diarios y completos semanales</li>
+                                <li>Monitorear uso de disco y configurar alertas de espacio</li>
+                                <li>Revisar y actualizar regularmente las políticas de ILM</li>
+                                <li>Documentar todos los usuarios y roles creados</li>
+                                <li>Auditar accesos usando X-Pack Security Audit</li>
+                            </ul>
+                        </div>
+
                         <div class="alert alert-success mt-8">
                             <p class="font-semibold mb-2">✅ Elasticsearch</p>
-                            <p>Elasticsearch es potente pero requiere configuración de seguridad adecuada. Siempre habilita xpack.security en producción. Usa roles y usuarios para aplicar principio de menor privilegio. Los snapshots son esenciales para backup. Monitorea el health del cluster regularmente.</p>
+                            <p>Elasticsearch es potente pero requiere configuración de seguridad adecuada. Siempre habilita xpack.security en producción. Usa roles y usuarios para aplicar principio de menor privilegio. Los snapshots son esenciales para backup. Monitorea el health del cluster regularmente. Implementa SSL/TLS, configura firewalls, y usa Index Lifecycle Management para optimizar el almacenamiento.</p>
                         </div>
                     </div>
                 </article>
@@ -290,38 +778,11 @@ curl -u elastic:PASSWORD -X GET "localhost:9200/_tasks?pretty"</code></pre>
         </div>
     </footer>
 
+    <script src="../../assets/js/navigation.js"></script>
     <script src="../../assets/js/search.js"></script>
     <script src="../../assets/js/main.js"></script>
     <style>[x-cloak] { display: none !important; }</style>
-            <script>
-        // Inicializar navegación cuando el DOM esté listo
-        (function() {
-            function initNav() {
-                if (typeof initNavigation === 'function') {
-                    initNavigation();
-                } else if (typeof generateNavigation === 'function') {
-                    const sidebar = document.querySelector('.sidebar nav');
-                    if (sidebar) {
-                        sidebar.innerHTML = generateNavigation();
-                        if (typeof highlightCurrentPage === 'function') {
-                            highlightCurrentPage();
-                        }
-                    }
-                }
-            }
-            
-            // Esperar a que todos los scripts estén cargados
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', function() {
-                    setTimeout(initNav, 200);
-                });
-            } else {
-                // DOM ya está listo, pero esperar un poco para asegurar que Alpine.js esté listo
-                setTimeout(initNav, 200);
-            }
-        })();
-    </script>
-        <script>
+    <script>
         // Inicializar navegación cuando el DOM esté listo
         (function() {
             function initNav() {

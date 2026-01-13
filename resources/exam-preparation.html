@@ -246,9 +246,128 @@
                             </ul>
                         </div>
 
+                        <h2 id="estrategias-examen">Estrategias para el Día del Examen</h2>
+                        <h3 id="antes-examen">Antes del Examen</h3>
+                        <ul>
+                            <li><strong>Descanso adecuado:</strong> Dormir bien la noche anterior</li>
+                            <li><strong>Llegar temprano:</strong> Llegar al centro de pruebas con tiempo suficiente</li>
+                            <li><strong>Documentación requerida:</strong> Llevar identificación válida y confirmación de registro</li>
+                            <li><strong>Repaso ligero:</strong> Revisar conceptos clave, no estudiar intensamente</li>
+                            <li><strong>Preparación mental:</strong> Mantener calma y confianza</li>
+                        </ul>
+
+                        <h3 id="durante-examen">Durante el Examen</h3>
+                        <ul>
+                            <li><strong>Gestionar tiempo:</strong> Asignar tiempo por pregunta según el total</li>
+                            <li><strong>Leer cuidadosamente:</strong> Entender completamente cada pregunta antes de responder</li>
+                            <li><strong>Eliminar opciones:</strong> Descartar respuestas claramente incorrectas</li>
+                            <li><strong>Marcar para revisión:</strong> Marcar preguntas difíciles y volver después</li>
+                            <li><strong>No cambiar respuestas:</strong> A menos que estés seguro, la primera impresión suele ser correcta</li>
+                        </ul>
+
+                        <h2 id="recursos-estudio">Recursos de Estudio Recomendados</h2>
+                        <div class="overflow-x-auto mb-6">
+                            <table>
+                                <thead>
+                                    <tr><th>Recurso</th><th>Tipo</th><th>Descripción</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Guías Oficiales</td>
+                                        <td>Documentación</td>
+                                        <td>Study guides oficiales de cada organización certificadora</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Practice Exams</td>
+                                        <td>Exámenes</td>
+                                        <td>Exámenes de práctica oficiales y de terceros</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Video Courses</td>
+                                        <td>Video</td>
+                                        <td>Cursos en línea (Cybrary, Pluralsight, Udemy, etc.)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Labs Hands-On</td>
+                                        <td>Práctica</td>
+                                        <td>Labs virtuales para práctica práctica (TryHackMe, HackTheBox, etc.)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Flashcards</td>
+                                        <td>Memorización</td>
+                                        <td>Anki, Quizlet, o flashcards físicas</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Study Groups</td>
+                                        <td>Colaboración</td>
+                                        <td>Grupos de estudio online o presenciales</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Books</td>
+                                        <td>Lectura</td>
+                                        <td>Libros oficiales de estudio y guías de referencia</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h2 id="checklist-examen">Checklist de Preparación para Examen</h2>
+                        <div class="checklist-container mb-6">
+                            <div class="checklist" data-checklist-id="exam-preparation">
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('exam-preparation', 0)" class="checklist-checkbox">
+                                        <span>Dominio de conocimiento revisado completamente</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('exam-preparation', 1)" class="checklist-checkbox">
+                                        <span>Material de estudio completado (guías, videos, libros)</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('exam-preparation', 2)" class="checklist-checkbox">
+                                        <span>Múltiples exámenes de práctica completados (score > 85%)</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('exam-preparation', 3)" class="checklist-checkbox">
+                                        <span>Áreas débiles identificadas y reforzadas</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('exam-preparation', 4)" class="checklist-checkbox">
+                                        <span>Práctica hands-on completada (labs, ejercicios)</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('exam-preparation', 5)" class="checklist-checkbox">
+                                        <span>Formato del examen entendido (tipos de preguntas, tiempo)</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('exam-preparation', 6)" class="checklist-checkbox">
+                                        <span>Examen programado y ubicación confirmada</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="checklist-progress mt-4">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" data-progress="exam-preparation"></div>
+                                </div>
+                                <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">Progreso: <span data-progress-text="exam-preparation">0%</span></p>
+                            </div>
+                        </div>
+
                         <div class="alert alert-success mt-8">
                             <p class="font-semibold mb-2">✅ Preparación para Exámenes</p>
-                            <p>La preparación efectiva requiere tiempo, práctica y dedicación. Combina estudio teórico con práctica hands-on. Los exámenes de práctica son esenciales para familiarizarse con el formato y identificar áreas de mejora. Recuerda: la certificación valida conocimiento, pero la experiencia práctica es igualmente importante.</p>
+                            <p>La preparación efectiva requiere tiempo, práctica y dedicación. Combina estudio teórico con práctica hands-on. Los exámenes de práctica son esenciales para familiarizarse con el formato y identificar áreas de mejora. Recuerda: la certificación valida conocimiento, pero la experiencia práctica es igualmente importante. Gestiona tu tiempo durante el examen y mantén la calma.</p>
                         </div>
                     </div>
                 </article>

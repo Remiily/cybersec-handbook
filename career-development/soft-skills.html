@@ -219,6 +219,113 @@
                             <li><strong>Mentoreo bidireccional:</strong> Aprender de otros y enseñar a otros</li>
                         </ul>
 
+                        <h2 id="comunicacion-efectiva">Comunicación Efectiva en Seguridad</h2>
+                        <h3 id="comunicacion-tecnica">Comunicación Técnica</h3>
+                        <p>La capacidad de comunicar conceptos técnicos complejos a diferentes audiencias es crucial:</p>
+                        <ul>
+                            <li><strong>Para Ejecutivos:</strong> Enfocarse en riesgo de negocio, impacto y ROI</li>
+                            <li><strong>Para Técnicos:</strong> Detalles técnicos, comandos, configuraciones</li>
+                            <li><strong>Para Usuarios Finales:</strong> Explicaciones simples, sin jerga técnica</li>
+                            <li><strong>Para Compliance:</strong> Mapeo a frameworks, evidencia de controles</li>
+                        </ul>
+
+                        <h3 id="reportes-seguridad">Estructura de Reportes de Seguridad</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Estructura de Reporte de Seguridad\n\n# 1. Executive Summary (1-2 páginas)\n# - Resumen ejecutivo para C-level\n# - Hallazgos críticos\n# - Recomendaciones principales\n# - Métricas clave (riesgo, compliance, etc.)\n\n# 2. Contexto y Alcance\n# - Objetivo del reporte\n# - Sistemas/activos evaluados\n# - Metodología utilizada\n# - Limitaciones\n\n# 3. Hallazgos Detallados\n# Para cada hallazgo:\n# - Título y descripción\n# - Severidad y riesgo\n# - Evidencia (screenshots, logs)\n# - Impacto de negocio\n# - Recomendaciones de remediación\n# - Timeline sugerido\n\n# 4. Análisis de Riesgo\n# - Matriz de riesgo\n# - Priorización\n# - Análisis de impacto\n\n# 5. Recomendaciones\n# - Recomendaciones técnicas\n# - Recomendaciones de proceso\n# - Roadmap de implementación\n\n# 6. Appendices\n# - Logs detallados\n# - Configuraciones\n# - Referencias técnicas")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Estructura de Reporte de Seguridad
+
+# 1. Executive Summary (1-2 páginas)
+# - Resumen ejecutivo para C-level
+# - Hallazgos críticos
+# - Recomendaciones principales
+# - Métricas clave (riesgo, compliance, etc.)
+
+# 2. Contexto y Alcance
+# - Objetivo del reporte
+# - Sistemas/activos evaluados
+# - Metodología utilizada
+# - Limitaciones
+
+# 3. Hallazgos Detallados
+# Para cada hallazgo:
+# - Título y descripción
+# - Severidad y riesgo
+# - Evidencia (screenshots, logs)
+# - Impacto de negocio
+# - Recomendaciones de remediación
+# - Timeline sugerido
+
+# 4. Análisis de Riesgo
+# - Matriz de riesgo
+# - Priorización
+# - Análisis de impacto
+
+# 5. Recomendaciones
+# - Recomendaciones técnicas
+# - Recomendaciones de proceso
+# - Roadmap de implementación
+
+# 6. Appendices
+# - Logs detallados
+# - Configuraciones
+# - Referencias técnicas</code></pre>
+                        </div>
+
+                        <h2 id="checklist-soft-skills">Checklist de Desarrollo de Soft Skills</h2>
+                        <div class="checklist-container mb-6">
+                            <div class="checklist" data-checklist-id="soft-skills-development">
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('soft-skills-development', 0)" class="checklist-checkbox">
+                                        <span>Habilidad de comunicar conceptos técnicos a no-técnicos</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('soft-skills-development', 1)" class="checklist-checkbox">
+                                        <span>Experiencia liderando equipos o proyectos</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('soft-skills-development', 2)" class="checklist-checkbox">
+                                        <span>Capacidad de colaborar efectivamente con otros departamentos</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('soft-skills-development', 3)" class="checklist-checkbox">
+                                        <span>Habilidad de negociar y obtener recursos/budget</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('soft-skills-development', 4)" class="checklist-checkbox">
+                                        <span>Gestión efectiva del tiempo y priorización</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('soft-skills-development', 5)" class="checklist-checkbox">
+                                        <span>Plan de desarrollo profesional continuo establecido</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="checklist-progress mt-4">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" data-progress="soft-skills-development"></div>
+                                </div>
+                                <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">Progreso: <span data-progress-text="soft-skills-development">0%</span></p>
+                            </div>
+                        </div>
+
                         <div class="alert alert-success mt-8">
                             <p class="font-semibold mb-2">✅ Recordatorio</p>
                             <p>Las habilidades técnicas son fundamentales para obtener oportunidades, pero las habilidades blandas determinan el crecimiento profesional a largo plazo y la capacidad de liderar equipos y proyectos exitosos.</p>

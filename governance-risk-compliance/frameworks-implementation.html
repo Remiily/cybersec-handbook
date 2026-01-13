@@ -80,8 +80,11 @@
                         </div>
 
                         <h2 id="iso-27001">ISO 27001</h2>
+                        <p>ISO/IEC 27001 es el estándar internacional para Sistemas de Gestión de Seguridad de la Información (ISMS).</p>
+
+                        <h3 id="fases-implementacion">Fases de Implementación</h3>
                         <div class="command-block mb-4" x-data="copyCommand">
-                            <button @click="copy('# Fases de implementación ISO 27001:\n\n# 1. Gap Analysis\n# - Evaluar estado actual\n# - Identificar gaps\n# - Priorizar controles\n\n# 2. ISMS (Information Security Management System)\n# - Definir scope\n# - Establecer políticas\n# - Documentar procesos\n\n# 3. Implementación de Controles\n# - Anexo A de ISO 27001\n# - 93 controles organizados en 14 dominios\n\n# 4. Auditoría Interna\n# - Verificar implementación\n# - Identificar no conformidades\n\n# 5. Certificación\n# - Auditoría externa\n# - Certificación por organismo acreditado')" class="copy-btn" :class="{ 'copied': copied }">
+                            <button @click="copy("# Fases de implementación ISO 27001:\n\n# 1. Gap Analysis (2-4 semanas)\n# - Evaluar estado actual vs ISO 27001\n# - Identificar gaps y no conformidades\n# - Priorizar controles según riesgo\n# - Documentar hallazgos\n\n# 2. ISMS Setup (4-8 semanas)\n# - Definir scope del ISMS\n# - Establecer políticas de seguridad\n# - Documentar procesos y procedimientos\n# - Definir roles y responsabilidades\n# - Establecer objetivos de seguridad\n\n# 3. Implementación de Controles (12-24 semanas)\n# - Anexo A de ISO 27001\n# - 93 controles organizados en 14 dominios:\n#   A.5: Políticas de seguridad\n#   A.6: Organización de la seguridad\n#   A.7: Seguridad de recursos humanos\n#   A.8: Gestión de activos\n#   A.9: Control de accesos\n#   A.10: Criptografía\n#   A.11: Seguridad física y ambiental\n#   A.12: Seguridad operacional\n#   A.13: Seguridad de comunicaciones\n#   A.14: Adquisición, desarrollo y mantenimiento\n#   A.15: Relaciones con proveedores\n#   A.16: Gestión de incidentes\n#   A.17: Continuidad del negocio\n#   A.18: Cumplimiento\n\n# 4. Auditoría Interna (2-4 semanas)\n# - Planificar auditoría interna\n# - Verificar implementación de controles\n# - Identificar no conformidades\n# - Documentar hallazgos\n# - Crear plan de acción correctiva\n\n# 5. Revisión de Dirección (1 semana)\n# - Revisar resultados de auditoría\n# - Aprobar mejoras\n# - Asignar recursos\n\n# 6. Certificación (4-8 semanas)\n# - Seleccionar organismo certificador\n# - Auditoría externa (Stage 1 y Stage 2)\n# - Resolver no conformidades\n# - Obtener certificación\n# - Mantener certificación (auditorías anuales)")" class="copy-btn" :class="{ 'copied': copied }">
                                 <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
                                 </svg>
@@ -91,28 +94,181 @@
                             </button>
                             <pre><code># Fases de implementación ISO 27001:
 
-# 1. Gap Analysis
-# - Evaluar estado actual
-# - Identificar gaps
-# - Priorizar controles
+# 1. Gap Analysis (2-4 semanas)
+# - Evaluar estado actual vs ISO 27001
+# - Identificar gaps y no conformidades
+# - Priorizar controles según riesgo
+# - Documentar hallazgos
 
-# 2. ISMS (Information Security Management System)
-# - Definir scope
-# - Establecer políticas
-# - Documentar procesos
+# 2. ISMS Setup (4-8 semanas)
+# - Definir scope del ISMS
+# - Establecer políticas de seguridad
+# - Documentar procesos y procedimientos
+# - Definir roles y responsabilidades
+# - Establecer objetivos de seguridad
 
-# 3. Implementación de Controles
+# 3. Implementación de Controles (12-24 semanas)
 # - Anexo A de ISO 27001
-# - 93 controles organizados en 14 dominios
+# - 93 controles organizados en 14 dominios:
+#   A.5: Políticas de seguridad
+#   A.6: Organización de la seguridad
+#   A.7: Seguridad de recursos humanos
+#   A.8: Gestión de activos
+#   A.9: Control de accesos
+#   A.10: Criptografía
+#   A.11: Seguridad física y ambiental
+#   A.12: Seguridad operacional
+#   A.13: Seguridad de comunicaciones
+#   A.14: Adquisición, desarrollo y mantenimiento
+#   A.15: Relaciones con proveedores
+#   A.16: Gestión de incidentes
+#   A.17: Continuidad del negocio
+#   A.18: Cumplimiento
 
-# 4. Auditoría Interna
-# - Verificar implementación
+# 4. Auditoría Interna (2-4 semanas)
+# - Planificar auditoría interna
+# - Verificar implementación de controles
 # - Identificar no conformidades
+# - Documentar hallazgos
+# - Crear plan de acción correctiva
 
-# 5. Certificación
-# - Auditoría externa
-# - Certificación por organismo acreditado</code></pre>
+# 5. Revisión de Dirección (1 semana)
+# - Revisar resultados de auditoría
+# - Aprobar mejoras
+# - Asignar recursos
+
+# 6. Certificación (4-8 semanas)
+# - Seleccionar organismo certificador
+# - Auditoría externa (Stage 1 y Stage 2)
+# - Resolver no conformidades
+# - Obtener certificación
+# - Mantener certificación (auditorías anuales)</code></pre>
                         </div>
+
+                        <h3 id="dominios-iso">Dominios del Anexo A</h3>
+                        <div class="overflow-x-auto mb-6">
+                            <table>
+                                <thead>
+                                    <tr><th>Dominio</th><th>Descripción</th><th>Controles</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>A.5</td>
+                                        <td>Políticas de seguridad</td>
+                                        <td>2 controles</td>
+                                    </tr>
+                                    <tr>
+                                        <td>A.6</td>
+                                        <td>Organización de la seguridad</td>
+                                        <td>7 controles</td>
+                                    </tr>
+                                    <tr>
+                                        <td>A.7</td>
+                                        <td>Seguridad de recursos humanos</td>
+                                        <td>6 controles</td>
+                                    </tr>
+                                    <tr>
+                                        <td>A.8</td>
+                                        <td>Gestión de activos</td>
+                                        <td>10 controles</td>
+                                    </tr>
+                                    <tr>
+                                        <td>A.9</td>
+                                        <td>Control de accesos</td>
+                                        <td>14 controles</td>
+                                    </tr>
+                                    <tr>
+                                        <td>A.10</td>
+                                        <td>Criptografía</td>
+                                        <td>2 controles</td>
+                                    </tr>
+                                    <tr>
+                                        <td>A.11</td>
+                                        <td>Seguridad física y ambiental</td>
+                                        <td>15 controles</td>
+                                    </tr>
+                                    <tr>
+                                        <td>A.12</td>
+                                        <td>Seguridad operacional</td>
+                                        <td>14 controles</td>
+                                    </tr>
+                                    <tr>
+                                        <td>A.13</td>
+                                        <td>Seguridad de comunicaciones</td>
+                                        <td>7 controles</td>
+                                    </tr>
+                                    <tr>
+                                        <td>A.14</td>
+                                        <td>Adquisición, desarrollo y mantenimiento</td>
+                                        <td>13 controles</td>
+                                    </tr>
+                                    <tr>
+                                        <td>A.15</td>
+                                        <td>Relaciones con proveedores</td>
+                                        <td>5 controles</td>
+                                    </tr>
+                                    <tr>
+                                        <td>A.16</td>
+                                        <td>Gestión de incidentes</td>
+                                        <td>7 controles</td>
+                                    </tr>
+                                    <tr>
+                                        <td>A.17</td>
+                                        <td>Continuidad del negocio</td>
+                                        <td>4 controles</td>
+                                    </tr>
+                                    <tr>
+                                        <td>A.18</td>
+                                        <td>Cumplimiento</td>
+                                        <td>8 controles</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h2 id="nist-csf-detalle">NIST CSF - Detalle de Funciones</h2>
+                        <h3 id="identify">Identify (Identificar)</h3>
+                        <ul>
+                            <li><strong>Asset Management:</strong> Inventario de activos de hardware, software y datos</li>
+                            <li><strong>Business Environment:</strong> Entender contexto del negocio y prioridades</li>
+                            <li><strong>Governance:</strong> Políticas, procedimientos y procesos de seguridad</li>
+                            <li><strong>Risk Assessment:</strong> Identificar y evaluar riesgos</li>
+                            <li><strong>Risk Management Strategy:</strong> Estrategia para gestionar riesgos</li>
+                            <li><strong>Supply Chain Risk Management:</strong> Gestionar riesgos de proveedores</li>
+                        </ul>
+
+                        <h3 id="protect">Protect (Proteger)</h3>
+                        <ul>
+                            <li><strong>Identity Management:</strong> Gestión de identidades y accesos</li>
+                            <li><strong>Protective Technology:</strong> Tecnologías de protección (firewalls, EDR, etc.)</li>
+                            <li><strong>Awareness and Training:</strong> Capacitación en seguridad</li>
+                            <li><strong>Data Security:</strong> Protección de datos en reposo y en tránsito</li>
+                            <li><strong>Information Protection Processes:</strong> Procesos para proteger información</li>
+                            <li><strong>Maintenance:</strong> Mantenimiento de sistemas y herramientas</li>
+                        </ul>
+
+                        <h3 id="detect">Detect (Detectar)</h3>
+                        <ul>
+                            <li><strong>Anomalies and Events:</strong> Detectar actividad anómala</li>
+                            <li><strong>Security Continuous Monitoring:</strong> Monitoreo continuo de seguridad</li>
+                            <li><strong>Detection Processes:</strong> Procesos de detección establecidos</li>
+                        </ul>
+
+                        <h3 id="respond">Respond (Responder)</h3>
+                        <ul>
+                            <li><strong>Response Planning:</strong> Planes de respuesta a incidentes</li>
+                            <li><strong>Communications:</strong> Comunicación durante incidentes</li>
+                            <li><strong>Analysis:</strong> Análisis de incidentes</li>
+                            <li><strong>Mitigation:</strong> Mitigación de incidentes</li>
+                            <li><strong>Improvements:</strong> Mejoras basadas en lecciones aprendidas</li>
+                        </ul>
+
+                        <h3 id="recover">Recover (Recuperar)</h3>
+                        <ul>
+                            <li><strong>Recovery Planning:</strong> Planes de recuperación</li>
+                            <li><strong>Improvements:</strong> Mejoras en procesos de recuperación</li>
+                            <li><strong>Communications:</strong> Comunicación durante recuperación</li>
+                        </ul>
 
                         <h2 id="checklist-frameworks">Checklist de Implementación</h2>
                         <div class="checklist-container bg-gray-50 dark:bg-gray-800 rounded-lg p-4 mb-6" data-checklist-id="frameworks-implementation">

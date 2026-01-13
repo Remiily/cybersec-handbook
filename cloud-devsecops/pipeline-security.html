@@ -189,9 +189,142 @@ jobs:
           target: 'https://staging.ejemplo.com'</code></pre>
                         </div>
 
+                        <h2 id="secret-scanning">Secret Scanning</h2>
+                        <h3 id="git-secrets">Git Secrets y TruffleHog</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Instalar git-secrets\n# macOS\nbrew install git-secrets\n\n# Configurar\ncd /path/to/repo\ngit secrets --install\ngit secrets --register-aws\n\n# Escanear commits\ngit secrets --scan-history\n\n# Pre-commit hook\n# git secrets --install crea hooks automáticamente\n\n# TruffleHog\npip install truffleHog\n# O\ndocker run -it trufflesecurity/trufflehog:latest github --repo https://github.com/user/repo\n\n# Escanear repositorio local\ntrufflehog filesystem /path/to/repo\n\n# Integrar en CI/CD\n# GitHub Actions:\n- name: TruffleHog Scan\n  uses: trufflesecurity/trufflehog@main\n  with:\n    path: .\n    base: ${{ github.event.repository.default_branch }}")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Instalar git-secrets
+# macOS
+brew install git-secrets
+
+# Configurar
+cd /path/to/repo
+git secrets --install
+git secrets --register-aws
+
+# Escanear commits
+git secrets --scan-history
+
+# Pre-commit hook
+# git secrets --install crea hooks automáticamente
+
+# TruffleHog
+pip install truffleHog
+# O
+docker run -it trufflesecurity/trufflehog:latest github --repo https://github.com/user/repo
+
+# Escanear repositorio local
+trufflehog filesystem /path/to/repo
+
+# Integrar en CI/CD
+# GitHub Actions:
+- name: TruffleHog Scan
+  uses: trufflesecurity/trufflehog@main
+  with:
+    path: .
+    base: ${{ github.event.repository.default_branch }}</code></pre>
+                        </div>
+
+                        <h2 id="container-scanning">Container Scanning</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Trivy - Container Scanner\n# Instalar\ngo install github.com/aquasecurity/trivy/cmd/trivy@latest\n# O\nbrew install trivy\n\n# Escanear imagen\ntrivy image <image:tag>\n\n# Escanear con output JSON\ntrivy image --format json --output results.json <image:tag>\n\n# Escanear solo vulnerabilidades críticas\ntrivy image --severity CRITICAL <image:tag>\n\n# Escanear filesystem\ntrivy fs /path/to/directory\n\n# Integrar en CI/CD\n# GitHub Actions:\n- name: Run Trivy vulnerability scanner\n  uses: aquasecurity/trivy-action@master\n  with:\n    image-ref: 'my-image:latest'\n    format: 'sarif'\n    output: 'trivy-results.sarif'\n\n# Clair - Container Scanner alternativo\n# Usar con Docker:\ndocker run -d --name clair -p 6060-6061:6060-6061 quay.io/coreos/clair:latest")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Trivy - Container Scanner
+# Instalar
+go install github.com/aquasecurity/trivy/cmd/trivy@latest
+# O
+brew install trivy
+
+# Escanear imagen
+trivy image <image:tag>
+
+# Escanear con output JSON
+trivy image --format json --output results.json <image:tag>
+
+# Escanear solo vulnerabilidades críticas
+trivy image --severity CRITICAL <image:tag>
+
+# Escanear filesystem
+trivy fs /path/to/directory
+
+# Integrar en CI/CD
+# GitHub Actions:
+- name: Run Trivy vulnerability scanner
+  uses: aquasecurity/trivy-action@master
+  with:
+    image-ref: 'my-image:latest'
+    format: 'sarif'
+    output: 'trivy-results.sarif'
+
+# Clair - Container Scanner alternativo
+# Usar con Docker:
+docker run -d --name clair -p 6060-6061:6060-6061 quay.io/coreos/clair:latest</code></pre>
+                        </div>
+
+                        <h2 id="checklist-pipeline">Checklist de Seguridad en CI/CD</h2>
+                        <div class="checklist-container mb-6">
+                            <div class="checklist" data-checklist-id="pipeline-security">
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('pipeline-security', 0)" class="checklist-checkbox">
+                                        <span>SAST integrado en pipeline (SonarQube, Semgrep, etc.)</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('pipeline-security', 1)" class="checklist-checkbox">
+                                        <span>DAST configurado para aplicaciones web</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('pipeline-security', 2)" class="checklist-checkbox">
+                                        <span>Secret scanning habilitado (TruffleHog, git-secrets)</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('pipeline-security', 3)" class="checklist-checkbox">
+                                        <span>Container scanning configurado (Trivy, Clair)</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('pipeline-security', 4)" class="checklist-checkbox">
+                                        <span>Dependency scanning automatizado (Snyk, Dependabot)</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('pipeline-security', 5)" class="checklist-checkbox">
+                                        <span>Build falla en vulnerabilidades críticas</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="checklist-progress mt-4">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" data-progress="pipeline-security"></div>
+                                </div>
+                                <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">Progreso: <span data-progress-text="pipeline-security">0%</span></p>
+                            </div>
+                        </div>
+
                         <div class="alert alert-success mt-8">
                             <p class="font-semibold mb-2">✅ Seguridad en CI/CD</p>
-                            <p>Integra SAST y DAST en tus pipelines desde el inicio. Falla el build si se encuentran vulnerabilidades críticas. Usa herramientas como Snyk, SonarQube o Semgrep para automatizar la detección.</p>
+                            <p>Integra SAST y DAST en tus pipelines desde el inicio. Falla el build si se encuentran vulnerabilidades críticas. Usa herramientas como Snyk, SonarQube o Semgrep para automatizar la detección. Implementa secret scanning para prevenir la exposición de credenciales y container scanning para asegurar que las imágenes no contengan vulnerabilidades conocidas.</p>
                         </div>
                     </div>
                 </article>

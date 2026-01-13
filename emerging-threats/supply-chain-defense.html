@@ -178,9 +178,282 @@ grype sbom:sbom.json
     path: .</code></pre>
                         </div>
 
+                        <h2 id="snyk">Snyk - Análisis de Dependencias</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Instalar Snyk CLI\nnpm install -g snyk\n# O\nbrew install snyk\n\n# Autenticarse\nsnyk auth\n\n# Test de vulnerabilidades\nsnyk test\n\n# Test con output JSON\nsnyk test --json > snyk-results.json\n\n# Monitorear proyecto\nsnyk monitor\n\n# Test de código (SAST)\nsnyk code test\n\n# Test de contenedores\nsnyk container test <image>\n\n# Test de IaC\nsnyk iac test\n\n# Integrar en CI/CD\n# GitHub Actions:\n- name: Run Snyk\n  uses: snyk/actions/node@master\n  env:\n    SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}\n  with:\n    args: --severity-threshold=high")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Instalar Snyk CLI
+npm install -g snyk
+# O
+brew install snyk
+
+# Autenticarse
+snyk auth
+
+# Test de vulnerabilidades
+snyk test
+
+# Test con output JSON
+snyk test --json > snyk-results.json
+
+# Monitorear proyecto
+snyk monitor
+
+# Test de código (SAST)
+snyk code test
+
+# Test de contenedores
+snyk container test <image>
+
+# Test de IaC
+snyk iac test
+
+# Integrar en CI/CD
+# GitHub Actions:
+- name: Run Snyk
+  uses: snyk/actions/node@master
+  env:
+    SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+  with:
+    args: --severity-threshold=high</code></pre>
+                        </div>
+
+                        <h2 id="herramientas-adicionales">Herramientas Adicionales</h2>
+                        <h3 id="whitesource-renovate">WhiteSource / Renovate</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Renovate Bot (GitHub App)\n# Automatiza actualizaciones de dependencias\n# Configurar: renovate.json\n\n{\n  \"extends\": [\"config:base\"],\n  \"packageRules\": [\n    {\n      \"updateTypes\": [\"minor\", \"patch\"],\n      \"automerge\": true\n    },\n    {\n      \"updateTypes\": [\"major\"],\n      \"automerge\": false,\n      \"reviewers\": [\"security-team\"]\n    }\n  ],\n  \"vulnerabilityAlerts\": {\n    \"enabled\": true\n  }\n}\n\n# WhiteSource Unified Agent\n# Escaneo completo de dependencias\njava -jar wss-unified-agent.jar\n  -d .\n  -apiKey YOUR_API_KEY\n  -project YOUR_PROJECT\n  -product YOUR_PRODUCT")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Renovate Bot (GitHub App)
+# Automatiza actualizaciones de dependencias
+# Configurar: renovate.json
+
+{
+  "extends": ["config:base"],
+  "packageRules": [
+    {
+      "updateTypes": ["minor", "patch"],
+      "automerge": true
+    },
+    {
+      "updateTypes": ["major"],
+      "automerge": false,
+      "reviewers": ["security-team"]
+    }
+  ],
+  "vulnerabilityAlerts": {
+    "enabled": true
+  }
+}
+
+# WhiteSource Unified Agent
+# Escaneo completo de dependencias
+java -jar wss-unified-agent.jar
+  -d .
+  -apiKey YOUR_API_KEY
+  -project YOUR_PROJECT
+  -product YOUR_PRODUCT</code></pre>
+                        </div>
+
+                        <h3 id="trivy-grype">Trivy y Grype</h3>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Trivy - Escaneo de vulnerabilidades\n# Instalar\ngo install github.com/aquasecurity/trivy/cmd/trivy@latest\n\n# Escanear imagen Docker\ntrivy image python:3.9\n\n# Escanear sistema de archivos\ntrivy fs .\n\n# Escanear repositorio Git\ntrivy repo https://github.com/user/repo\n\n# Output JSON\ntrivy image --format json python:3.9 > trivy-results.json\n\n# Grype - Escaneo de SBOMs y contenedores\n# Instalar\ncurl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b /usr/local/bin\n\n# Escanear directorio\ngrype dir:.\n\n# Escanear imagen\ngrype docker:python:3.9\n\n# Escanear SBOM\ngrype sbom:sbom.json\n\n# Output en formato CycloneDX\ngrype dir:. -o cyclonedx > grype-sbom.json")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Trivy - Escaneo de vulnerabilidades
+# Instalar
+go install github.com/aquasecurity/trivy/cmd/trivy@latest
+
+# Escanear imagen Docker
+trivy image python:3.9
+
+# Escanear sistema de archivos
+trivy fs .
+
+# Escanear repositorio Git
+trivy repo https://github.com/user/repo
+
+# Output JSON
+trivy image --format json python:3.9 > trivy-results.json
+
+# Grype - Escaneo de SBOMs y contenedores
+# Instalar
+curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b /usr/local/bin
+
+# Escanear directorio
+grype dir:.
+
+# Escanear imagen
+grype docker:python:3.9
+
+# Escanear SBOM
+grype sbom:sbom.json
+
+# Output en formato CycloneDX
+grype dir:. -o cyclonedx > grype-sbom.json</code></pre>
+                        </div>
+
+                        <h2 id="proceso-remediacion">Proceso de Remediation</h2>
+                        <div class="command-block mb-4" x-data="copyCommand">
+                            <button @click="copy("# Proceso estructurado de remediation\n\n# 1. IDENTIFICACIÓN\n# - Ejecutar escaneo de dependencias\n# - Identificar vulnerabilidades críticas\n# - Priorizar por CVSS score\n\n# 2. ANÁLISIS\n# - Verificar si la dependencia es usada directamente\n# - Verificar si es dependencia transitiva\n# - Analizar impacto en la aplicación\n\n# 3. TESTING\n# - Actualizar dependencia en branch separado\n# - Ejecutar tests unitarios e integración\n# - Verificar que no hay breaking changes\n\n# 4. ACTUALIZACIÓN\n# - Actualizar package.json/requirements.txt\n# - Actualizar lockfile\n# - Commit con mensaje descriptivo\n\n# 5. VALIDACIÓN\n# - Verificar que vulnerabilidad está resuelta\n# - Re-ejecutar escaneo\n# - Documentar cambios\n\n# Ejemplo: Actualizar dependencia vulnerable\n# npm audit muestra: lodash@4.17.20 tiene vulnerabilidad\n# npm update lodash\n# npm audit (verificar que está resuelto)\n# git commit -m \"fix: update lodash to resolve CVE-2021-23337\"")" class="copy-btn" :class="{ 'copied': copied }">
+                                <svg x-show="!copied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <svg x-show="copied" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                            <pre><code># Proceso estructurado de remediation
+
+# 1. IDENTIFICACIÓN
+# - Ejecutar escaneo de dependencias
+# - Identificar vulnerabilidades críticas
+# - Priorizar por CVSS score
+
+# 2. ANÁLISIS
+# - Verificar si la dependencia es usada directamente
+# - Verificar si es dependencia transitiva
+# - Analizar impacto en la aplicación
+
+# 3. TESTING
+# - Actualizar dependencia en branch separado
+# - Ejecutar tests unitarios e integración
+# - Verificar que no hay breaking changes
+
+# 4. ACTUALIZACIÓN
+# - Actualizar package.json/requirements.txt
+# - Actualizar lockfile
+# - Commit con mensaje descriptivo
+
+# 5. VALIDACIÓN
+# - Verificar que vulnerabilidad está resuelta
+# - Re-ejecutar escaneo
+# - Documentar cambios
+
+# Ejemplo: Actualizar dependencia vulnerable
+# npm audit muestra: lodash@4.17.20 tiene vulnerabilidad
+# npm update lodash
+# npm audit (verificar que está resuelto)
+# git commit -m "fix: update lodash to resolve CVE-2021-23337"</code></pre>
+                        </div>
+
+                        <h2 id="vendor-assessment">Vendor Assessment</h2>
+                        <div class="table-container mb-6">
+                            <table class="min-w-full">
+                                <thead>
+                                    <tr>
+                                        <th>Criterio</th>
+                                        <th>Preguntas Clave</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Seguridad del Código</strong></td>
+                                        <td>¿Tienen proceso de code review? ¿Usan SAST/DAST? ¿Tienen bug bounty program?</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Gestión de Vulnerabilidades</strong></td>
+                                        <td>¿Cómo manejan vulnerabilidades? ¿Tiempo de respuesta? ¿Proceso de disclosure?</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Compliance</strong></td>
+                                        <td>¿Cumplen con estándares (ISO 27001, SOC 2)? ¿Tienen certificaciones?</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Supply Chain</strong></td>
+                                        <td>¿Generan SBOMs? ¿Monitorean sus dependencias? ¿Firman sus releases?</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Incident Response</strong></td>
+                                        <td>¿Tienen plan de IR? ¿Notifican incidentes? ¿Tienen seguro cibernético?</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h2 id="best-practices-supply-chain">Mejores Prácticas de Supply Chain</h2>
+                        <ul>
+                            <li><strong>Pin versions:</strong> Usar versiones específicas en lugar de ranges (^, ~)</li>
+                            <li><strong>Lockfiles:</strong> Usar package-lock.json, yarn.lock, Pipfile.lock, etc.</li>
+                            <li><strong>Verificar checksums:</strong> Validar integridad de paquetes descargados</li>
+                            <li><strong>Code signing:</strong> Verificar firmas de paquetes cuando esté disponible</li>
+                            <li><strong>Scope privado:</strong> Usar scopes privados para paquetes internos</li>
+                            <li><strong>Monitoreo continuo:</strong> Automatizar escaneo de dependencias en CI/CD</li>
+                            <li><strong>SBOMs:</strong> Generar y mantener SBOMs actualizados</li>
+                            <li><strong>Vendor assessment:</strong> Evaluar seguridad de proveedores antes de adoptar</li>
+                            <li><strong>Proceso de remediation:</strong> Tener proceso documentado para actualizar dependencias vulnerables</li>
+                            <li><strong>Alertas automáticas:</strong> Configurar alertas para vulnerabilidades críticas</li>
+                            <li><strong>Revisión de dependencias:</strong> Revisar nuevas dependencias antes de agregarlas</li>
+                            <li><strong>Minimizar dependencias:</strong> Usar solo dependencias necesarias</li>
+                        </ul>
+
+                        <h2 id="checklist-supply-chain">Checklist de Supply Chain Defense</h2>
+                        <div class="checklist-container mb-6">
+                            <div class="checklist" data-checklist-id="supply-chain-defense">
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('supply-chain-defense', 0)" class="checklist-checkbox">
+                                        <span>Dependencias monitoreadas automáticamente</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('supply-chain-defense', 1)" class="checklist-checkbox">
+                                        <span>Lockfiles configurados y versiones pinneadas</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('supply-chain-defense', 2)" class="checklist-checkbox">
+                                        <span>SBOMs generados y actualizados</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('supply-chain-defense', 3)" class="checklist-checkbox">
+                                        <span>Alertas configuradas para vulnerabilidades críticas</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('supply-chain-defense', 4)" class="checklist-checkbox">
+                                        <span>Proceso de actualización de dependencias documentado</span>
+                                    </label>
+                                </div>
+                                <div class="checklist-item">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" onchange="handleChecklistChange('supply-chain-defense', 5)" class="checklist-checkbox">
+                                        <span>Vendor assessment realizado para proveedores críticos</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="checklist-progress mt-4">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" data-progress="supply-chain-defense"></div>
+                                </div>
+                                <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">Progreso: <span data-progress-text="supply-chain-defense">0%</span></p>
+                            </div>
+                        </div>
+
                         <div class="alert alert-success mt-8">
                             <p class="font-semibold mb-2">✅ Supply Chain Defense</p>
-                            <p>Los ataques a la cadena de suministro están aumentando. Usa herramientas como Dependabot, Snyk, o WhiteSource para monitorear dependencias. Genera SBOMs para tener visibilidad completa de lo que estás usando. Pin versions cuando sea posible.</p>
+                            <p>Los ataques a la cadena de suministro están aumentando. Usa herramientas como Dependabot, Snyk, o WhiteSource para monitorear dependencias. Genera SBOMs para tener visibilidad completa de lo que estás usando. Pin versions cuando sea posible y mantén un proceso estructurado para actualizar dependencias vulnerables.</p>
                         </div>
                     </div>
                 </article>
@@ -196,38 +469,11 @@ grype sbom:sbom.json
         </div>
     </footer>
 
+    <script src="../../assets/js/navigation.js"></script>
     <script src="../../assets/js/search.js"></script>
     <script src="../../assets/js/main.js"></script>
     <style>[x-cloak] { display: none !important; }</style>
-            <script>
-        // Inicializar navegación cuando el DOM esté listo
-        (function() {
-            function initNav() {
-                if (typeof initNavigation === 'function') {
-                    initNavigation();
-                } else if (typeof generateNavigation === 'function') {
-                    const sidebar = document.querySelector('.sidebar nav');
-                    if (sidebar) {
-                        sidebar.innerHTML = generateNavigation();
-                        if (typeof highlightCurrentPage === 'function') {
-                            highlightCurrentPage();
-                        }
-                    }
-                }
-            }
-            
-            // Esperar a que todos los scripts estén cargados
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', function() {
-                    setTimeout(initNav, 200);
-                });
-            } else {
-                // DOM ya está listo, pero esperar un poco para asegurar que Alpine.js esté listo
-                setTimeout(initNav, 200);
-            }
-        })();
-    </script>
-        <script>
+    <script>
         // Inicializar navegación cuando el DOM esté listo
         (function() {
             function initNav() {
